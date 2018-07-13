@@ -7,6 +7,12 @@ namespace WcRunway.Core.Domain
 {
     public class TokenRunwayCalculator
     {
+        public TokenRunwayCalculator()
+        {
+
+        }
+
+
         /// <summary>
         /// 
         /// </summary>

@@ -6,8 +6,9 @@ using System.Text;
 
 namespace WcRunway.Core.Infrastructure.Data.Snowflake
 {
-    public class MockSnowflakeContext
+    public class MockSnowflakeContext : ISnowflakeContext
     {
+
         public Dictionary<int, int> GetUnitOwnership(int unitId)
         {
             var results = new Dictionary<int, int>();
@@ -26,7 +27,12 @@ namespace WcRunway.Core.Infrastructure.Data.Snowflake
             return results;
         }
 
-        public Dictionary<int, double> GetMonetizedUsers()
+        public IEnumerable<int> SpenderIds()
+        {
+            return Spenders().Keys;
+        }
+
+        public Dictionary<int, double> Spenders()
         {
             var results = new Dictionary<int, double>();
             using (var reader = File.OpenText($"Resources/monetized.csv"))
