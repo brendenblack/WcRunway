@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcRunway.Cli
+namespace WcRunway.Cli.Verbs
 {
     [Verb("data", HelpText = "Fetch and cache data required for runway calculations")]
     public class DataOptions

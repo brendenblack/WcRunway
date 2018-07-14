@@ -5,7 +5,7 @@ using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WcRunway.Core.Infrastructure.Data.Snowflake
+namespace WcRunway.Core.Infrastructure.Data.Providers.Snowflake
 {
     public class SnowflakeContext
     {

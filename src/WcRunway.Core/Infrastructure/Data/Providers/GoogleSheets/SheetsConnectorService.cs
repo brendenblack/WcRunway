@@ -1,19 +1,19 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
-using Google.Apis.Sheets.v4.Data;
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using System.IO;
 
-namespace WcRunway.Core.Infrastructure
+namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
 {
     public class SheetsConnectorService
     {
-        public SheetsConnectorService()
+        private readonly ILogger<SheetsConnectorService> log;
+
+        public SheetsConnectorService(ILogger<SheetsConnectorService> logger)
         {
             ServiceAccountCredential credential;
-
+            log = logger;
             using (var stream = new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
             {
                 credential = GoogleCredential.FromStream(stream)

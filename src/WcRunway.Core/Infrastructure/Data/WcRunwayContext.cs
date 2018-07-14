@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WcRunway.Core.Infrastructure.Data.Units;
+using WcRunway.Core.Infrastructure.Data.Game;
 
 namespace WcRunway.Core.Infrastructure.Data
 {
     public class WcRunwayContext
     {
-        public WcRunwayContext(IUnitRepository units)
+        public WcRunwayContext(IUnitData units)
         {
             this.Units = units;
         }
 
-        public IUnitRepository Units { get; private set; }
+        public IUnitData Units { get; private set; }
     }
 }

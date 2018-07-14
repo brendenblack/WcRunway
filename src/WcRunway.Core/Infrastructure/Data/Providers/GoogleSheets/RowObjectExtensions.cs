@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcRunway.Core.Sheets
+namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
 {
     internal static class RowObjectExtensions
     {

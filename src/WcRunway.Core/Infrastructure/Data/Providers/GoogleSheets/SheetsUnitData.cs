@@ -8,10 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using WcRunway.Core.Domain;
 using WcRunway.Core.Infrastructure;
+using WcRunway.Core.Infrastructure.Data.Game;
 
-namespace WcRunway.Core.Sheets
+namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
 {
-    public class SheetsUnitRepository
+    public class SheetsUnitData : IUnitData
     {
         #region Column mapping
         private readonly int COL_IDENTIFIER = 0;
@@ -94,7 +95,7 @@ namespace WcRunway.Core.Sheets
         private readonly string sheetId = "1oB2tzdftGTXeOnWr_aIlZ0A48FM15bfyz406Ldn_7hk";
         private readonly Google.Apis.Sheets.v4.SheetsService sheets;
 
-        public SheetsUnitRepository(SheetsConnectorService sheets)
+        public SheetsUnitData(SheetsConnectorService sheets)
         {
             this.Validity = TimeSpan.FromMinutes(30);
             this.sheets = sheets.Service;

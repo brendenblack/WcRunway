@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WcRunway.Core.Domain;
-using WcRunway.Core.Sheets;
+using WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets;
 using Xunit;
 
 namespace WcRunway.IntegrationTests.Sheets
@@ -17,7 +17,7 @@ namespace WcRunway.IntegrationTests.Sheets
             this.sut = fixture.sut;
         }
 
-        private SheetsUnitRepository sut;
+        private SheetsUnitData sut;
 
         [Fact]
         public void RefreshUnits_ShouldRetrieveUnits()
