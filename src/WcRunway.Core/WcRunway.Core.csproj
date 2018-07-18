@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\NewFolder\" />
     <Folder Include="Infrastructure\Data\Units\" />
     <Folder Include="Sheets\" />
   </ItemGroup>

@@ -10,9 +10,9 @@ using Xunit;
 
 namespace WcRunway.IntegrationTests.Sheets
 {
-    public class UnitDataSheet_RefreshUnitsTests : IClassFixture<UnitDataSheet_RefreshFixture>
+    public class SheetsUnitData_RefreshUnitsTests : IClassFixture<SheetsUnitData_RefreshFixture>
     {
-        public UnitDataSheet_RefreshUnitsTests(UnitDataSheet_RefreshFixture fixture)
+        public SheetsUnitData_RefreshUnitsTests(SheetsUnitData_RefreshFixture fixture)
         {
             this.sut = fixture.sut;
         }

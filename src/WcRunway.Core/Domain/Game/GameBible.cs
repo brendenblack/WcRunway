@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WcRunway.Core.Domain;
+﻿using System.Collections.Generic;
 
-namespace WcRunway.Core.Infrastructure.Data.Game
+namespace WcRunway.Core.Domain.Game
 {
     public class GameContext : IGameContext
     {

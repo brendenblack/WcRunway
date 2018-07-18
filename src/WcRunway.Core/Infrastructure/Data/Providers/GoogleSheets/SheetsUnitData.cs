@@ -7,8 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WcRunway.Core.Domain;
-using WcRunway.Core.Infrastructure;
-using WcRunway.Core.Infrastructure.Data.Game;
+using WcRunway.Core.Domain.Game;
 
 namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
 {

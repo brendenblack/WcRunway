@@ -4,13 +4,9 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WcRunway.Cli.Verbs;
-using WcRunway.Core.Domain;
-using WcRunway.Core.Infrastructure;
-using WcRunway.Core.Infrastructure.Data;
-using WcRunway.Core.Infrastructure.Data.Game;
+using WcRunway.Core.Domain.Game;
 using WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets;
 using WcRunway.Core.Infrastructure.Data.Snowflake;
 

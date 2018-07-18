@@ -1,11 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using WcRunway.Core.Infrastructure.Data;
-using WcRunway.Core.Infrastructure.Data.Game;
+using WcRunway.Core.Domain.Game;
 using WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets;
 
 namespace WcRunway.Cli

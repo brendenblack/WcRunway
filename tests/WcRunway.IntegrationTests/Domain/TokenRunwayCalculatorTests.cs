@@ -4,15 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WcRunway.Core.Domain;
-using WcRunway.Core.Sheets;
 using WcRunway.IntegrationTests.Sheets;
 using Xunit;
 
 namespace WcRunway.IntegrationTests.Domain
 {
-    public class TokenRunwayCalculatorTests : IClassFixture<UnitDataSheet_RefreshFixture>
+    public class TokenRunwayCalculatorTests : IClassFixture<SheetsUnitData_RefreshFixture>
     {
-        public TokenRunwayCalculatorTests(UnitDataSheet_RefreshFixture fixture)
+        public TokenRunwayCalculatorTests(SheetsUnitData_RefreshFixture fixture)
         {
             this.units = fixture.sut.Units;
             this.sut = new TokenRunwayCalculator();

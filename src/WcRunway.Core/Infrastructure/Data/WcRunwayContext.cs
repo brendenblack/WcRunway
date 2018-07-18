@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WcRunway.Core.Infrastructure.Data.Game;
+﻿using WcRunway.Core.Domain.Game;
 
 namespace WcRunway.Core.Infrastructure.Data
 {

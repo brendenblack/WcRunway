@@ -1,10 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using WcRunway.Cli.Verbs;
-using WcRunway.Core.Infrastructure.Data.Game;
+using WcRunway.Core.Domain.Game;
 
 namespace WcRunway.Cli
 {
