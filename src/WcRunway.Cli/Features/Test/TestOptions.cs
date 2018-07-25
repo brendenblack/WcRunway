@@ -10,5 +10,8 @@ namespace WcRunway.Cli.Features.Test
     {
         [Option("sandbox2", Required = false, Default = false)]
         public bool TestSandbox2 { get; set; }
+
+        [Option("copybible", Required = false, Default = false)]
+        public bool TestOfferBible { get; set; }
     }
 }

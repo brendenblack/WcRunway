@@ -10,17 +10,27 @@ namespace WcRunway.CoreTests
 {
     public class Class1
     {
-        //[Fact]
-        //public void test()
-        //{
-        //    var def = new { Sku = "", Quantity = 0 };
-        //    var json = "{\"omegatitanpartcheck\":80}";
+        [Fact]
+        public void DateTimeOffsetTests()
+        {
+            DateTimeOffset dto = new DateTimeOffset(2018, 7, 1, 3, 45, 0, TimeSpan.FromHours(-7));
 
-        //    var d = JsonConvert.DeserializeAnonymousType(json, def);
+            dto.ToUnixTimeSeconds().ShouldBe(1530441900);
+        }
 
-        //    d.Sku.ShouldBe("omegatitanpartcheck");
-        //    d.Quantity.ShouldBe(80);
-        //}
+        [Fact]
+        public void DateTimeOffsetFromUnixTimestamp()
+        {
+            var dto = DateTimeOffset.FromUnixTimeSeconds(1530441900).ToOffset(TimeSpan.FromHours(-7));
+
+            dto.Year.ShouldBe(2018);
+            dto.Month.ShouldBe(7);
+            dto.Day.ShouldBe(1);
+            dto.Hour.ShouldBe(3);
+            dto.Minute.ShouldBe(45);
+            dto.Second.ShouldBe(0);
+        }
+
 
         [Fact]
         public void SettingTime()

@@ -30,8 +30,8 @@ namespace WcRunway.Cli
             // load configuration
             var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .AddJsonFile("appsettings.dev.json")
+            .AddJsonFile("appsettings.json", true)
+            .AddJsonFile("appsettings.dev.json", true)
             .AddEnvironmentVariables();
 
             IConfiguration config = builder.Build();
@@ -58,13 +58,22 @@ namespace WcRunway.Cli
             //log.LogTrace("Warmup complete");
 
             // Handle input
-            Parser.Default.ParseArguments<TokenOptions, DataOptions, GenerateOptions, TestOptions>(args)
-               .MapResult(
-                    (TokenOptions o) => container.GetService<TokenRunway>().Execute(o),
-                    (DataOptions o) => ExecuteData(o),
-                    (GenerateOptions o) => container.GetService<GenerateHandler>().Execute(o),
-                    (TestOptions o) => container.GetService<TestHandler>().Execute(o),
-                    (errs) => HandleParseError(errs));
+            try
+            {
+
+
+                Parser.Default.ParseArguments<TokenOptions, DataOptions, GenerateOptions, TestOptions>(args)
+                   .MapResult(
+                        (TokenOptions o) => container.GetService<TokenRunway>().Execute(o),
+                        (DataOptions o) => ExecuteData(o),
+                        (GenerateOptions o) => container.GetService<GenerateHandler>().Execute(o),
+                        (TestOptions o) => container.GetService<TestHandler>().Execute(o),
+                        (errs) => HandleParseError(errs));
+            }
+            catch (Exception e)
+            {
+                log.LogError(e.Message);
+            }
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
@@ -181,7 +190,8 @@ namespace WcRunway.Cli
             services.AddTransient<ISnowflakeContext, MockSnowflakeContext>();
             services.AddSingleton<IUnitData, SheetsUnitData>();
             services.AddTransient<IGameContext, GameContext>();
-            services.AddTransient<IOfferCopyBible, MockOfferCopyBible>();
+            services.AddTransient<IOfferCopyBible, SheetsOfferCopyBible>();
+            services.AddTransient<UniqueOfferCreator>();
 
             services.AddTransient<TokenRunway>();
             services.AddTransient<GenerateHandler>();

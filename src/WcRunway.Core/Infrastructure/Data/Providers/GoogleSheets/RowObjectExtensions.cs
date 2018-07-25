@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WcRunway.Core.Domain.Offers;
 
 namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
 {
@@ -26,6 +27,19 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
             }
 
             return i;
+        }
+
+        internal static OfferType AsOfferType(this Object col, OfferType defaultValue = OfferType.UNLOCK)
+        {
+            OfferType ot;
+            if (Enum.TryParse(col.ToString(), out ot))
+            {
+                return ot;
+            }
+            else;
+            {
+                return defaultValue;
+            }
         }
     }
 }

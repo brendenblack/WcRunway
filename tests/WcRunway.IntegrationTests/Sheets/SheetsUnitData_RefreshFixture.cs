@@ -12,9 +12,9 @@ namespace WcRunway.IntegrationTests.Sheets
         public SheetsUnitData_RefreshFixture()
         {
             var logger = new Logger<SheetsConnectorService>(new NullLoggerFactory());
-
             var connector = new SheetsConnectorService(logger);
-            this.sut = new SheetsUnitData(connector);
+            var logger2 = new Logger<SheetsUnitData>(new NullLoggerFactory());
+            this.sut = new SheetsUnitData(logger2, connector);
             Task.Run(() => this.sut.RefreshUnits()).Wait();
 
         }

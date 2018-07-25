@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using WcRunway.Core.Domain;
 using WcRunway.Core.Domain.Game;
 
 namespace WcRunway.Cli.Features.Generate
@@ -11,11 +12,13 @@ namespace WcRunway.Cli.Features.Generate
     {
         private readonly ILogger<GenerateHandler> log;
         private readonly IGameContext gameContext;
+        private readonly UniqueOfferGenerator gen;
 
-        public GenerateHandler(ILogger<GenerateHandler> log, IGameContext gameContext)
+        public GenerateHandler(ILogger<GenerateHandler> log, IGameContext gameContext, UniqueOfferGenerator gen)
         {
             this.log = log;
             this.gameContext = gameContext;
+            this.gen = gen;
         }
 
         public int Execute(GenerateOptions o)
@@ -38,6 +41,7 @@ namespace WcRunway.Cli.Features.Generate
             }
 
             // generate unlock
+
 
             if (o.IncludeLevels)
             {

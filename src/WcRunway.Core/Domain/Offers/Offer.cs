@@ -1,0 +1,114 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace WcRunway.Core.Domain.Offers
+{
+    public class Offer
+    {
+        public int Id { get; set; }
+
+        public string OfferCode { get; set; }
+
+        public long StartTimeEpochSeconds { get; set; }
+
+        public DateTimeOffset StartTime
+        {
+            get
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(StartTimeEpochSeconds).ToOffset(TimeSpan.FromHours(-7));
+            }
+            set
+            {
+                this.StartTimeEpochSeconds = value.ToUnixTimeSeconds();
+            }
+        }
+
+        public long EndTimeEpochSeconds { get; set; }
+
+        public DateTimeOffset EndTime
+        {
+            get
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(EndTimeEpochSeconds).ToOffset(TimeSpan.FromHours(-7));
+            }
+            set
+            {
+                this.EndTimeEpochSeconds = value.ToUnixTimeSeconds();
+            }
+        }
+
+        public int? Duration { get; set; }
+
+        public int? Priority { get; set; } = 0;
+
+        public int MaxQuantity { get; set; } = 1;
+
+        public int Cooldown { get; set; } = 0;
+
+        public int CooldownType { get; set; } = 1;
+
+        public int Cost { get; set; }
+
+        public int FullCost { get; set; }
+
+        public string CostSku { get; set; } = "gold";
+
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
+        public string ContentJson { get; set; }
+
+        public string DisplayedItemsJson { get; set; }
+
+        public string IconTitle { get; set; }
+
+        public string IconDescription { get; set; }
+
+
+        #region Builder
+        public static IOfferBuilderSetStartTime WithCode(string offerCode)
+        {
+            return new Offer.Builder(offerCode);
+        }
+
+
+        public interface IOfferBuilderSetStartTime
+        {
+            IOfferBuilderSetEndTime StartingAt(DateTimeOffset dto);
+            IOfferBuilderSetEndTime StartingAt(long epochSeconds);
+        }
+
+        public interface IOfferBuilderSetEndTime
+        {
+
+        }
+
+        public class Builder : IOfferBuilderSetStartTime, IOfferBuilderSetEndTime
+        {
+            private readonly string offerCode;
+            private long startTime;
+            private long endTime;
+
+            internal Builder(string offerCode)
+            {
+                this.offerCode = offerCode;
+            }
+
+            public IOfferBuilderSetEndTime StartingAt(DateTimeOffset dto)
+            {
+                throw new NotImplementedException();
+            }
+
+            public IOfferBuilderSetEndTime StartingAt(long epochSeconds)
+            {
+                this.startTime = epochSeconds;
+                return this;
+            }
+        }
+        #endregion
+
+    }
+
+}

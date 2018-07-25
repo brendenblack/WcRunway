@@ -9,7 +9,7 @@ using WcRunway.Core.Domain.Offers;
 
 namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
 {
-    public class SheetsOfferCopyBible : IOfferCopyBible
+    public class SheetsOfferData : IOfferData
     {
         #region column mapping
         private static readonly int COL_UNIT_ID = 0;
@@ -22,11 +22,13 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
         private static readonly int COL_FULL_COST = 7;
         private static readonly int COL_COST_SKU = 8;
         private static readonly int COL_DURATION = 9;
+        private static readonly int COL_CONTENT = 10;
+        private static readonly int COL_DISPLAY = 11;
         #endregion
 
         private readonly string sheetId = "1x3nlFmcPUNzJT6wwkqxtGBnxcWALenR5ZnBI5wZjxvw";
         private readonly SheetsService sheets;
-        private readonly ILogger<SheetsOfferCopyBible> log;
+        private readonly ILogger<SheetsOfferData> log;
 
         public DateTime LastUpdate { get; private set; }
         public TimeSpan Validity { get; private set; }
@@ -38,35 +40,35 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
             }
         }
 
-        public SheetsOfferCopyBible(ILogger<SheetsOfferCopyBible> logger, SheetsConnectorService sheets)
+        public SheetsOfferData(ILogger<SheetsOfferData> logger, SheetsConnectorService sheets)
         {
             this.Validity = TimeSpan.FromMinutes(30);
             this.sheets = sheets.Service;
             this.log = logger;
         }
 
-        private List<OfferCopy> copies = new List<OfferCopy>();
-        public List<OfferCopy> Copies
+
+        private List<OfferSkeleton> skeletons = new List<OfferSkeleton>();
+
+        public List<OfferSkeleton> Skeletons
         {
             get
             {
                 if (IsStale)
                 {
-                    log.LogInformation("Offer copy values are stale, refetching");
                     Update();
                 }
 
-                return this.copies;
+                return skeletons;
             }
         }
 
-
         public async Task Update()
         {
-            log.LogDebug("Clearing {} copy record(s)", copies?.Count ?? 0);
-            this.copies.Clear();
+            log.LogDebug("Clearing {} offer skeleton(s)", skeletons?.Count ?? 0);
+            this.skeletons.Clear();
 
-            var range = "Copy!A2:F";
+            var range = "Uniques!A2:L";
             log.LogDebug("Retrieving records from range {0}", range);
             
             SpreadsheetsResource.ValuesResource.GetRequest request = sheets.Spreadsheets.Values.Get(sheetId, range);
@@ -79,18 +81,23 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
             {
                 foreach (var row in values)
                 {
-
-                    var copy = new OfferCopy
+                    var skeleton = new OfferSkeleton
                     {
                         UnitId = row[COL_UNIT_ID].AsInteger(),
                         OfferType = row[COL_OFFER_TYPE].AsOfferType(),
                         Title = row[COL_TITLE].ToString(),
                         Description = row[COL_DESCRIPTION].ToString(),
                         IconTitle = row[COL_ICON_TITLE].ToString(),
-                        IconDescription = row[COL_ICON_DESCRIPTION].ToString()
+                        IconDescription = row[COL_ICON_DESCRIPTION].ToString(),
+                        Cost = row[COL_COST].AsInteger(),
+                        FullCost = row[COL_FULL_COST].AsInteger(),
+                        CostSku = row[COL_COST_SKU].AsString() ?? "gold",
+                        Duration = row[COL_DURATION].AsInteger(),
+                        Content = row[COL_CONTENT].AsString(),
+                        DisplayedItems = row[COL_DISPLAY].AsString()
                     };
 
-                    this.copies.Add(copy);
+                    this.skeletons.Add(skeleton);
                 }
             }
             else
@@ -98,11 +105,6 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
                 log.LogWarning("No values returned from sheet {0}", sheetId);
             }
 
-        }
-
-        public string GetTitleFor(int unitId, OfferType offerType)
-        {
-            throw new NotImplementedException();
         }
     }
 }
