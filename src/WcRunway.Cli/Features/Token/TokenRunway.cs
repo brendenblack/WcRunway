@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Linq;
-using WcRunway.Cli.Verbs;
 using WcRunway.Core.Domain.Game;
 
-namespace WcRunway.Cli
+namespace WcRunway.Cli.Features.Token
 {
     public class TokenRunway
     {

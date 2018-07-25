@@ -10,17 +10,44 @@ namespace WcRunway.CoreTests
 {
     public class Class1
     {
+        //[Fact]
+        //public void test()
+        //{
+        //    var def = new { Sku = "", Quantity = 0 };
+        //    var json = "{\"omegatitanpartcheck\":80}";
+
+        //    var d = JsonConvert.DeserializeAnonymousType(json, def);
+
+        //    d.Sku.ShouldBe("omegatitanpartcheck");
+        //    d.Quantity.ShouldBe(80);
+        //}
+
         [Fact]
-        public void test()
+        public void SettingTime()
         {
-            var def = new { Sku = "", Quantity = 0 };
-            var json = "{\"omegatitanpartcheck\":80}";
+            //january 1 2018
+            var milli = 1514793600;
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var timespan = TimeSpan.FromSeconds(milli);
 
-            var d = JsonConvert.DeserializeAnonymousType(json, def);
+            var date = epoch.Add(timespan).ToLocalTime();
 
-            d.Sku.ShouldBe("omegatitanpartcheck");
-            d.Quantity.ShouldBe(80);
+            date.Year.ShouldBe(2018);
+            date.Month.ShouldBe(1);
+            date.Day.ShouldBe(1);
         }
+
+
+        [Fact]
+        public void AsIntegerShouldSetNegativeValues()
+        {
+            var input = "-1";
+
+            bool parse = Int32.TryParse(input, System.Globalization.NumberStyles.AllowThousands | System.Globalization.NumberStyles.AllowLeadingSign, System.Globalization.CultureInfo.CurrentCulture, out int result);
+
+            result.ShouldBe(-1);
+        }
+
 
         [Fact]
         public void test2()

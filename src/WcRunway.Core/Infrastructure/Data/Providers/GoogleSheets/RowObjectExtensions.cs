@@ -15,7 +15,11 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
         {
             int i;
 
-            bool parse = Int32.TryParse(column.ToString(), System.Globalization.NumberStyles.AllowThousands, System.Globalization.CultureInfo.InvariantCulture, out i);
+            bool parse = Int32.TryParse(
+                column.ToString(), 
+                System.Globalization.NumberStyles.AllowThousands | System.Globalization.NumberStyles.AllowLeadingSign,
+                System.Globalization.CultureInfo.InvariantCulture, 
+                out i);
             if (!parse)
             {
                 i = defaultValue;

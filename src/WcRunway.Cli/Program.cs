@@ -1,13 +1,21 @@
 ﻿using CommandLine;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
-using WcRunway.Cli.Verbs;
+using WcRunway.Cli.Features.Data;
+using WcRunway.Cli.Features.Generate;
+using WcRunway.Cli.Features.Test;
+using WcRunway.Cli.Features.Token;
 using WcRunway.Core.Domain.Game;
+using WcRunway.Core.Domain.Offers;
 using WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets;
+using WcRunway.Core.Infrastructure.Data.Providers.MySql;
 using WcRunway.Core.Infrastructure.Data.Snowflake;
 
 namespace WcRunway.Cli
@@ -18,11 +26,23 @@ namespace WcRunway.Cli
 
         static async Task Main(string[] args)
         {
+
+            // load configuration
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile("appsettings.dev.json")
+            .AddEnvironmentVariables();
+
+            IConfiguration config = builder.Build();
+            
+
+            // Build the container
             var serviceCollection = new ServiceCollection();
-            ConfigureServices(serviceCollection);
+            ConfigureServices(serviceCollection, config);
             container = serviceCollection.BuildServiceProvider();
 
-            // configure console logging
+            // Configure console logging
             container.GetRequiredService<ILoggerFactory>()
                 .AddNLog(new NLogProviderOptions
                 {
@@ -30,16 +50,20 @@ namespace WcRunway.Cli
                     CaptureMessageProperties = true
                 });
             NLog.LogManager.LoadConfiguration("nlog.config");
-            
+           
+            // Warm up the data source
             var log = container.GetService<ILoggerFactory>().CreateLogger<Program>();
-            log.LogTrace("Triggering warmup");
-            await container.GetService<Warmup>().Run();
-            log.LogTrace("Warmup complete");
+            //log.LogTrace("Triggering warmup");
+            //await container.GetService<Warmup>().Run();
+            //log.LogTrace("Warmup complete");
 
-            Parser.Default.ParseArguments<TokenOptions, DataOptions>(args)
+            // Handle input
+            Parser.Default.ParseArguments<TokenOptions, DataOptions, GenerateOptions, TestOptions>(args)
                .MapResult(
                     (TokenOptions o) => container.GetService<TokenRunway>().Execute(o),
                     (DataOptions o) => ExecuteData(o),
+                    (GenerateOptions o) => container.GetService<GenerateHandler>().Execute(o),
+                    (TestOptions o) => container.GetService<TestHandler>().Execute(o),
                     (errs) => HandleParseError(errs));
 
             Console.WriteLine("Press any key to exit");
@@ -132,19 +156,36 @@ namespace WcRunway.Cli
             return -1;
         }
 
-        private static void ConfigureServices(IServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services, IConfiguration config)
         {
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             services.AddLogging((builder) => builder.SetMinimumLevel(LogLevel.Trace));
+
+            // Add SB2 database connection
+            var sb2url = config["sandbox2:url"];
+            var sb2username = config["sandbox2:username"];
+            var sb2password = config["sandbox2:password"];
+            var sb2name = config["sandbox2:name"];
+            var sb2conn = $"server={sb2url};database={sb2name};uid={sb2username};pwd={sb2password};ssl-mode=none";
+
+            services.AddDbContext<Sandbox2Context>(opt =>
+            {
+                opt //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).
+                .UseMySQL(sb2conn);
+            });
+
 
             services.AddSingleton<SheetsConnectorService>();
             services.AddTransient<Warmup>();
             services.AddTransient<ISnowflakeContext, MockSnowflakeContext>();
             services.AddSingleton<IUnitData, SheetsUnitData>();
             services.AddTransient<IGameContext, GameContext>();
+            services.AddTransient<IOfferCopyBible, MockOfferCopyBible>();
 
             services.AddTransient<TokenRunway>();
+            services.AddTransient<GenerateHandler>();
+            services.AddTransient<TestHandler>();
         }
     }
 

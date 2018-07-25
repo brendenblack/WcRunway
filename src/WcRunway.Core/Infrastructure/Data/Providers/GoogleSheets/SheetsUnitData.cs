@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -92,12 +93,14 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
         #endregion
 
         private readonly string sheetId = "1oB2tzdftGTXeOnWr_aIlZ0A48FM15bfyz406Ldn_7hk";
-        private readonly Google.Apis.Sheets.v4.SheetsService sheets;
+        private readonly SheetsService sheets;
+        private readonly ILogger<SheetsUnitData> log;
 
-        public SheetsUnitData(SheetsConnectorService sheets)
+        public SheetsUnitData(ILogger<SheetsUnitData> logger, SheetsConnectorService sheets)
         {
             this.Validity = TimeSpan.FromMinutes(30);
             this.sheets = sheets.Service;
+            this.log = logger;
         }
 
         private List<Unit> _units = new List<Unit>();
@@ -119,7 +122,7 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
             var range = "Unit Data!A2:EJ";
             SpreadsheetsResource.ValuesResource.GetRequest request = sheets.Spreadsheets.Values.Get(sheetId, range);
             ValueRange response = await request.ExecuteAsync();
-            Console.WriteLine("Received response of range {0} (major dimension: {1})", response.Range, response.MajorDimension);
+            log.LogDebug("Received response of range {0} (major dimension: {1})", response.Range, response.MajorDimension);
             var values = response.Values;
             
 
@@ -178,7 +181,7 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
                         }
                         catch (JsonSerializationException e)
                         {
-                            Console.WriteLine("There was an error parsing upgradeSkuCost column as JSON, value: {0}", upgradeSkuCost);
+                            log.LogError("There was an error parsing upgradeSkuCost column as JSON, value: {0}", upgradeSkuCost);
                         }
                     }
 
@@ -193,7 +196,7 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
             }
             else
             {
-                Console.WriteLine("No data found.");
+                log.LogWarning("No data found");
             }
 
             this.LastUpdate = DateTime.Now;

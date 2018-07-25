@@ -329,3 +329,5 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 /src/WcRunway.Core/client_secret.json
+/src/WcRunway.Cli/appsettings.json
+/src/WcRunway.Cli/appsettings.dev.json

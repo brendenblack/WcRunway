@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcRunway.Cli.Verbs
+namespace WcRunway.Cli.Features.Token
 {
     [Verb("token", HelpText = "Calculate token runway")]
     public class TokenOptions
