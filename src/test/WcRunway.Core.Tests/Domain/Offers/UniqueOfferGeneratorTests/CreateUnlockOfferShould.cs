@@ -10,11 +10,11 @@ using WcRunway.Core.Domain.Offers;
 using WcRunway.Core.Infrastructure.Data.Providers.MySql;
 using Xunit;
 
-namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGenerator
+namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
 {
     public class CreateUnlockOfferShould
     {
-        private readonly Core.Domain.Offers.UniqueOfferGenerator sut;
+        private readonly UniqueOfferGenerator sut;
         private readonly OfferSkeleton _skeleton;
 
         public CreateUnlockOfferShould()
@@ -24,7 +24,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGenerator
                 .Options;
 
             var sb2 = new Sandbox2Context(options);
-            ILogger<Core.Domain.Offers.UniqueOfferGenerator> logger = TestHelpers.CreateLogger<Core.Domain.Offers.UniqueOfferGenerator>();
+            ILogger<UniqueOfferGenerator> logger = TestHelpers.CreateLogger<UniqueOfferGenerator>();
 
             var skeleton = new OfferSkeleton
             {
@@ -47,7 +47,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGenerator
             var mockOfferData = new Mock<IOfferData>();
             mockOfferData.Setup(o => o.Skeletons).Returns(new List<OfferSkeleton> { skeleton });
 
-            var gen = new Core.Domain.Offers.UniqueOfferGenerator(logger, mockOfferData.Object);
+            var gen = new UniqueOfferGenerator(logger, mockOfferData.Object);
 
             this.sut = gen;
         }
@@ -59,6 +59,49 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGenerator
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
             offer.OfferCode.ShouldBe("Jul18TestUnl");
+        }
+
+        [Theory]
+        [InlineData(7)]
+        [InlineData(1000)]
+        [InlineData(245)]
+        public void SetPriorityWhenProvidedValid(int priority)
+        {
+            var unit = new Unit(217) { Name = "Juggernaut" };
+            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test", priority);
+
+            offer.Priority.ShouldBe(priority);
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(-2415)]
+        public void SetPriorityTo0WhenProvidedInvalid(int invalidPriority)
+        {
+            var unit = new Unit(217) { Name = "Juggernaut" };
+            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test", invalidPriority);
+
+            offer.Priority.ShouldBe(0);
+        }
+
+        [Fact]
+        public void SetStartTimeToNow()
+        {
+            var unit = new Unit(217) { Name = "Juggernaut" };
+            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+
+            offer.StartTime.ShouldBe(DateTimeOffset.Now, TimeSpan.FromSeconds(10));
+
+        }
+
+        [Fact]
+        public void SetEndTimeTo3DaysFromNow()
+        {
+            var unit = new Unit(217) { Name = "Juggernaut" };
+            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+
+            offer.EndTime.ShouldBe(DateTimeOffset.Now.AddDays(3), TimeSpan.FromSeconds(10));
+
         }
 
         #region when skeleton exists
@@ -192,6 +235,59 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGenerator
             offer.IconDescription.ShouldBe("Offer includes an UNLOCK of the powerful WAR RIG!");
         }
 
+        [Fact]
+        public void SetDefaultDurationWhenSkeletonNotFound()
+        {
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+
+            offer.Duration.ShouldBe(86400);
+        }
+
+        [Fact]
+        public void SetDefaultCostWhenSkeletonNotFound()
+        {
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+
+            offer.Cost.ShouldBe(99);
+        }
+
+        [Fact]
+        public void SetDefaultFullCostWhenSkeletonNotFound()
+        {
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+
+            offer.FullCost.ShouldBe(-1);
+        }
+
+        [Fact]
+        public void SetDefaultCostSkuWhenSkeletonNotFound()
+        {
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+
+            offer.CostSku.ShouldBe("gold");
+        }
+
+        [Fact]
+        public void SetEmptyContentWhenSkeletonNotFound()
+        {
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+
+            offer.ContentJson.ShouldBe("{ \"skus\": { \"gold\": 0 } }");
+        }
+
+        [Fact]
+        public void SetEmptyDisplayedItemsWhenSkeletonNotFound()
+        {
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+
+            offer.DisplayedItemsJson.ShouldBe("[]");
+        }
         #endregion
 
     }

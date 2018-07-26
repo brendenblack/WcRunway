@@ -4,6 +4,9 @@ using System.Text;
 
 namespace WcRunway.Core.Domain.Offers
 {
+    /// <summary>
+    /// Models an offer as represented inside the War Commander offer tool
+    /// </summary>
     public class Offer
     {
         public int Id { get; set; }
@@ -67,6 +70,8 @@ namespace WcRunway.Core.Domain.Offers
         public string IconDescription { get; set; }
 
         public string DisplayOptionsJson { get; set; } = "{ \"show_popup\": 2}";
+
+        public int TemplateId { get; set; }
 
 
         #region Builder

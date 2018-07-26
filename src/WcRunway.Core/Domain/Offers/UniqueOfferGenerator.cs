@@ -27,6 +27,11 @@ namespace WcRunway.Core.Domain.Offers
                 // TODO
             }
 
+            if (priority < 0)
+            {
+                priority = 0;
+            }
+
             var code = $"{prefix}Unl";
             log.LogInformation("Creating unlock offer for {0} - {1} using offer code {2}", unit.Id, unit.Name, code);
 
@@ -69,7 +74,8 @@ namespace WcRunway.Core.Domain.Offers
                 Priority = priority,
                 MaxQuantity = 1,
                 Cooldown = 0,
-                CooldownType = 1
+                CooldownType = 1,
+                TemplateId = 6
                 
             };
 
