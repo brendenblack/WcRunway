@@ -3,8 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using WcRunway.Core.Domain;
 using WcRunway.Core.Domain.Game;
+using WcRunway.Core.Domain.Offers;
+using WcRunway.Core.Infrastructure.Data.Providers.MySql;
 
 namespace WcRunway.Cli.Features.Generate
 {
@@ -13,12 +16,14 @@ namespace WcRunway.Cli.Features.Generate
         private readonly ILogger<GenerateHandler> log;
         private readonly IGameContext gameContext;
         private readonly UniqueOfferGenerator gen;
+        private readonly Sandbox2Context sb2;
 
-        public GenerateHandler(ILogger<GenerateHandler> log, IGameContext gameContext, UniqueOfferGenerator gen)
+        public GenerateHandler(ILogger<GenerateHandler> log, IGameContext gameContext, UniqueOfferGenerator gen, Sandbox2Context sb2)
         {
             this.log = log;
             this.gameContext = gameContext;
             this.gen = gen;
+            this.sb2 = sb2;
         }
 
         public int Execute(GenerateOptions o)
@@ -41,6 +46,10 @@ namespace WcRunway.Cli.Features.Generate
             }
 
             // generate unlock
+            var unlock = gen.CreateUnlockOffer(unit, prefix);
+            this.sb2.Offers.Add(unlock);
+            this.sb2.SaveChanges();
+            log.LogInformation("Generated unlock offer has been created with id {0}", unlock.Id);
 
 
             if (o.IncludeLevels)

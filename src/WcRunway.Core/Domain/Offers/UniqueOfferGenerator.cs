@@ -6,7 +6,7 @@ using System.Text;
 using WcRunway.Core.Domain.Offers;
 using WcRunway.Core.Infrastructure.Data.Providers.MySql;
 
-namespace WcRunway.Core.Domain
+namespace WcRunway.Core.Domain.Offers
 {
     public class UniqueOfferGenerator
     {
@@ -31,7 +31,7 @@ namespace WcRunway.Core.Domain
             log.LogInformation("Creating unlock offer for {0} - {1} using offer code {2}", unit.Id, unit.Name, code);
 
             // Fetch data from the offer data dictionary
-            var skeleton = this.offerData.Skeletons.FirstOrDefault(c => c.UnitId == unit.Id && c.OfferType == OfferType.UNLOCK);
+            var skeleton = this.offerData.Skeletons.FirstOrDefault(c => c.UnitId == unit.Id && c.OfferType == OfferType.UNIT_UNLOCK);
             // If nothing was found, use generic alternative with functionally empty content & displayed item blocks
             if (skeleton == null)
             {

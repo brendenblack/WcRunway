@@ -29,10 +29,10 @@ namespace WcRunway.Cli
 
             // load configuration
             var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", true)
-            .AddJsonFile("appsettings.dev.json", true)
-            .AddEnvironmentVariables();
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true)
+                .AddJsonFile("appsettings.dev.json", true)
+                .AddEnvironmentVariables();
 
             IConfiguration config = builder.Build();
             
@@ -172,10 +172,10 @@ namespace WcRunway.Cli
             services.AddLogging((builder) => builder.SetMinimumLevel(LogLevel.Trace));
 
             // Add SB2 database connection
-            var sb2url = config["sandbox2:url"];
-            var sb2username = config["sandbox2:username"];
-            var sb2password = config["sandbox2:password"];
-            var sb2name = config["sandbox2:name"];
+            var sb2url = config["data:sandbox2:url"];
+            var sb2username = config["data:sandbox2:username"];
+            var sb2password = config["data:sandbox2:password"];
+            var sb2name = config["data:sandbox2:name"];
             var sb2conn = $"server={sb2url};database={sb2name};uid={sb2username};pwd={sb2password};ssl-mode=none";
 
             services.AddDbContext<Sandbox2Context>(opt =>

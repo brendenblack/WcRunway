@@ -6,7 +6,8 @@ namespace WcRunway.Core.Domain.Offers
 {
     public enum OfferType
     {
-        UNLOCK,
+        UNIT_UNLOCK,
+        PRE_BUILT_UNIT,
         LEVELS,
         ELITE_PARTS,
         OMEGA_PARTS,

@@ -66,6 +66,8 @@ namespace WcRunway.Core.Domain.Offers
 
         public string IconDescription { get; set; }
 
+        public string DisplayOptionsJson { get; set; } = "{ \"show_popup\": 2}";
+
 
         #region Builder
         public static IOfferBuilderSetStartTime WithCode(string offerCode)

@@ -29,7 +29,7 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
             return i;
         }
 
-        internal static OfferType AsOfferType(this Object col, OfferType defaultValue = OfferType.UNLOCK)
+        internal static OfferType AsOfferType(this Object col, OfferType defaultValue = OfferType.UNIT_UNLOCK)
         {
             OfferType ot;
             if (Enum.TryParse(col.ToString(), out ot))
