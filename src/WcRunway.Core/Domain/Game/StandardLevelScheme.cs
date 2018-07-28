@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcRunway.Core
+namespace WcRunway.Core.Domain.Game
 {
     public class StandardLevelScheme
     {

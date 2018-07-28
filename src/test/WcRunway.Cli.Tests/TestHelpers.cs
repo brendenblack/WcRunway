@@ -2,11 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml;
 
-namespace WcRunway.CoreTests
+namespace WcRunway.Cli.Tests
 {
-    public class TestLogging
+    public class TestHelpers
     {
         public static ILogger<T> CreateLogger<T>()
         {

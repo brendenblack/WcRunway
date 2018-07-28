@@ -5,18 +5,19 @@ using System.Text;
 using WcRunway.Core.Domain.Offers;
 using Xunit;
 
-namespace WcRunway.CoreTests.Domain.Offers
+namespace WcRunway.Core.Tests.Domain.Offers.OfferTests
 {
-    public class Offer_StartTimeShould
+    public class StartTimeShould
     {
         [Theory]
         [InlineData(1514793600)]
+        [InlineData(1532415600)]
         public void ReturnExpectedTimeWhenValid(int epochSeconds)
         {
-            var expectedTime = DateTimeOffset.FromUnixTimeSeconds(1514793600).ToOffset(TimeSpan.FromHours(-7));
+            var expectedTime = DateTimeOffset.FromUnixTimeSeconds(epochSeconds).ToOffset(TimeSpan.FromHours(-7));
 
             var offer = new Offer { StartTimeEpochSeconds = epochSeconds };
-            
+
             offer.StartTime.ShouldBe(expectedTime);
         }
     }

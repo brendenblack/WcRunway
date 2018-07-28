@@ -3,16 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using WcRunway.Core.Domain;
 using WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets;
 using Xunit;
 
-namespace WcRunway.IntegrationTests.Sheets
+namespace WcRunway.Core.Tests.Infrastructure.Data.Providers.GoogleSheets.SheetsUnitDataTests
 {
-    public class SheetsUnitData_RefreshUnitsTests : IClassFixture<SheetsUnitData_RefreshFixture>
+    public class RefreshUnits_Should : IClassFixture<RefreshUnitsFixture>
     {
-        public SheetsUnitData_RefreshUnitsTests(SheetsUnitData_RefreshFixture fixture)
+        public RefreshUnits_Should(RefreshUnitsFixture fixture)
         {
             this.sut = fixture.sut;
         }
@@ -20,13 +19,13 @@ namespace WcRunway.IntegrationTests.Sheets
         private SheetsUnitData sut;
 
         [Fact]
-        public void RefreshUnits_ShouldRetrieveUnits()
+        public void RetrieveUnits()
         {
             this.sut.Units.Count().ShouldBeGreaterThan(0);
         }
 
         [Fact]
-        public void RefreshUnits_ShouldSetName()
+        public void SetName()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
 
@@ -34,7 +33,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void RefreshUnits_ShouldSetIdentifier()
+        public void SetIdentifier()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
 
@@ -42,7 +41,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void RefreshUnits_ShouldSetDescription()
+        public void SetDescription()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
 
@@ -50,7 +49,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void ShouldSetLevels()
+        public void SetLevels()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
 
@@ -58,7 +57,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void ShouldSetLevelMetalUpgradeCost()
+        public void SetLevelMetalUpgradeCost()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
             Level level7 = phalanx.Levels.First(l => l.Number == 7);
@@ -67,7 +66,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void ShouldSetLevelOilUpgradeCost()
+        public void SetLevelOilUpgradeCost()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
             Level level7 = phalanx.Levels.First(l => l.Number == 7);
@@ -76,7 +75,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void ShouldSetLevelThoriumUpgradeCost()
+        public void SetLevelThoriumUpgradeCost()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
             Level level12 = phalanx.Levels.First(l => l.Number == 12);
@@ -85,7 +84,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void ShouldSetUpgradeSkuWhenRelevant()
+        public void SetUpgradeSkuWhenRelevant()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
             Level level14 = phalanx.Levels.First(l => l.Number == 14);
@@ -94,7 +93,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void ShouldNotSetCostSkuWhenIrrelevant()
+        public void NotSetCostSkuWhenIrrelevant()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
             Level level7 = phalanx.Levels.First(l => l.Number == 7);
@@ -103,7 +102,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void ShouldSetUpgradeSkuCostWhenRelevant()
+        public void SetUpgradeSkuCostWhenRelevant()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
             Level level14 = phalanx.Levels.First(l => l.Number == 14);
@@ -114,7 +113,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void ShouldNotSetUpgradeSkuCostWhenIrrelevant()
+        public void NotSetUpgradeSkuCostWhenIrrelevant()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
             Level level7 = phalanx.Levels.First(l => l.Number == 7);
@@ -124,7 +123,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void ShouldSetUpgradeCostGoldToNegativeValueWhenDisallowed()
+        public void SetUpgradeCostGoldToNegativeValueWhenDisallowed()
         {
             Unit phalanx = this.sut.Units.First(u => u.Id == 251);
             Level level12 = phalanx.Levels.First(l => l.Number == 12);
@@ -133,7 +132,7 @@ namespace WcRunway.IntegrationTests.Sheets
         }
 
         [Fact]
-        public void ShouldSetUpgradeCostGold()
+        public void SetUpgradeCostGold()
         {
             Unit warrig = this.sut.Units.First(u => u.Id == 257);
             Level level8 = warrig.Levels.First(l => l.Number == 8);

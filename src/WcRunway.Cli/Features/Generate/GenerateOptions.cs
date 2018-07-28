@@ -26,5 +26,6 @@ namespace WcRunway.Cli.Features.Generate
 
         [Option('e', "elite", Default = true, HelpText = "Generate an offer for Elite parts for the indicated unit")]
         public bool IncludeEliteParts { get; set; }
+
     }
 }

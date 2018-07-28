@@ -5,11 +5,11 @@ using System.Text;
 using WcRunway.Core.Infrastructure.Data.Snowflake;
 using Xunit;
 
-namespace WcRunway.IntegrationTests.Infrastructure.Data.Snowflake
+namespace WcRunway.Core.Tests.Infrastructure.Data.Providers.Snowflake.MockSnowflakeContextTests
 {
-    public class MockSnowflakeContextTests
+    public class GetUnitOwnership_Should
     {
-        public MockSnowflakeContextTests()
+        public GetUnitOwnership_Should()
         {
             this.sut = new MockSnowflakeContext();
         }
@@ -23,6 +23,5 @@ namespace WcRunway.IntegrationTests.Infrastructure.Data.Snowflake
 
             ownership.Count.ShouldBe(64512);
         }
-        
     }
 }

@@ -2,19 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WcRunway.Core;
+using WcRunway.Core.Domain.Game;
 using Xunit;
 
-namespace WcRunway.CoreTests
+namespace WcRunway.Core.Tests.Domain.Game.StandardLevelSchemeTests
 {
-    public class StandardLevelSchemeTests
+    public class CalculateTokensForLevelShould
     {
-        public StandardLevelSchemeTests()
+        private readonly StandardLevelScheme sut;
+
+        public CalculateTokensForLevelShould()
         {
             this.sut = new StandardLevelScheme();
         }
-
-        private readonly StandardLevelScheme sut;
 
         [Theory]
         [InlineData(1)]
@@ -27,7 +27,7 @@ namespace WcRunway.CoreTests
         [InlineData(8)]
         [InlineData(9)]
         [InlineData(10)]
-        public void LevelsLessThanOrEqualTo10ShouldReturn55(int level)
+        public void Return55ForLevelsLessThanOrEqualTo10(int level)
         {
             int tokens = this.sut.CalculateTokensForLevel(level);
 
@@ -45,7 +45,7 @@ namespace WcRunway.CoreTests
         [InlineData(18, 19)]
         [InlineData(19, 10)]
         [InlineData(20, 0)]
-        public void LevelsGreaterThan10ShouldReturnExpectedValue(int level, int expected)
+        public void ReturnExpectedValueForLevelsGreaterThan10(int level, int expected)
         {
             int tokens = this.sut.CalculateTokensForLevel(level);
 

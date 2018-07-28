@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WcRunway.Core.Domain;
-using WcRunway.IntegrationTests.Sheets;
+using WcRunway.Core.Tests.Infrastructure.Data.Providers.GoogleSheets.SheetsUnitDataTests;
 using Xunit;
 
-namespace WcRunway.IntegrationTests.Domain
+namespace WcRunway.Core.Tests.Domain.TokenRunwayCalculatorTests
 {
-    public class TokenRunwayCalculatorTests : IClassFixture<SheetsUnitData_RefreshFixture>
+    public class CalculateRemainingCostsAtLevel_Should : IClassFixture<RefreshUnitsFixture> // TODO: break dependence on this fixture
     {
-        public TokenRunwayCalculatorTests(SheetsUnitData_RefreshFixture fixture)
+        public CalculateRemainingCostsAtLevel_Should(RefreshUnitsFixture fixture)
         {
             this.units = fixture.sut.Units;
             this.sut = new TokenRunwayCalculator();
@@ -21,7 +21,7 @@ namespace WcRunway.IntegrationTests.Domain
         private TokenRunwayCalculator sut;
 
         [Fact]
-        public void ShouldTrackSkuUsedAsCost()
+        public void TrackSkuUsedAsCost()
         {
             var phalanx = this.units.First(u => u.Id == 251);
 
@@ -52,7 +52,7 @@ namespace WcRunway.IntegrationTests.Domain
         [InlineData(18, 19)]
         [InlineData(19, 10)]
         [InlineData(20, 0)]
-        public void ShouldCalculateCorrectTokenCount(int level, int expectedCount)
+        public void CalculateCorrectTokenCount(int level, int expectedCount)
         {
             var phalanx = this.units.First(u => u.Id == 251);
 

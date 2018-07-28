@@ -10,10 +10,10 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
     {
         private readonly ILogger<SheetsConnectorService> log;
 
-        public SheetsConnectorService(ILogger<SheetsConnectorService> logger)
+        public SheetsConnectorService(ILogger<SheetsConnectorService> logger, ServiceAccountCredential credential)
         {
-            ServiceAccountCredential credential;
             log = logger;
+            // TODO: inject this secret
             using (var stream = new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
             {
                 credential = GoogleCredential.FromStream(stream)

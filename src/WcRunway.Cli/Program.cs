@@ -184,7 +184,7 @@ namespace WcRunway.Cli
                 .UseMySQL(sb2conn);
             });
 
-
+            services.AddSingleton(EmbeddedJsonServiceCredential.CreateCredentialFromFile()); 
             services.AddSingleton<SheetsConnectorService>();
             services.AddTransient<Warmup>();
             services.AddTransient<ISnowflakeContext, MockSnowflakeContext>();
