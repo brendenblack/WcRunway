@@ -37,5 +37,10 @@ namespace WcRunway.Core.Domain
                 return Levels.SelectMany(l => l.UpgradeSkuCosts.Select(s => s.Sku));
             }
         }
+
+        public override string ToString()
+        {
+            return $"{Id} {Name}";
+        }
     }
 }

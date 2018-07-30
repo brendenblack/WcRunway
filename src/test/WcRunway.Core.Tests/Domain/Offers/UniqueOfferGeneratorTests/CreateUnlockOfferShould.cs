@@ -12,44 +12,23 @@ using Xunit;
 
 namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
 {
-    public class CreateUnlockOfferShould
+    public class CreateUnlockOfferShould : IClassFixture<UniqueOfferGeneratorFixture>, IDisposable
     {
+        //private readonly UniqueOfferGenerator sut;
+        //private readonly OfferSkeleton _skeleton;
+        private readonly UniqueOfferGeneratorFixture fixture;
         private readonly UniqueOfferGenerator sut;
-        private readonly OfferSkeleton _skeleton;
 
-        public CreateUnlockOfferShould()
+        public CreateUnlockOfferShould(UniqueOfferGeneratorFixture fixture)
         {
-            var options = new DbContextOptionsBuilder<Sandbox2Context>()
-                .UseInMemoryDatabase(databaseName: "CreateUnlockOffer")
-                .Options;
+            this.fixture = fixture;
+            this.fixture.Sandbox2.Database.EnsureCreated();
+            this.sut = fixture.OfferGenerator;
+        }
 
-            var sb2 = new Sandbox2Context(options);
-            ILogger<UniqueOfferGenerator> logger = TestHelpers.CreateLogger<UniqueOfferGenerator>();
-
-            var skeleton = new OfferSkeleton
-            {
-                UnitId = 217,
-                OfferType = OfferType.UNIT_UNLOCK,
-                Title = "The death machine",
-                Description = "Death on wheels! This Offer includes an UNLOCKED Standard Juggernaut.",
-                IconTitle = "Death Machine!",
-                IconDescription = "Offer includes an UNLOCKED Standard Juggernaut.",
-                Cost = 99,
-                FullCost = 1000,
-                CostSku = "gold",
-                Duration = 8200,
-                Content = "",
-                DisplayedItems = ""
-            };
-
-            this._skeleton = skeleton;
-
-            var mockOfferData = new Mock<IOfferData>();
-            mockOfferData.Setup(o => o.Skeletons).Returns(new List<OfferSkeleton> { skeleton });
-
-            var gen = new UniqueOfferGenerator(logger, mockOfferData.Object);
-
-            this.sut = gen;
+        public void Dispose()
+        {
+            this.fixture.Sandbox2.Database.EnsureDeleted();
         }
 
         [Fact]
@@ -59,6 +38,19 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
             offer.OfferCode.ShouldBe("Jul18TestUnl");
+        }
+
+        [Theory]
+        [InlineData("Jul18TestTestTestTest")]
+        [InlineData("Jul18TestTestTestUnlock")]
+        [InlineData("Jul18TestTestTestLocked")]
+        [InlineData("Jul18TestTestTestT")]
+        public void TrimOfferCodeWhenLongerThan17Characters(string offerCodePrefix)
+        {
+            var unit = new Unit(217) { Name = "Juggernaut" };
+            var offer = this.sut.CreateUnlockOffer(unit, offerCodePrefix);
+
+            offer.OfferCode.ShouldBe("Jul18TestTestTestUnl");
         }
 
         [Theory]
@@ -111,7 +103,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
-            offer.Title.ShouldBe(this._skeleton.Title);
+            offer.Title.ShouldBe(this.fixture.Skeleton.Title);
         }
 
         [Fact]
@@ -120,7 +112,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
-            offer.Description.ShouldBe(this._skeleton.Description);
+            offer.Description.ShouldBe(this.fixture.Skeleton.Description);
         }
 
         [Fact]
@@ -129,7 +121,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
-            offer.IconTitle.ShouldBe(this._skeleton.IconTitle);
+            offer.IconTitle.ShouldBe(this.fixture.Skeleton.IconTitle);
         }
 
         [Fact]
@@ -138,7 +130,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
-            offer.IconDescription.ShouldBe(this._skeleton.IconDescription);
+            offer.IconDescription.ShouldBe(this.fixture.Skeleton.IconDescription);
         }
 
         [Fact]
@@ -147,7 +139,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
-            offer.Cost.ShouldBe(this._skeleton.Cost);
+            offer.Cost.ShouldBe(this.fixture.Skeleton.Cost);
         }
 
         [Fact]
@@ -156,7 +148,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
-            offer.FullCost.ShouldBe(this._skeleton.FullCost);
+            offer.FullCost.ShouldBe(this.fixture.Skeleton.FullCost);
         }
 
         [Fact]
@@ -165,7 +157,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
-            offer.CostSku.ShouldBe(this._skeleton.CostSku);
+            offer.CostSku.ShouldBe(this.fixture.Skeleton.CostSku);
         }
 
         [Fact]
@@ -174,7 +166,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
-            offer.Duration.ShouldBe(this._skeleton.Duration);
+            offer.Duration.ShouldBe(this.fixture.Skeleton.Duration);
         }
 
         [Fact]
@@ -183,7 +175,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
-            offer.ContentJson.ShouldBe(this._skeleton.Content);
+            offer.ContentJson.ShouldBe(this.fixture.Skeleton.Content);
         }
 
         [Fact]
@@ -192,7 +184,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
 
-            offer.DisplayedItemsJson.ShouldBe(this._skeleton.DisplayedItems);
+            offer.DisplayedItemsJson.ShouldBe(this.fixture.Skeleton.DisplayedItems);
         }
 
         #endregion

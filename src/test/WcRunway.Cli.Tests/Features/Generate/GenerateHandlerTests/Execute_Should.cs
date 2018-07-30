@@ -3,6 +3,7 @@ using Moq;
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using WcRunway.Cli.Features.Generate;
 using WcRunway.Core.Domain;
@@ -13,47 +14,15 @@ using Xunit;
 
 namespace WcRunway.Cli.Tests.Features.Generate.GenerateHandlerTests
 {
-    public class Execute_Should
+    public class Execute_Should : IClassFixture<GenerateHandlerFixture>
     {
-        // ILogger<GenerateHandler> log, IGameContext gameContext, UniqueOfferGenerator gen, Sandbox2Context sb2
-
-        // ILogger<UniqueOfferGenerator> log, IOfferData offerData)
-        public Execute_Should()
+        public Execute_Should(GenerateHandlerFixture fixture)
         {
-            var offerGeneratorLogger = TestHelpers.CreateLogger<UniqueOfferGenerator>();
-            var mockOfferData = new Mock<IOfferData>();
-            var skeletonJuggernaut = new OfferSkeleton()
-            {
-                UnitId = 217,
-                Title = "The Juggernaut",
-                Description = "Unlock the Juggernaut",
-                IconTitle = "Juggernaut unlock",
-                IconDescription = "Offer includes a Juggernaut unlock",
-                Cost = 99,
-                FullCost = 1000,
-                CostSku = "gold"
-            };
-            mockOfferData.Setup(od => od.Skeletons).Returns(new List<OfferSkeleton> { skeletonJuggernaut });
-
-            // TODO: setup offer data
-
-            var uniqueOfferGenerator = new UniqueOfferGenerator(offerGeneratorLogger, mockOfferData.Object);
-
-            var logger = TestHelpers.CreateLogger<GenerateHandler>();
-            var mockGameContext = new Mock<IGameContext>();
-            var phalanx = new Unit(251) { Name = "Phalanx" };
-            var juggernaut = new Unit(217) { Name = "Juggernaut" };
-            mockGameContext.Setup(gc => gc.Units).Returns(new List<Unit> { phalanx, juggernaut });
-
-            var options = new DbContextOptionsBuilder<Sandbox2Context>()
-                .UseInMemoryDatabase(databaseName: "GenerateHandlerExecute")
-                .Options;
-            var sb2 = new Sandbox2Context(options);
-            sb2.Database.EnsureCreated();
-
-            this.sut = new GenerateHandler(logger, mockGameContext.Object, uniqueOfferGenerator, sb2);
+            this.fixture = fixture;
+            this.sut = fixture.Handler;
         }
 
+        private readonly GenerateHandlerFixture fixture;
         private readonly GenerateHandler sut;
 
         [Fact]
@@ -65,23 +34,37 @@ namespace WcRunway.Cli.Tests.Features.Generate.GenerateHandlerTests
             Should.Throw<ArgumentException>(() => sut.Execute(opts));
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void ThrowExceptionWhenPrefixInvalid(string prefix)
-        {
-            var opts = new GenerateOptions
-            {
-                UnitId = 217,
-                OfferCodePrefix = prefix
-            };
+        //[Theory]
+        //[InlineData(null)]
+        //[InlineData("")]
+        //public void ThrowExceptionWhenPrefixInvalid(string prefix)
+        //{
+        //    var opts = new GenerateOptions
+        //    {
+        //        UnitId = 217,
+        //        OfferCodePrefix = prefix
+        //    };
 
-            Should.Throw<ArgumentException>(() => sut.Execute(opts));
-        }
+        //    Should.Throw<ArgumentException>(() => sut.Execute(opts));
+        //}
+
+        //[Fact]
+        //public void ThrowExceptWhenOfferCodeExists()
+        //{
+        //    var opts = new GenerateOptions
+        //    {
+        //        UnitId = 217,
+        //        OfferCodePrefix = "Jul18Exists"
+        //    };
+
+        //    this.sut.Execute(opts);
+
+        //    Should.Throw<InvalidOperationException>(() => this.sut.Execute(opts));
+        //}
 
         #region Unlock tests
         [Fact]
-        public void AddOfferToDatabase()
+        public void Return0WhenSuccessful()
         {
             var opts = new GenerateOptions()
             {
@@ -89,6 +72,44 @@ namespace WcRunway.Cli.Tests.Features.Generate.GenerateHandlerTests
                 OfferCodePrefix = "Jul18Test"
             };
 
+            var result = this.sut.Execute(opts);
+
+            result.ShouldBe(0);
+        }
+
+
+        [Fact]
+        public void AddUnlockOfferWithExpectedOfferCodeToDatabase()
+        {
+            var opts = new GenerateOptions()
+            {
+                UnitId = 217,
+                OfferCodePrefix = "Test123",
+                IncludeEliteParts = false,
+                IncludeLevels = false,
+                IncludeOmegaParts = false,
+                IncludeTech = false
+            };
+
+            this.sut.Execute(opts);
+            var offer = this.fixture.Sandbox2.Offers.FirstOrDefaultAsync(o => o.OfferCode == "Test123Unl");
+
+            offer.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void CreateUnlockCohortCsvInDefaultDirectory()
+        {
+            var opts = new GenerateOptions()
+            {
+                UnitId = 217,
+                OfferCodePrefix = "Jul18Test"
+            };
+            var csv = Path.Combine(Environment.CurrentDirectory, "Jul18Test", "Jul18TestUnl.csv");
+
+            this.sut.Execute(opts);
+
+            File.Exists(csv).ShouldBe(true);
         }
         #endregion
     }

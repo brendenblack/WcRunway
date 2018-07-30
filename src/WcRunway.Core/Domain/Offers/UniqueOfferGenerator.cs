@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WcRunway.Core.Domain.Offers;
+using WcRunway.Core.Domain.Users;
 using WcRunway.Core.Infrastructure.Data.Providers.MySql;
+using WcRunway.Core.Infrastructure.Data.Snowflake;
 
 namespace WcRunway.Core.Domain.Offers
 {
@@ -12,19 +14,27 @@ namespace WcRunway.Core.Domain.Offers
     {
         private readonly ILogger<UniqueOfferGenerator> log;
         private readonly IOfferData offerData;
+        private readonly IUnitOwnership unitOwnership;
 
-        public UniqueOfferGenerator(ILogger<UniqueOfferGenerator> log, IOfferData offerData)
+        public UniqueOfferGenerator(ILogger<UniqueOfferGenerator> log, IOfferData offerData, IUnitOwnership unitOwnership)
         {
             this.log = log;
             this.offerData = offerData;
+            this.unitOwnership = unitOwnership;
         }
 
-
+        /// <summary>
+        /// Creates an offer that will unlock the specified unit
+        /// </summary>
+        /// <param name="unit">The unit to unlock</param>
+        /// <param name="prefix">What prefix to apply to the offer code</param>
+        /// <param name="priority">Optional. The priority to assign to the offer, higher priorit offers will display before lower priority ones</param>
+        /// <returns></returns>
         public Offer CreateUnlockOffer(Unit unit, string prefix, int priority = 0)
         {
             if (unit == null || string.IsNullOrWhiteSpace(prefix))
             {
-                // TODO
+                throw new ArgumentException("Unit must not be null");
             }
 
             if (priority < 0)
@@ -32,7 +42,7 @@ namespace WcRunway.Core.Domain.Offers
                 priority = 0;
             }
 
-            var code = $"{prefix}Unl";
+            var code = (prefix.Length > 17) ? $"{prefix.Substring(0, 17)}Unl" : $"{prefix}Unl";
             log.LogInformation("Creating unlock offer for {0} - {1} using offer code {2}", unit.Id, unit.Name, code);
 
             // Fetch data from the offer data dictionary
@@ -80,6 +90,15 @@ namespace WcRunway.Core.Domain.Offers
             };
 
             return offer;
+        }
+
+        /// <summary>
+        /// Fetches a cohort of users who do not have the specified unit unlocked and are thus eligible to receive the unlock offer
+        /// </summary>
+        /// <param name="unit"></param>
+        public List<int> FetchUnlockCohort(Unit unit)
+        {
+            return this.unitOwnership.FetchUnitOwnerUserIds(unit.Id);
         }
     }
 }

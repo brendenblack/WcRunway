@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcRunway.Core.Domain.Offers
+namespace WcRunway.Core.Domain.Store
 {
-    public interface IOfferCreator
+    public interface IStoreData
     {
     }
 }

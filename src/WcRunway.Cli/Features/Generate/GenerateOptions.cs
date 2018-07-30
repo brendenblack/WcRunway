@@ -27,5 +27,8 @@ namespace WcRunway.Cli.Features.Generate
         [Option('e', "elite", Default = true, HelpText = "Generate an offer for Elite parts for the indicated unit")]
         public bool IncludeEliteParts { get; set; }
 
+        [Option('d', "output", Required = false, HelpText = "Specify the output directory for cohort CSVs, by default this will be the current directory")]
+        public string OutputDirectoryPath { get; set; }
+
     }
 }

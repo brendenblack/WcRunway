@@ -14,8 +14,10 @@ using WcRunway.Cli.Features.Test;
 using WcRunway.Cli.Features.Token;
 using WcRunway.Core.Domain.Game;
 using WcRunway.Core.Domain.Offers;
+using WcRunway.Core.Domain.Users;
 using WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets;
 using WcRunway.Core.Infrastructure.Data.Providers.MySql;
+using WcRunway.Core.Infrastructure.Data.Providers.Snowflake;
 using WcRunway.Core.Infrastructure.Data.Snowflake;
 
 namespace WcRunway.Cli
@@ -26,6 +28,7 @@ namespace WcRunway.Cli
 
         static async Task Main(string[] args)
         {
+            var exitCode = 0;
 
             // load configuration
             var builder = new ConfigurationBuilder()
@@ -73,6 +76,7 @@ namespace WcRunway.Cli
             catch (Exception e)
             {
                 log.LogError(e.Message);
+                exitCode = 1;
             }
 
             Console.WriteLine("Press any key to exit");
@@ -80,8 +84,8 @@ namespace WcRunway.Cli
 
             NLog.LogManager.Shutdown();
 
-
-
+            Environment.Exit(exitCode);
+            
 
             //Console.WriteLine("Loading unit data...");
             //var sheets = new SheetsConnectorService();
@@ -183,15 +187,23 @@ namespace WcRunway.Cli
                 opt //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).
                 .UseMySQL(sb2conn);
             });
+            
+            var sfAccount = config["data:snowflake:account"];
+            var sfUsername = config["data:snowflake:username"];
+            var sfPassword = config["data:snowflake:password"];
+            var sfDatabase = config["data:snowflake:database"] ?? "";
+            var sfSchema = config["data:snowflake:schema"] ?? "";
+
+            services.AddTransient<SnowflakeConnectionDetails>(o => new SnowflakeConnectionDetails(sfAccount, sfUsername, sfPassword, sfDatabase, sfSchema));
 
             services.AddSingleton(EmbeddedJsonServiceCredential.CreateCredentialFromFile()); 
             services.AddSingleton<SheetsConnectorService>();
             services.AddTransient<Warmup>();
-            services.AddTransient<ISnowflakeContext, MockSnowflakeContext>();
+            services.AddTransient<IUnitOwnership, SnowflakeContext>();
+            services.AddTransient<ISnowflakeContext, MockSnowflakeContext>();// TODO: refactor this out
             services.AddSingleton<IUnitData, SheetsUnitData>();
             services.AddTransient<IGameContext, GameContext>();
             services.AddTransient<IOfferCopyBible, SheetsOfferCopyBible>();
-            services.AddTransient<UniqueOfferCreator>();
 
             services.AddTransient<TokenRunway>();
             services.AddTransient<GenerateHandler>();

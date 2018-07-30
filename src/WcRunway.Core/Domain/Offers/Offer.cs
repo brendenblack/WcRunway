@@ -41,7 +41,7 @@ namespace WcRunway.Core.Domain.Offers
             }
         }
 
-        public int? Duration { get; set; }
+        public int? Duration { get; set; } = 86400;
 
         public int? Priority { get; set; } = 0;
 
@@ -51,9 +51,9 @@ namespace WcRunway.Core.Domain.Offers
 
         public int CooldownType { get; set; } = 1;
 
-        public int Cost { get; set; }
+        public int Cost { get; set; } = 0;
 
-        public int FullCost { get; set; }
+        public int FullCost { get; set; } = -1;
 
         public string CostSku { get; set; } = "gold";
 
