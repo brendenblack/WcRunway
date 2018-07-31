@@ -32,50 +32,71 @@ namespace WcRunway.Cli.Features.Generate
 
         public int Execute(GenerateOptions opts)
         {
-            var prefix = ValidatePrefix(opts.OfferCodePrefix);
+            // Validate the prefix
+            var prefix = ValidatePrefix(opts.OfferCodePrefix); // TODO: refactor this logic out and in to the Core project
             log.LogInformation("Launching Generate Offer handler for unit id {0} with offer code prefix {1}", opts.UnitId, prefix);
 
-            DirectoryInfo outputDir = CreateOutputDirectory(opts.OutputDirectoryPath, prefix);
-            log.LogInformation($"Setting output directory to {outputDir.FullName}");
-
+            // Retrieve the specified unit
             var unit = this.gameContext.Units.FirstOrDefault(u => u.Id == opts.UnitId);
             if (unit == null)
             {
-                throw new ArgumentException($"A unit with id {opts.UnitId} was not found");
+                log.LogError($"A unit with id {opts.UnitId} was not found");
             }
             log.LogDebug($"Unit: {unit.ToString()}");
 
-            // generate unlock
-            var unlock = gen.CreateUnlockOffer(unit, prefix);
-            this.sb2.Offers.Add(unlock);
-            this.sb2.SaveChanges();
-            log.LogInformation("Generated unlock offer has been created with id {0}", unlock.Id);
+            List<Offer> generatedOffers = new List<Offer>();
 
-            log.LogTrace("Pulling non-owner cohort for offer {0} {1}", unlock.Id, unlock.OfferCode);
-            var unlockCohort = this.unitOwnership.FetchUnitNonOwnerUserIds(unit.Id);
-            log.LogDebug("Found {0} non-owner(s)", unlockCohort.Count);
-            WriteCohort(Path.Combine(outputDir.FullName, unlock.OfferCode + ".csv"), unlockCohort);
-
-            if (opts.IncludeLevels)
+            if (opts.IncludeAllOffers || opts.IncludeUnlock)
             {
-                // generate levels
+                // Generate unlock offer
+                var unlock = gen.CreateUnlockOffer(unit, prefix);
+                generatedOffers.Add(unlock);
             }
 
-            if (opts.IncludeTech)
+            if (opts.IncludeAllOffers || opts.IncludeLevels)
             {
-                // generate tech
+                // Generate level run offers
+                var levels = gen.CreateLevelOffers(unit, prefix);
+                generatedOffers.AddRange(levels);
             }
 
-            if (opts.IncludeEliteParts)
+            if (opts.IncludeAllOffers || opts.IncludeTech)
             {
-                // elite parts
+                // Generate tech offer
+                var techs = gen.CreateTechOffers(unit, prefix);
+                generatedOffers.AddRange(techs);
             }
 
-            if (opts.IncludeOmegaParts)
+            if (opts.IncludeAllOffers || opts.IncludeEliteParts)
             {
-                // omega parts
+                // Generate elite parts offer
+                var elite = gen.CreateElitePartsOffer(unit, prefix);
+                generatedOffers.Add(elite);
             }
 
+            if (opts.IncludeAllOffers || opts.IncludeOmegaParts)
+            {
+                // Generate omega parts
+                var omega = gen.CreateOmegaPartsOffer(unit, prefix);
+                generatedOffers.Add(omega);
+            }
+
+
+            try
+            {
+                this.sb2.Offers.AddRange(generatedOffers);
+                this.sb2.SaveChanges();
+                foreach (var offer in generatedOffers)
+                {
+                    log.LogInformation("Offer {0} has been generated with id {1}", offer.OfferCode, offer.Id);
+                }
+            }
+            catch (Exception e)
+            {
+                // TODO
+                log.LogError("");
+                return -1;
+            }
 
 
             return 0;
@@ -104,25 +125,5 @@ namespace WcRunway.Cli.Features.Generate
 
             return prefix;
         }
-
-        public void WriteCohort(string filename, List<int> cohort)
-        {
-            using (var writer = new StreamWriter(filename))
-            {
-                foreach (int user in cohort)
-                {
-                    writer.WriteLine(user);
-                }
-            }
-        }
-
-        public DirectoryInfo CreateOutputDirectory(string outputDirectoryPath, string prefix)
-        {
-            // TODO: taking in both arguments like this is gross when they are mutually exclusive options
-            return (String.IsNullOrWhiteSpace(outputDirectoryPath))
-                ? Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, prefix))
-                : Directory.CreateDirectory(outputDirectoryPath);
-        }
-
     }
 }

@@ -1,25 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Moq;
-using Shouldly;
+﻿using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using WcRunway.Core.Domain;
 using WcRunway.Core.Domain.Offers;
-using WcRunway.Core.Infrastructure.Data.Providers.MySql;
 using Xunit;
 
 namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
 {
-    public class CreateUnlockOfferShould : IClassFixture<UniqueOfferGeneratorFixture>, IDisposable
+    public class CreateOmegaPartsOffer_Should : IClassFixture<UniqueOfferGeneratorFixture>, IDisposable
     {
-        //private readonly UniqueOfferGenerator sut;
-        //private readonly OfferSkeleton _skeleton;
         private readonly UniqueOfferGeneratorFixture fixture;
         private readonly UniqueOfferGenerator sut;
 
-        public CreateUnlockOfferShould(UniqueOfferGeneratorFixture fixture)
+        public CreateOmegaPartsOffer_Should(UniqueOfferGeneratorFixture fixture)
         {
             this.fixture = fixture;
             this.fixture.Sandbox2.Database.EnsureCreated();
@@ -28,39 +22,27 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
 
         public void Dispose()
         {
-            this.fixture.Sandbox2.Database.EnsureDeleted();
+            this.fixture.Sandbox2.Offers.RemoveRange(this.fixture.Sandbox2.Offers);
+            this.fixture.Sandbox2.SaveChanges();
         }
 
         [Fact]
         public void SetOfferCode()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.OfferCode.ShouldBe("Jul18TestUnl");
-        }
-
-        [Theory]
-        [InlineData("Jul18TestTestTestTest")]
-        [InlineData("Jul18TestTestTestUnlock")]
-        [InlineData("Jul18TestTestTestLocked")]
-        [InlineData("Jul18TestTestTestT")]
-        public void TrimOfferCodeWhenLongerThan17Characters(string offerCodePrefix)
-        {
-            var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, offerCodePrefix);
-
-            offer.OfferCode.ShouldBe("Jul18TestTestTestUnl");
+            offer.OfferCode.ShouldBe("Jul18TestOPts");
         }
 
         [Theory]
         [InlineData(7)]
         [InlineData(1000)]
         [InlineData(245)]
-        public void SetPriorityWhenProvidedValid(int priority)
+        public void SetPriorityWhenPriorityValid(int priority)
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test", priority);
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test", priority);
 
             offer.Priority.ShouldBe(priority);
         }
@@ -71,7 +53,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public void SetPriorityTo0WhenProvidedInvalid(int invalidPriority)
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test", invalidPriority);
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test", invalidPriority);
 
             offer.Priority.ShouldBe(0);
         }
@@ -80,7 +62,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public void SetStartTimeToNow()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
             offer.StartTime.ShouldBe(DateTimeOffset.Now, TimeSpan.FromSeconds(10));
 
@@ -90,7 +72,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public void SetEndTimeTo3DaysFromNow()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
             offer.EndTime.ShouldBe(DateTimeOffset.Now.AddDays(3), TimeSpan.FromSeconds(10));
 
@@ -101,90 +83,90 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public void SetTitleAccordingToSkeletonWhenSkeletonFound()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.Title.ShouldBe(this.fixture.Skeleton.Title);
+            offer.Title.ShouldBe(this.fixture.OmegaSkeleton.Title);
         }
 
         [Fact]
         public void SetDescriptionAccordingToSkeletonWhenSkeletonExists()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.Description.ShouldBe(this.fixture.Skeleton.Description);
+            offer.Description.ShouldBe(this.fixture.OmegaSkeleton.Description);
         }
 
         [Fact]
         public void SetIconTitleAccordingToSkeletonWhenSkeletonExists()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.IconTitle.ShouldBe(this.fixture.Skeleton.IconTitle);
+            offer.IconTitle.ShouldBe(this.fixture.OmegaSkeleton.IconTitle);
         }
 
         [Fact]
         public void SetIconDescriptionAccordingToSkeletonWhenSkeletonExists()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.IconDescription.ShouldBe(this.fixture.Skeleton.IconDescription);
+            offer.IconDescription.ShouldBe(this.fixture.OmegaSkeleton.IconDescription);
         }
 
         [Fact]
         public void SetCostAccordingToSkeletonWhenSkeletonExists()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.Cost.ShouldBe(this.fixture.Skeleton.Cost);
+            offer.Cost.ShouldBe(this.fixture.OmegaSkeleton.Cost);
         }
 
         [Fact]
         public void SetFullCostAccordingToSkeletonWhenSkeletonExists()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.FullCost.ShouldBe(this.fixture.Skeleton.FullCost);
+            offer.FullCost.ShouldBe(this.fixture.OmegaSkeleton.FullCost);
         }
 
         [Fact]
         public void SetCostSkuAccordingToSkeletonWhenSkeletonExists()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.CostSku.ShouldBe(this.fixture.Skeleton.CostSku);
+            offer.CostSku.ShouldBe(this.fixture.OmegaSkeleton.CostSku);
         }
 
         [Fact]
         public void SetDurationAccordingToSkeletonWhenSkeletonExists()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.Duration.ShouldBe(this.fixture.Skeleton.Duration);
+            offer.Duration.ShouldBe(this.fixture.OmegaSkeleton.Duration);
         }
 
         [Fact]
         public void SetContentAccordingToSkeletonWhenSkeletonExists()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.ContentJson.ShouldBe(this.fixture.Skeleton.Content);
+            offer.ContentJson.ShouldBe(this.fixture.OmegaSkeleton.Content);
         }
 
         [Fact]
         public void SetDisplayedItemsAccordingToSkeletonWhenSkeletonExists()
         {
             var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.DisplayedItemsJson.ShouldBe(this.fixture.Skeleton.DisplayedItems);
+            offer.DisplayedItemsJson.ShouldBe(this.fixture.OmegaSkeleton.DisplayedItems);
         }
 
         #endregion
@@ -195,43 +177,43 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public void SetGenericTitleWhenSkeletonNotFound()
         {
             var unit = new Unit(257) { Name = "War Rig" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.Title.ShouldBe("Unlock the War Rig!");
+            offer.Title.ShouldBe("Omega War Rig Parts!");
         }
 
         [Fact]
         public void SetGenericDescriptionWhenSkeletonNotFound()
         {
             var unit = new Unit(257) { Name = "War Rig" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.Description.ShouldBe("Offer includes an UNLOCK of the powerful WAR RIG!");
+            offer.Description.ShouldBe("Offer includes OMEGA PARTS for the WAR RIG!");
         }
 
         [Fact]
         public void SetGenericIconTitleWhenSkeletonNotFound()
         {
             var unit = new Unit(257) { Name = "War Rig" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.IconTitle.ShouldBe("War Rig UNLOCK!");
+            offer.IconTitle.ShouldBe("War Rig Omega Parts!");
         }
 
         [Fact]
         public void SetGenericIconDescriptionWhenSkeletonNotFound()
         {
             var unit = new Unit(257) { Name = "War Rig" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.IconDescription.ShouldBe("Offer includes an UNLOCK of the powerful WAR RIG!");
+            offer.IconDescription.ShouldBe("Offer includes WAR RIG Omega Parts!");
         }
 
         [Fact]
         public void SetDefaultDurationWhenSkeletonNotFound()
         {
             var unit = new Unit(257) { Name = "War Rig" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
             offer.Duration.ShouldBe(86400);
         }
@@ -240,7 +222,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public void SetDefaultCostWhenSkeletonNotFound()
         {
             var unit = new Unit(257) { Name = "War Rig" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
             offer.Cost.ShouldBe(99);
         }
@@ -249,7 +231,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public void SetDefaultFullCostWhenSkeletonNotFound()
         {
             var unit = new Unit(257) { Name = "War Rig" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
             offer.FullCost.ShouldBe(-1);
         }
@@ -258,7 +240,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public void SetDefaultCostSkuWhenSkeletonNotFound()
         {
             var unit = new Unit(257) { Name = "War Rig" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
             offer.CostSku.ShouldBe("gold");
         }
@@ -267,7 +249,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public void SetEmptyContentWhenSkeletonNotFound()
         {
             var unit = new Unit(257) { Name = "War Rig" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
             offer.ContentJson.ShouldBe("{ \"skus\": { \"gold\": 0 } }");
         }
@@ -276,11 +258,10 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public void SetEmptyDisplayedItemsWhenSkeletonNotFound()
         {
             var unit = new Unit(257) { Name = "War Rig" };
-            var offer = this.sut.CreateUnlockOffer(unit, "Jul18Test");
+            var offer = this.sut.CreateOmegaPartsOffer(unit, "Jul18Test");
 
-            offer.DisplayedItemsJson.ShouldBe("[]");
+            offer.DisplayedItemsJson.ShouldBe("[ {} ]");
         }
         #endregion
-
     }
 }

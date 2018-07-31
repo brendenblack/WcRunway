@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WcRunway.Core.Domain;
 using WcRunway.Core.Domain.Game;
+using WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets.Extension;
 
 namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
 {
@@ -104,8 +105,8 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
         }
 
         private List<Unit> _units = new List<Unit>();
-        
-        public DateTime LastUpdate { get; private set; }
+
+        public DateTime LastUpdate { get; private set; } = DateTime.MinValue;
         public TimeSpan Validity { get; private set; }
         public bool IsStale
         {
@@ -114,8 +115,20 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
                 return DateTime.Now > (LastUpdate + Validity);
             }
         }
+        
+        public IEnumerable<Unit> Units
+        {
+            get
+            {
+                if (IsStale)
+                {
+                    log.LogDebug("Units data is stale, refetching...");
+                    Task.WaitAll(RefreshUnits());
+                }
 
-        public IEnumerable<Unit> Units => this._units;
+                return _units;
+            }
+        }
 
         public async Task RefreshUnits()
         {

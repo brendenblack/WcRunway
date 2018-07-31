@@ -8,14 +8,6 @@ namespace WcRunway.Cli.Tests
     public class UnitTest1
     {
         [Fact]
-        public void Test1()
-        {
-            var dir = Environment.CurrentDirectory;
-
-            dir.ShouldBe("");
-        }
-
-        [Fact]
         public void Test2()
         {
             var dir = "C:\\Mypath";

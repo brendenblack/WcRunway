@@ -19,6 +19,7 @@ namespace WcRunway.Core.Domain.Offers
         public int Duration { get; set; }
         public string Content { get; set; }
         public string DisplayedItems { get; set; }
+        public int MaximumQuanity { get; set; } = 1;
 
     }
 }

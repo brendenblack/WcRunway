@@ -9,6 +9,12 @@ namespace WcRunway.Core.Domain.Offers
     /// </summary>
     public class Offer
     {
+        public Offer()
+        {
+            this.CreatedTime = DateTimeOffset.Now;
+            this.ModifiedTime = DateTimeOffset.Now;
+        }
+
         public int Id { get; set; }
 
         public string OfferCode { get; set; }
@@ -24,6 +30,7 @@ namespace WcRunway.Core.Domain.Offers
             set
             {
                 this.StartTimeEpochSeconds = value.ToUnixTimeSeconds();
+                this.ModifiedTimeEpochSeconds = StartTimeEpochSeconds;
             }
         }
 
@@ -38,6 +45,34 @@ namespace WcRunway.Core.Domain.Offers
             set
             {
                 this.EndTimeEpochSeconds = value.ToUnixTimeSeconds();
+            }
+        }
+
+        public long ModifiedTimeEpochSeconds { get; set; }
+
+        public DateTimeOffset ModifiedTime
+        {
+            get
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(ModifiedTimeEpochSeconds).ToOffset(TimeSpan.FromHours(-7));
+            }
+            set
+            {
+                this.ModifiedTimeEpochSeconds = value.ToUnixTimeSeconds();
+            }
+        }
+
+        public long CreatedTimeEpochSeconds { get; set; }
+
+        public DateTimeOffset CreatedTime
+        {
+            get
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(CreatedTimeEpochSeconds).ToOffset(TimeSpan.FromHours(-7));
+            }
+            set
+            {
+                this.CreatedTimeEpochSeconds = value.ToUnixTimeSeconds();
             }
         }
 
@@ -73,6 +108,35 @@ namespace WcRunway.Core.Domain.Offers
 
         public int TemplateId { get; set; }
 
+        public int Deleted { get; set; } = 0;
+
+        public bool IsDeleted
+        {
+            get
+            {
+                return Deleted == 1;
+            }
+            set
+            {
+                Deleted = (value) ? 1 : 0;
+            }
+        }
+
+        public int Enabled { get; set; } = 1;
+
+        public bool IsEnabled
+        {
+            get
+            {
+                return Enabled == 1;
+            }
+            set
+            {
+                Enabled = (value) ? 1 : 0;
+            }
+        }
+
+        public string Prerequisite { get; set; }
 
         #region Builder
         public static IOfferBuilderSetStartTime WithCode(string offerCode)

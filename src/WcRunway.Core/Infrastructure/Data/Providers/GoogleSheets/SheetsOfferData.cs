@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using WcRunway.Core.Domain.Offers;
+using WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets.Extension;
 
 namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
 {
@@ -24,6 +25,8 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
         private static readonly int COL_DURATION = 9;
         private static readonly int COL_CONTENT = 10;
         private static readonly int COL_DISPLAY = 11;
+        private static readonly int COL_TEMPLATE_ID = 12;
+        private static readonly int COL_MAX_QUANTITY = 13;
         #endregion
 
         private readonly string sheetId = "1x3nlFmcPUNzJT6wwkqxtGBnxcWALenR5ZnBI5wZjxvw";
@@ -56,7 +59,8 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
             {
                 if (IsStale)
                 {
-                    Update();
+                    log.LogDebug("Offer skeleton data is stale, refetching...");
+                    Task.WaitAll(Update());
                 }
 
                 return skeletons;
@@ -81,30 +85,37 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
             {
                 foreach (var row in values)
                 {
-                    var skeleton = new OfferSkeleton
+                    try
                     {
-                        UnitId = row[COL_UNIT_ID].AsInteger(),
-                        OfferType = row[COL_OFFER_TYPE].AsOfferType(),
-                        Title = row[COL_TITLE].ToString(),
-                        Description = row[COL_DESCRIPTION].ToString(),
-                        IconTitle = row[COL_ICON_TITLE].ToString(),
-                        IconDescription = row[COL_ICON_DESCRIPTION].ToString(),
-                        Cost = row[COL_COST].AsInteger(),
-                        FullCost = row[COL_FULL_COST].AsInteger(),
-                        CostSku = row[COL_COST_SKU].AsString() ?? "gold",
-                        Duration = row[COL_DURATION].AsInteger(),
-                        Content = row[COL_CONTENT].AsString(),
-                        DisplayedItems = row[COL_DISPLAY].AsString()
-                    };
+                        var skeleton = new OfferSkeleton
+                        {
+                            UnitId = row.ReadColumnAsInteger(COL_UNIT_ID),
+                            OfferType = row.ReadColumnAsOfferType(COL_OFFER_TYPE), // .[COL_OFFER_TYPE].AsOfferType(),
+                            Title = row.ReadColumnAsString(COL_TITLE),
+                            Description = row.ReadColumnAsString(COL_DESCRIPTION), // ?: row[COL_DESCRIPTION].ToString(),
+                            IconTitle = row.ReadColumnAsString(COL_ICON_TITLE),
+                            IconDescription = row.ReadColumnAsString(COL_ICON_DESCRIPTION),
+                            Cost = row.ReadColumnAsInteger(COL_COST),
+                            FullCost = row.ReadColumnAsInteger(COL_FULL_COST),
+                            CostSku = row.ReadColumnAsString(COL_COST_SKU, "gold"),
+                            Duration = row.ReadColumnAsInteger(COL_DURATION, 86400),
+                            Content = row.ReadColumnAsString(COL_CONTENT, "{\"gold\": 0 }"),
+                            DisplayedItems = row.ReadColumnAsString(COL_DISPLAY, "[]"),
+                            MaximumQuanity = row.ReadColumnAsInteger(COL_MAX_QUANTITY, 1)
+                        };
 
-                    this.skeletons.Add(skeleton);
+                        this.skeletons.Add(skeleton);
+                    }
+                    catch (IndexOutOfRangeException e)
+                    {
+                        log.LogError("Unable to read row as an offer skeleton, skipping");
+                    }
                 }
             }
             else
             {
                 log.LogWarning("No values returned from sheet {0}", sheetId);
             }
-
         }
     }
 }

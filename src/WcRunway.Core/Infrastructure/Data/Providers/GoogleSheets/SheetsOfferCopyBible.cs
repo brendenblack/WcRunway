@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using WcRunway.Core.Domain.Offers;
+using WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets.Extension;
 
 namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
 {
@@ -82,10 +83,10 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
 
                     var copy = new OfferCopy
                     {
-                        UnitId = row[COL_UNIT_ID].AsInteger(),
-                        OfferType = row[COL_OFFER_TYPE].AsOfferType(),
-                        Title = row[COL_TITLE].ToString(),
-                        Description = row[COL_DESCRIPTION].ToString(),
+                        UnitId = row.ReadColumnAsInteger(COL_UNIT_ID),
+                        OfferType = row.ReadColumnAsOfferType(COL_OFFER_TYPE),
+                        Title = row.ReadColumnAsString(COL_TITLE),
+                        Description = row.ReadColumnAsString(COL_DESCRIPTION),
                         IconTitle = row[COL_ICON_TITLE].ToString(),
                         IconDescription = row[COL_ICON_DESCRIPTION].ToString()
                     };

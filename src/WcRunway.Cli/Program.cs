@@ -63,7 +63,10 @@ namespace WcRunway.Cli
             // Handle input
             try
             {
-
+                var parser = new Parser(with => {
+                    with.EnableDashDash = true;
+                    with.CaseSensitive = true;
+                    });
 
                 Parser.Default.ParseArguments<TokenOptions, DataOptions, GenerateOptions, TestOptions>(args)
                    .MapResult(
@@ -178,6 +181,7 @@ namespace WcRunway.Cli
             // Add SB2 database connection
             var sb2url = config["data:sandbox2:url"];
             var sb2username = config["data:sandbox2:username"];
+
             var sb2password = config["data:sandbox2:password"];
             var sb2name = config["data:sandbox2:name"];
             var sb2conn = $"server={sb2url};database={sb2name};uid={sb2username};pwd={sb2password};ssl-mode=none";
@@ -204,6 +208,8 @@ namespace WcRunway.Cli
             services.AddSingleton<IUnitData, SheetsUnitData>();
             services.AddTransient<IGameContext, GameContext>();
             services.AddTransient<IOfferCopyBible, SheetsOfferCopyBible>();
+            services.AddTransient<UniqueOfferGenerator>();
+            services.AddTransient<IOfferData, SheetsOfferData>();
 
             services.AddTransient<TokenRunway>();
             services.AddTransient<GenerateHandler>();
