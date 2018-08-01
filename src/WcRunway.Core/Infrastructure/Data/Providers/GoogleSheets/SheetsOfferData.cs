@@ -33,8 +33,8 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
         private readonly SheetsService sheets;
         private readonly ILogger<SheetsOfferData> log;
 
-        public DateTime LastUpdate { get; private set; }
-        public TimeSpan Validity { get; private set; }
+        public DateTime LastUpdate { get; private set; } = DateTime.MinValue;
+        public TimeSpan Validity { get; private set; } = TimeSpan.FromMinutes(30);
         public bool IsStale
         {
             get
@@ -98,7 +98,7 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets
                             Cost = row.ReadColumnAsInteger(COL_COST),
                             FullCost = row.ReadColumnAsInteger(COL_FULL_COST),
                             CostSku = row.ReadColumnAsString(COL_COST_SKU, "gold"),
-                            Duration = row.ReadColumnAsInteger(COL_DURATION, 86400),
+                            Duration = row.ReadColumnAsInteger(COL_DURATION, 28800),
                             Content = row.ReadColumnAsString(COL_CONTENT, "{\"gold\": 0 }"),
                             DisplayedItems = row.ReadColumnAsString(COL_DISPLAY, "[]"),
                             MaximumQuanity = row.ReadColumnAsInteger(COL_MAX_QUANTITY, 1)

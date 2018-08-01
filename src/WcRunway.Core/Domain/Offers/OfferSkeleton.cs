@@ -20,6 +20,7 @@ namespace WcRunway.Core.Domain.Offers
         public string Content { get; set; }
         public string DisplayedItems { get; set; }
         public int MaximumQuanity { get; set; } = 1;
+        public int TemplateId { get; set; } = 6;
 
     }
 }

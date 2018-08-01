@@ -29,7 +29,7 @@ namespace WcRunway.Cli.Features.Generate
         [Option('o', "omega", Required = false, Default = false, HelpText = "Generate an offer of Omega parts for the indicated unit")]
         public bool IncludeOmegaParts { get; set; }
 
-        [Option('e', "elite", Required = false, Default = true, HelpText = "Generate an offer of Elite parts for the indicated unit")]
+        [Option('e', "elite", Required = false, Default = false, HelpText = "Generate an offer of Elite parts for the indicated unit")]
         public bool IncludeEliteParts { get; set; }
 
         [Option("all", Required = false, Default = false, HelpText = "Generate all offers for the specified unit")]

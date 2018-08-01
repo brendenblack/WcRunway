@@ -32,7 +32,7 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets.Extension
         }
 
         [Obsolete("Use ReadColumnAsOfferType instead")]
-        public static OfferType AsOfferType(this Object col, OfferType defaultValue = OfferType.UNIT_UNLOCK)
+        public static OfferType AsOfferType(this Object col, OfferType defaultValue = OfferType.STANDARD_UNLOCK)
         {
             if (col == null)
             {
@@ -42,7 +42,7 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets.Extension
             switch (col.ToString().ToUpper())
             {
                 case "UNLOCK":
-                    return OfferType.UNIT_UNLOCK;
+                    return OfferType.STANDARD_UNLOCK;
                 case "LEVELS":
                     return OfferType.LEVELS;
                 case "OMEGA PARTS":
@@ -66,7 +66,7 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets.Extension
         /// <param name="columnIndex"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static OfferType ReadColumnAsOfferType(this IList<object> row, int columnIndex, OfferType defaultValue = OfferType.UNIT_UNLOCK)
+        public static OfferType ReadColumnAsOfferType(this IList<object> row, int columnIndex, OfferType defaultValue = OfferType.STANDARD_UNLOCK)
         {
             string columnValue;
             try
@@ -86,7 +86,11 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.GoogleSheets.Extension
             switch (columnValue.ToUpper())
             {
                 case "UNLOCK":
-                    return OfferType.UNIT_UNLOCK;
+                    return OfferType.STANDARD_UNLOCK;
+                case "ELITE UNLOCK":
+                    return OfferType.ELITE_UNLOCK;
+                case "OMEGA UNLOCK":
+                    return OfferType.OMEGA_UNLOCK;
                 case "LEVELS":
                     return OfferType.LEVELS;
                 case "OMEGA PARTS":

@@ -94,7 +94,7 @@ namespace WcRunway.Cli.Tests.Features.Generate.GenerateHandlerTests
             var skeleton = new OfferSkeleton
             {
                 UnitId = 217,
-                OfferType = OfferType.UNIT_UNLOCK,
+                OfferType = OfferType.STANDARD_UNLOCK,
                 Title = "The death machine",
                 Description = "Death on wheels! This Offer includes an UNLOCKED Standard Juggernaut.",
                 IconTitle = "Death Machine!",

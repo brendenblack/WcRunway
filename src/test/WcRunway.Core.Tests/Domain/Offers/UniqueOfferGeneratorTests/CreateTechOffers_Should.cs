@@ -13,12 +13,17 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
     {
         private readonly UniqueOfferGeneratorFixture fixture;
         private readonly UniqueOfferGenerator sut;
+        private readonly OfferSkeleton skeleton1;
+        private readonly OfferSkeleton skeleton2;
 
         public CreateTechOffers_Should(UniqueOfferGeneratorFixture fixture)
         {
             this.fixture = fixture;
             this.fixture.Sandbox2.Database.EnsureCreated();
             this.sut = fixture.OfferGenerator;
+
+            skeleton1 = this.fixture.TechSkeletons.First(s => s.Title == "Steering KNUCKLE");
+            skeleton2 = this.fixture.TechSkeletons.First(s => s.Title == "Mounted FLAMETHROWER");
         }
 
         public void Dispose()
@@ -33,7 +38,10 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var unit = new Unit(217) { Name = "Juggernaut" };
             var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offers.First().OfferCode.ShouldBe("Jul18TestTek1");
+            foreach (var offer in offers)
+            {
+                offer.OfferCode.ShouldStartWith("Jul18TestTek");
+            }
         }
 
         [Theory]
@@ -66,7 +74,6 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
             offers.First().StartTime.ShouldBe(DateTimeOffset.Now, TimeSpan.FromSeconds(10));
-
         }
 
         [Fact]
@@ -76,7 +83,6 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
             offers.First().EndTime.ShouldBe(DateTimeOffset.Now.AddDays(3), TimeSpan.FromSeconds(10));
-
         }
 
         #region when skeleton exists
@@ -85,185 +91,201 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         {
             var unit = new Unit(257) { Name = "War Rig" };
             var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
-            var skeleton = this.fixture.TechSkeletons.First();
 
-            var offer = offers.First(o => o.OfferCode == skeleton.Title).Title;
-            offer.ShouldBe(skeleton.Title);
+            foreach (var offer in offers)
+            {
+                this.fixture.TechSkeletons.Select(s => s.Title).Contains(offer.Title).ShouldBeTrue($"Title was {offer.Title}");
+            }
         }
 
         [Fact]
         public void SetDescriptionAccordingToSkeletonWhenSkeletonExists()
         {
-            var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.Description.ShouldBe(this.fixture.EliteSkeleton.Description);
+            foreach (var offer in offers)
+            {
+                this.fixture.TechSkeletons.Select(s => s.Description).Contains(offer.Description).ShouldBeTrue($"Description was {offer.Description}");
+            }
         }
 
         [Fact]
         public void SetIconTitleAccordingToSkeletonWhenSkeletonExists()
         {
-            var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.IconTitle.ShouldBe(this.fixture.EliteSkeleton.IconTitle);
+            foreach (var offer in offers)
+            {
+                this.fixture.TechSkeletons.Select(s => s.IconTitle).Contains(offer.IconTitle).ShouldBeTrue($"Icon title was {offer.IconTitle}");
+            }
         }
 
         [Fact]
         public void SetIconDescriptionAccordingToSkeletonWhenSkeletonExists()
         {
-            var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.IconDescription.ShouldBe(this.fixture.EliteSkeleton.IconDescription);
+            foreach (var offer in offers)
+            {
+                this.fixture.TechSkeletons.Select(s => s.IconDescription).Contains(offer.IconDescription).ShouldBeTrue($"Icon description was {offer.IconDescription}");
+            }
         }
 
         [Fact]
         public void SetCostAccordingToSkeletonWhenSkeletonExists()
         {
-            var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.Cost.ShouldBe(this.fixture.EliteSkeleton.Cost);
+            offers.First(o => o.Title == skeleton1.Title).Cost.ShouldBe(skeleton1.Cost);
+            offers.First(o => o.Title == skeleton2.Title).Cost.ShouldBe(skeleton2.Cost);
         }
 
         [Fact]
         public void SetFullCostAccordingToSkeletonWhenSkeletonExists()
         {
-            var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.FullCost.ShouldBe(this.fixture.EliteSkeleton.FullCost);
+            offers.First(o => o.Title == skeleton1.Title).FullCost.ShouldBe(skeleton1.FullCost);
+            offers.First(o => o.Title == skeleton2.Title).FullCost.ShouldBe(skeleton2.FullCost);
         }
 
         [Fact]
         public void SetCostSkuAccordingToSkeletonWhenSkeletonExists()
         {
-            var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.CostSku.ShouldBe(this.fixture.EliteSkeleton.CostSku);
+            offers.First(o => o.Title == skeleton1.Title).CostSku.ShouldBe(skeleton1.CostSku);
+            offers.First(o => o.Title == skeleton2.Title).CostSku.ShouldBe(skeleton2.CostSku);
         }
 
         [Fact]
         public void SetDurationAccordingToSkeletonWhenSkeletonExists()
         {
-            var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.Duration.ShouldBe(this.fixture.EliteSkeleton.Duration);
+            offers.First(o => o.Title == skeleton1.Title).Duration.ShouldBe(skeleton1.Duration);
+            offers.First(o => o.Title == skeleton2.Title).Duration.ShouldBe(skeleton2.Duration);
         }
 
         [Fact]
         public void SetContentAccordingToSkeletonWhenSkeletonExists()
         {
-            var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.ContentJson.ShouldBe(this.fixture.EliteSkeleton.Content);
+            offers.First(o => o.Title == skeleton1.Title).ContentJson.ShouldBe(skeleton1.Content);
+            offers.First(o => o.Title == skeleton2.Title).ContentJson.ShouldBe(skeleton2.Content);
         }
 
         [Fact]
         public void SetDisplayedItemsAccordingToSkeletonWhenSkeletonExists()
         {
-            var unit = new Unit(217) { Name = "Juggernaut" };
-            var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
+            var unit = new Unit(257) { Name = "War Rig" };
+            var offers = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.DisplayedItemsJson.ShouldBe(this.fixture.EliteSkeleton.DisplayedItems);
+            offers.First(o => o.Title == skeleton1.Title).DisplayedItemsJson.ShouldBe(skeleton1.DisplayedItems);
+            offers.First(o => o.Title == skeleton2.Title).DisplayedItemsJson.ShouldBe(skeleton2.DisplayedItems);
         }
 
         #endregion
 
 
-        #region when skeleton does not exist
+        #region when skeletons do not exist
         [Fact]
         public void SetGenericTitleWhenSkeletonNotFound()
         {
-            var unit = new Unit(257) { Name = "War Rig" };
+            var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.Title.ShouldBe("Elite War Rig Parts!");
+            offer.First().Title.ShouldBe("Tech out your Juggernaut!");
         }
 
         [Fact]
         public void SetGenericDescriptionWhenSkeletonNotFound()
         {
-            var unit = new Unit(257) { Name = "War Rig" };
+            var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.Description.ShouldBe("Offer includes ELITE PARTS for the WAR RIG!");
+            offer.First().Description.ShouldBe("Offer includes TECH for the JUGGERNAUT!");
         }
 
         [Fact]
         public void SetGenericIconTitleWhenSkeletonNotFound()
         {
-            var unit = new Unit(257) { Name = "War Rig" };
+            var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.IconTitle.ShouldBe("War Rig Elite Parts!");
+            offer.First().IconTitle.ShouldBe("Juggernaut Tech!");
         }
 
         [Fact]
         public void SetGenericIconDescriptionWhenSkeletonNotFound()
         {
-            var unit = new Unit(257) { Name = "War Rig" };
+            var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.IconDescription.ShouldBe("Offer includes WAR RIG Elite Parts!");
+            offer.First().IconDescription.ShouldBe("Offer includes JUGGERNAUT Tech!");
         }
 
         [Fact]
         public void SetDefaultDurationWhenSkeletonNotFound()
         {
-            var unit = new Unit(257) { Name = "War Rig" };
+            var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.Duration.ShouldBe(86400);
+            offer.First().Duration.ShouldBe(86400);
         }
 
         [Fact]
         public void SetDefaultCostWhenSkeletonNotFound()
         {
-            var unit = new Unit(257) { Name = "War Rig" };
+            var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.Cost.ShouldBe(99);
+            offer.First().Cost.ShouldBe(99);
         }
 
         [Fact]
         public void SetDefaultFullCostWhenSkeletonNotFound()
         {
-            var unit = new Unit(257) { Name = "War Rig" };
+            var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.FullCost.ShouldBe(-1);
+            offer.First().FullCost.ShouldBe(-1);
         }
 
         [Fact]
         public void SetDefaultCostSkuWhenSkeletonNotFound()
         {
-            var unit = new Unit(257) { Name = "War Rig" };
+            var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.CostSku.ShouldBe("gold");
+            offer.First().CostSku.ShouldBe("gold");
         }
 
         [Fact]
         public void SetEmptyContentWhenSkeletonNotFound()
         {
-            var unit = new Unit(257) { Name = "War Rig" };
+            var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.ContentJson.ShouldBe("{ \"skus\": { \"gold\": 0 } }");
+            offer.First().ContentJson.ShouldBe("{ \"skus\": { \"gold\": 0 } }");
         }
 
         [Fact]
         public void SetEmptyDisplayedItemsWhenSkeletonNotFound()
         {
-            var unit = new Unit(257) { Name = "War Rig" };
+            var unit = new Unit(217) { Name = "Juggernaut" };
             var offer = this.sut.CreateTechOffers(unit, "Jul18Test");
 
-            offer.DisplayedItemsJson.ShouldBe("[ {} ]");
+            offer.First().DisplayedItemsJson.ShouldBe("[ {} ]");
         }
         #endregion
     }

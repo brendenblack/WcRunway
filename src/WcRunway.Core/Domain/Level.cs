@@ -9,7 +9,7 @@ namespace WcRunway.Core.Domain
         public int Number { get; set; }
 
         /// <summary>
-        /// Differentiates different "stages" of leveling, e.g. 1-20 is normal, then an increasing token cost
+        /// Differentiates different "stages" of leveling, e.g. for faction units 1-10 is normal, thereafter an increasing token cost scheme is applied
         /// </summary>
         public int Grade { get; set; }
 

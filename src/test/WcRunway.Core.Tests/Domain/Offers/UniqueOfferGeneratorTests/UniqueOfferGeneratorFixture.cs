@@ -20,6 +20,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
         public OfferSkeleton OmegaSkeleton { get; private set; }
         public OfferSkeleton EliteSkeleton { get; private set; }
         public List<OfferSkeleton> TechSkeletons { get; private set; }
+        public List<OfferSkeleton> LevelSkeletons { get; private set; }
 
         public UniqueOfferGeneratorFixture()
         {
@@ -69,7 +70,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
             this.UnlockSkeleton = new OfferSkeleton
             {
                 UnitId = 217,
-                OfferType = OfferType.UNIT_UNLOCK,
+                OfferType = OfferType.STANDARD_UNLOCK,
                 Title = "The death machine",
                 Description = "Death on wheels! This Offer includes an UNLOCKED Standard Juggernaut.",
                 IconTitle = "Death Machine!",
@@ -152,12 +153,149 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
                 }
             };
 
-            return new List<OfferSkeleton>
+            this.LevelSkeletons = new List<OfferSkeleton>
+            {
+                new OfferSkeleton
+                {
+                    UnitId = 217,
+                    OfferType = OfferType.LEVELS,
+                    Title = "Juggernaut Upgrades!",
+                    Description = "Make your Juggernaut last longer and hit harder than ever before! This offer will upgrade your existing Juggernaut to level 5!",
+                    IconTitle = "Juggernaut Upgrades!",
+                    IconDescription = "This offer will upgrade your existing Juggernaut to level 5",
+                    Cost = 39,
+                    FullCost = 250,
+                    CostSku = "gold",
+                    Duration = 28800,
+                    Content = "{\"unit_unlocks\":[ {\"type\":217, \"level\": 5} ]}",
+                    DisplayedItems = "[ {\"item\":\"juggernautunlocked\" , \"amount\": 1, \"order\":1}]",
+                    MaximumQuanity = 1
+                },
+                new OfferSkeleton
+                {
+                    UnitId = 217,
+                    OfferType = OfferType.LEVELS,
+                    Title = "Juggernaut Upgrades!",
+                    Description = "Make your Juggernaut last longer and hit harder than ever before! This offer will upgrade your existing Juggernaut to level 10!",
+                    IconTitle = "Juggernaut Upgrades!",
+                    IconDescription = "This offer will upgrade your existing Juggernaut to level 10",
+                    Cost = 39,
+                    FullCost = 250,
+                    CostSku = "gold",
+                    Duration = 28800,
+                    Content = "{\"unit_unlocks\":[ {\"type\":217, \"level\": 10} ]}",
+                    DisplayedItems = "[ {\"item\":\"juggernautunlocked\" , \"amount\": 1, \"order\":1}]",
+                    MaximumQuanity = 1
+                },
+                new OfferSkeleton
+                {
+                    UnitId = 217,
+                    OfferType = OfferType.LEVELS,
+                    Title = "Juggernaut Upgrades!",
+                    Description = "Make your Juggernaut last longer and hit harder than ever before! This offer will upgrade your existing Juggernaut to level 15!",
+                    IconTitle = "Juggernaut Upgrades!",
+                    IconDescription = "This offer will upgrade your existing Juggernaut to level 15",
+                    Cost = 39,
+                    FullCost = 250,
+                    CostSku = "gold",
+                    Duration = 28800,
+                    Content = "{\"unit_unlocks\":[ {\"type\":217, \"level\": 15} ]}",
+                    DisplayedItems = "[ {\"item\":\"juggernautunlocked\" , \"amount\": 1, \"order\":1}]",
+                    MaximumQuanity = 1
+                },
+                new OfferSkeleton
+                {
+                    UnitId = 217,
+                    OfferType = OfferType.LEVELS,
+                    Title = "Juggernaut Upgrades!",
+                    Description = "Make your Juggernaut last longer and hit harder than ever before! This offer will upgrade your existing Juggernaut to level 20!",
+                    IconTitle = "Juggernaut Upgrades!",
+                    IconDescription = "This offer will upgrade your existing Juggernaut to level 20",
+                    Cost = 39,
+                    FullCost = 250,
+                    CostSku = "gold",
+                    Duration = 28800,
+                    Content = "{\"unit_unlocks\":[ {\"type\":217, \"level\": 20} ]}",
+                    DisplayedItems = "[ {\"item\":\"juggernautunlocked\" , \"amount\": 1, \"order\":1}]",
+                    MaximumQuanity = 1
+                },
+                new OfferSkeleton
+                {
+                    UnitId = 217,
+                    OfferType = OfferType.LEVELS,
+                    Title = "Juggernaut Upgrades!",
+                    Description = "Make your Juggernaut last longer and hit harder than ever before! This offer will upgrade your existing Juggernaut to level 25!",
+                    IconTitle = "Juggernaut Upgrades!",
+                    IconDescription = "This offer will upgrade your existing Juggernaut to level 25",
+                    Cost = 39,
+                    FullCost = 250,
+                    CostSku = "gold",
+                    Duration = 28800,
+                    Content = "{\"unit_unlocks\":[ {\"type\":217, \"level\": 25} ]}",
+                    DisplayedItems = "[ {\"item\":\"juggernautunlocked\" , \"amount\": 1, \"order\":1}]",
+                    MaximumQuanity = 1
+                },
+                new OfferSkeleton
+                {
+                    UnitId = 217,
+                    OfferType = OfferType.LEVELS,
+                    Title = "Juggernaut Upgrades!",
+                    Description = "Make your Juggernaut last longer and hit harder than ever before! This offer will upgrade your existing Juggernaut to level 30!",
+                    IconTitle = "Juggernaut Upgrades!",
+                    IconDescription = "This offer will upgrade your existing Juggernaut to level 30",
+                    Cost = 39,
+                    FullCost = 250,
+                    CostSku = "gold",
+                    Duration = 28800,
+                    Content = "{\"unit_unlocks\":[ {\"type\":217, \"level\": 30} ]}",
+                    DisplayedItems = "[ {\"item\":\"juggernautunlocked\" , \"amount\": 1, \"order\":1}]",
+                    MaximumQuanity = 1
+                },
+                new OfferSkeleton
+                {
+                    UnitId = 217,
+                    OfferType = OfferType.LEVELS,
+                    Title = "Juggernaut Upgrades!",
+                    Description = "Make your Juggernaut last longer and hit harder than ever before! This offer will upgrade your existing Juggernaut to level 35!",
+                    IconTitle = "Juggernaut Upgrades!",
+                    IconDescription = "This offer will upgrade your existing Juggernaut to level 35",
+                    Cost = 39,
+                    FullCost = 250,
+                    CostSku = "gold",
+                    Duration = 28800,
+                    Content = "{\"unit_unlocks\":[ {\"type\":217, \"level\": 35} ]}",
+                    DisplayedItems = "[ {\"item\":\"juggernautunlocked\" , \"amount\": 1, \"order\":1}]",
+                    MaximumQuanity = 1
+                },
+                new OfferSkeleton
+                {
+                    UnitId = 217,
+                    OfferType = OfferType.LEVELS,
+                    Title = "Juggernaut Upgrades!",
+                    Description = "Make your Juggernaut last longer and hit harder than ever before! This offer will upgrade your existing Juggernaut to level 40!",
+                    IconTitle = "Juggernaut Upgrades!",
+                    IconDescription = "This offer will upgrade your existing Juggernaut to level 40",
+                    Cost = 39,
+                    FullCost = 250,
+                    CostSku = "gold",
+                    Duration = 28800,
+                    Content = "{\"unit_unlocks\":[ {\"type\":217, \"level\": 40 } ]}",
+                    DisplayedItems = "[ {\"item\":\"juggernautunlocked\" , \"amount\": 1, \"order\":1}]",
+                    MaximumQuanity = 1
+                },
+
+            };
+
+            var result = new List<OfferSkeleton>
             {
                 UnlockSkeleton, OmegaSkeleton, EliteSkeleton
             };
-        }
+            result.AddRange(TechSkeletons);
+            result.AddRange(LevelSkeletons);
 
+            return result;
+        }
+        
 
         public void Dispose()
         {

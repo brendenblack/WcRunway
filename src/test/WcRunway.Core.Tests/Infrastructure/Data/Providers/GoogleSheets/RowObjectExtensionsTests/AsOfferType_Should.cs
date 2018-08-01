@@ -34,14 +34,20 @@ namespace WcRunway.Core.Tests.Infrastructure.Data.Providers.GoogleSheets.RowObje
         [InlineData("ELITE PARTS", OfferType.ELITE_PARTS)]
         [InlineData("Levels", OfferType.LEVELS)]
         [InlineData("levels", OfferType.LEVELS)]
-        [InlineData("unlock", OfferType.UNIT_UNLOCK)]
-        [InlineData("Unlock", OfferType.UNIT_UNLOCK)]
-        [InlineData("UNLOCK", OfferType.UNIT_UNLOCK)]
+        [InlineData("unlock", OfferType.STANDARD_UNLOCK)]
+        [InlineData("Unlock", OfferType.STANDARD_UNLOCK)]
+        [InlineData("UNLOCK", OfferType.STANDARD_UNLOCK)]
+        [InlineData("Omega Unlock", OfferType.OMEGA_UNLOCK)]
+        [InlineData("OMEGA UNLOCK", OfferType.OMEGA_UNLOCK)]
+        [InlineData("omega unlock", OfferType.OMEGA_UNLOCK)]
+        [InlineData("Elite Unlock", OfferType.ELITE_UNLOCK)]
+        [InlineData("ELITE UNLOCK", OfferType.ELITE_UNLOCK)]
+        [InlineData("elite unlock", OfferType.ELITE_UNLOCK)]
         public void ReturnExpectedOfferType(string input, OfferType expectedOutput)
         {
-            Object value = input;
-
-            value.AsOfferType().ShouldBe(expectedOutput);
+            Object[] row = new Object[20];
+            row[1] = (Object)input;
+            row.ReadColumnAsOfferType(1).ShouldBe(expectedOutput);
         }
     }
 }

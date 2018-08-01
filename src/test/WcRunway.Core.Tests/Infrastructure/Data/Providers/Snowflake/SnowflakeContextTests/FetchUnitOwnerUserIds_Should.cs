@@ -16,12 +16,13 @@ namespace WcRunway.Core.Tests.Infrastructure.Data.Providers.Snowflake.SnowflakeC
 
         private readonly SnowflakeContext snowflake;
 
-        [Fact]
-        public void ReturnListOfIds()
-        {
-            var owners = snowflake.FetchUnitOwnerUserIds(251);
+        // Far too slow to keep enabled
+        //[Fact]
+        //public void ReturnListOfIds()
+        //{
+        //    var owners = snowflake.FetchUnitOwnerUserIds(251);
 
-            owners.Count.ShouldBeGreaterThan(0);
-        }
+        //    owners.Count.ShouldBeGreaterThan(0);
+        //}
     }
 }

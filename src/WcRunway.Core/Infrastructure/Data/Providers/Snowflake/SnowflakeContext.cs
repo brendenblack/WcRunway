@@ -50,7 +50,7 @@ namespace WcRunway.Core.Infrastructure.Data.Providers.Snowflake
 
                 IDbCommand cmd = conn.CreateCommand();
                 cmd.CommandText = $"select ua.USERID, ua.LEVEL from {TABLE_USER_ACADEMY} ua join {TABLE_USERS} u on u.USERID = ua.USERID where u.SEENTIME >= DATE_PART('epoch_second', dateadd('day', -30, current_date())) and ua.type = {unitId};";
-                IDataReader reader = cmd.ExecuteReader();
+                IDataReader reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
                 var records = 0;
                 try
                 {
