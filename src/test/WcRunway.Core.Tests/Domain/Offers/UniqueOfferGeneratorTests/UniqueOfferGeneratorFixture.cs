@@ -34,7 +34,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
 
 
             ILogger<UniqueOfferGenerator> logger = TestHelpers.CreateLogger<UniqueOfferGenerator>();
-            var gen = new UniqueOfferGenerator(logger, mockOfferData.Object, mockUnitOwnership);
+            var gen = new UniqueOfferGenerator(logger, mockOfferData.Object);
 
             this.OfferGenerator = gen;
         }

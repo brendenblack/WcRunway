@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Atlassian.SDK" Version="10.3.2" />
     <PackageReference Include="CsvHelper" Version="7.1.1" />
+    <PackageReference Include="Dapplo.Jira" Version="0.7.15" />
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.34.0.1240" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.1.1" />
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.12" />
