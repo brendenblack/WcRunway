@@ -40,7 +40,7 @@ namespace WcRunway.Core.Tests.Domain.Offers.UniqueOfferGeneratorTests
 
             foreach (var offer in offers)
             {
-                offer.OfferCode.ShouldStartWith("Jul18TestTek");
+                offer.OfferCode.ShouldStartWith("Jul18TestTec");
             }
         }
 

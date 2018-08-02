@@ -20,8 +20,10 @@ namespace WcRunway.Cli.Features.Generate
         private readonly IUnitOwnership unitOwnership;
         private readonly UniqueOfferGenerator gen;
         private readonly Sandbox2Context sb2;
+
+        public static int ERR_UNIT_NOT_FOUND = 10;
         
-        public GenerateHandler(ILogger<GenerateHandler> log, IGameContext gameContext, IUnitOwnership unitOwnership, UniqueOfferGenerator gen, Sandbox2Context sb2)
+        public GenerateHandler(ILogger<GenerateHandler> log, IGameContext gameContext, UniqueOfferGenerator gen, Sandbox2Context sb2)
         {
             this.log = log;
             this.gameContext = gameContext;
@@ -33,14 +35,27 @@ namespace WcRunway.Cli.Features.Generate
         public int Execute(GenerateOptions opts)
         {
             // Validate the prefix
-            var prefix = ValidatePrefix(opts.OfferCodePrefix); // TODO: refactor this logic out and in to the Core project
+            string prefix;
+            try
+            {
+                prefix = ValidatePrefix(opts.OfferCodePrefix); // TODO: refactor this logic out and in to the Core project
+            }
+            catch (Exception e)
+            {
+                log.LogError(e.Message);
+                return -1;
+            }
+
             log.LogInformation("Launching Generate Offer handler for unit id {0} with offer code prefix {1}", opts.UnitId, prefix);
 
             // Retrieve the specified unit
-            var unit = this.gameContext.Units.FirstOrDefault(u => u.Id == opts.UnitId);
+            var unit = this.gameContext.Units
+                .FirstOrDefault(u => u.Id == opts.UnitId);
+
             if (unit == null)
             {
                 log.LogError($"A unit with id {opts.UnitId} was not found");
+                return -1;
             }
             log.LogDebug($"Unit: {unit.ToString()}");
 
@@ -94,7 +109,7 @@ namespace WcRunway.Cli.Features.Generate
             catch (Exception e)
             {
                 // TODO
-                log.LogError("");
+                log.LogError(e.Message);
                 return -1;
             }
 

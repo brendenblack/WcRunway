@@ -3,20 +3,24 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using WcRunway.Cli.Features.Generate;
+using WcRunway.Core.Infrastructure.Data.Providers.MySql;
 using Xunit;
 
 namespace WcRunway.Cli.Tests.Features.Generate.GenerateHandlerTests
 {
-    public class ValidatePrefix_Should : IClassFixture<GenerateHandlerFixture>, IDisposable
+    public class ValidatePrefix_Should : IClassFixture<ExecuteFixture> //, IDisposable
     {
-        public ValidatePrefix_Should(GenerateHandlerFixture fixture)
+        public ValidatePrefix_Should(ExecuteFixture fixture)
         {
-            this.sut = fixture.Handler;
             this.fixture = fixture;
+            this.sb2 = fixture.SetupSandbox2($"Execute_{new Guid().ToString()}");
+            var genLogger = TestHelpers.CreateLogger<GenerateHandler>();
+            this.sut = new GenerateHandler(genLogger, fixture.GameContext, fixture.OfferGenerator, sb2);
         }
 
+        private readonly ExecuteFixture fixture;
+        private readonly Sandbox2Context sb2;
         private readonly GenerateHandler sut;
-        private readonly GenerateHandlerFixture fixture;
 
         [Fact]
         public void ReturnExpectedPrefix()
@@ -50,16 +54,16 @@ namespace WcRunway.Cli.Tests.Features.Generate.GenerateHandlerTests
         public void ThrowWhenInUse(string existingOfferCode)
         {
             var existingOffer = TestHelpers.CreateTestOffer(existingOfferCode);
-            this.fixture.Sandbox2.Offers.Add(existingOffer);
-            this.fixture.Sandbox2.SaveChanges();
+            this.sb2.Offers.Add(existingOffer);
+            this.sb2.SaveChanges();
 
             Should.Throw<InvalidOperationException>(() => this.sut.ValidatePrefix("Test123"));
         }
 
-        public void Dispose()
-        {
-            this.fixture.Sandbox2.Offers.RemoveRange(this.fixture.Sandbox2.Offers);
-            this.fixture.Sandbox2.SaveChanges();
-        }
+        //public void Dispose()
+        //{
+        //    this.fixture.Sandbox2.Offers.RemoveRange(this.fixture.Sandbox2.Offers);
+        //    this.fixture.Sandbox2.SaveChanges();
+        //}
     }
 }

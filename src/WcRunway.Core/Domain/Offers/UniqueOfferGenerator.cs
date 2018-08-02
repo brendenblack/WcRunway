@@ -16,15 +16,13 @@ namespace WcRunway.Core.Domain.Offers
     {
         private readonly ILogger<UniqueOfferGenerator> log;
         private readonly IOfferData offerData;
-        private readonly IUnitOwnership unitOwnership;
 
         public readonly int MAX_PREFIX_LENGTH = 16;
 
-        public UniqueOfferGenerator(ILogger<UniqueOfferGenerator> log, IOfferData offerData, IUnitOwnership unitOwnership)
+        public UniqueOfferGenerator(ILogger<UniqueOfferGenerator> log, IOfferData offerData)
         {
             this.log = log;
             this.offerData = offerData;
-            this.unitOwnership = unitOwnership;
         }
 
         /// <summary>
@@ -538,10 +536,10 @@ namespace WcRunway.Core.Domain.Offers
         /// Fetches a cohort of users who do not have the specified unit unlocked and are thus eligible to receive the unlock offer
         /// </summary>
         /// <param name="unit"></param>
-        public List<int> FetchUnlockCohort(Unit unit)
-        {
-            return this.unitOwnership.FetchUnitOwnerUserIds(unit.Id);
-        }
+        //public List<int> FetchUnlockCohort(Unit unit)
+        //{
+        //    return this.unitOwnership.FetchUnitOwnerUserIds(unit.Id);
+        //}
     }
 
 }
