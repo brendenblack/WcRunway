@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WcRunway.Core.Domain.Offers;
+using WcCore.Domain.Offers;
 
-namespace WcRunway.Cli.Tests
+namespace WcOffers.Cli.Tests
 {
     public class TestHelpers
     {

@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WcRunway.Core.Domain.Offers;
-using WcRunway.Core.Domain.Quality;
+using WcCore.Domain.Offers;
+using WcCore.Domain.Quality;
 using Xunit;
 
-namespace WcRunway.Core.Tests.Domain.Quality.OfferJiraTicketManagerTests
+namespace WcCore.Tests.Domain.Quality.OfferJiraTicketManagerTests
 {
     public class CreateIssueDescription_Should
     {
@@ -79,22 +79,22 @@ namespace WcRunway.Core.Tests.Domain.Quality.OfferJiraTicketManagerTests
                 ContentJson = "{\"gold\": 0 }",
                 DisplayedItemsJson = "[{}]"
             };
-            var expectedDescription = $"These are my comments\n\n\n|*Offer Code:* {offer.OfferCode}\n"
-                + $"|*Offer Id:* {offer.Id}\n"
-                + $"|*Title:* {offer.Title}\n"
-                + $"|*Description:* {offer.Description}\n"
-                + $"|*Icon Title:* {offer.IconTitle}\n"
-                + $"|*Icon Description:* {offer.IconDescription}\n"
-                + $"|*Start Time:* {offer.StartTime}\n"
-                + $"|*End Time:* {offer.EndTime}\n"
-                + $"|*Duration:* {offer.Duration}\n"
-                + $"|*Cost:* {offer.Cost}\n"
-                + $"|*Full Cost:* {offer.FullCost}\n"
-                + $"|*Template ID:* {offer.TemplateId}\n"
-                + $"|*Content:* {offer.ContentJson}\n"
-                + $"|*Displayed Items:* {offer.DisplayedItemsJson}\n"
-                + $"|*Display Options:* {offer.DisplayOptionsJson}\n"
-                + $"|*Enabled:* {offer.IsEnabled}\n";
+            var expectedDescription = $"These are my comments\n\n\n|*Offer Code:* {offer.OfferCode}|\n"
+                + $"|*Offer Id:* {offer.Id}|\n"
+                + $"|*Title:* {offer.Title}|\n"
+                + $"|*Description:* {offer.Description}|\n"
+                + $"|*Icon Title:* {offer.IconTitle}|\n"
+                + $"|*Icon Description:* {offer.IconDescription}|\n"
+                + $"|*Start Time:* {offer.StartTime}|\n"
+                + $"|*End Time:* {offer.EndTime}|\n"
+                + $"|*Duration:* {offer.Duration}|\n"
+                + $"|*Cost:* {offer.Cost}|\n"
+                + $"|*Full Cost:* {offer.FullCost}|\n"
+                + $"|*Template ID:* {offer.TemplateId}|\n"
+                + $"|*Content:* {offer.ContentJson}|\n"
+                + $"|*Displayed Items:* {offer.DisplayedItemsJson}|\n"
+                + $"|*Display Options:* {offer.DisplayOptionsJson}|\n"
+                + $"|*Enabled:* {offer.IsEnabled}|\n";
 
             var result = sut.CreateIssueDescription(offer, "These are my comments");
 

@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using WcData.Implementation.Sheets.Extensions;
-using WcData.Offers;
+using WcData.Sheets;
+using WcCore.Domain.Offers;
 
 namespace WcData.Implementation.Sheets
 {

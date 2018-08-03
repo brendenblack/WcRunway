@@ -3,17 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WcRunway.Core.Domain;
-using WcRunway.Core.Tests.Infrastructure.Data.Providers.GoogleSheets.SheetsUnitDataTests;
+using WcCore.Domain;
 using Xunit;
 
-namespace WcRunway.Core.Tests.Domain.TokenRunwayCalculatorTests
+namespace WcCore.Tests.Domain.TokenRunwayCalculatorTests
 {
-    public class CalculateRemainingCostsAtLevel_Should : IClassFixture<RefreshUnitsFixture> // TODO: break dependence on this fixture
+    public class CalculateRemainingCostsAtLevel_Should
     {
-        public CalculateRemainingCostsAtLevel_Should(RefreshUnitsFixture fixture)
+        public CalculateRemainingCostsAtLevel_Should()
         {
-            this.units = fixture.sut.Units;
+            this.units = new List<Unit>(); // TODO
             this.sut = new TokenRunwayCalculator();
         }
 

@@ -1,19 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Moq;
-using Shouldly;
+﻿using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using WcRunway.Cli.Features.Generate;
-using WcRunway.Core.Domain;
-using WcRunway.Core.Domain.Game;
-using WcRunway.Core.Domain.Offers;
-using WcRunway.Core.Infrastructure.Data.Providers.MySql;
+using WcData.GameContext;
+using WcOffers.Cli.Features.Generate;
 using Xunit;
 
-namespace WcRunway.Cli.Tests.Features.Generate.GenerateHandlerTests
+namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
 {
     public class Execute_Unlock_Should : IClassFixture<ExecuteFixture>
     {

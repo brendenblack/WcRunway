@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WcRunway.Core.Domain.Game;
-using WcRunway.Core.Domain.Offers;
+using WcCore.Domain.Game;
+using WcCore.Domain.Offers;
 using Xunit;
 
-namespace WcRunway.Cli.Tests
+namespace WcOffers.Cli.Tests
 {
     public class UnitTest1
     {

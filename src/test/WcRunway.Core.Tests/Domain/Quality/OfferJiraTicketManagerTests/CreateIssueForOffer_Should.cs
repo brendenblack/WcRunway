@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using WcRunway.Core.Domain.Offers;
-using WcRunway.Core.Domain.Quality;
+using WcCore.Domain.Offers;
+using WcCore.Domain.Quality;
 using Xunit;
 
-namespace WcRunway.Core.Tests.Domain.Quality.OfferJiraTicketManagerTests
+namespace WcCore.Tests.Domain.Quality.OfferJiraTicketManagerTests
 {
     public class CreateIssueForOffer_Should
     {
@@ -18,25 +18,25 @@ namespace WcRunway.Core.Tests.Domain.Quality.OfferJiraTicketManagerTests
 
         private readonly OfferJiraTicketManager sut;
 
-        [Fact]
-        public async Task Test()
-        {
-            var offer = new Offer { OfferCode = "Aug18TestJira" };
+        //[Fact]
+        //public async Task Test()
+        //{
+        //    var offer = new Offer { OfferCode = "Aug18TestJira" };
 
-            await sut.CreateIssueForOffer(offer);
+        //    await sut.CreateIssueForOffer(offer);
 
-            offer.OfferCode.ShouldBe("Aug18TestJira");
+        //    offer.OfferCode.ShouldBe("Aug18TestJira");
 
-        }
+        //}
 
-        [Fact]
-        public async Task ThrowWhenTicketSummaryExists()
-        {
-            var offer = new Offer { OfferCode = "Aug18TestJira" };
+        //[Fact]
+        //public async Task ThrowWhenTicketSummaryExists()
+        //{
+        //    var offer = new Offer { OfferCode = "Aug18TestJira" };
 
-            await sut.CreateIssueForOffer(offer);
+        //    await sut.CreateIssueForOffer(offer);
 
-            offer.OfferCode.ShouldBe("Aug18TestJira");
-        }
+        //    offer.OfferCode.ShouldBe("Aug18TestJira");
+        //}
     }
 }

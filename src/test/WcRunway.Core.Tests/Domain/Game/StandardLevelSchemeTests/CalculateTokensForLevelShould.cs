@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WcRunway.Core.Domain.Game;
+using WcCore.Domain.Game;
 using Xunit;
 
-namespace WcRunway.Core.Tests.Domain.Game.StandardLevelSchemeTests
+namespace WcCore.Tests.Domain.Game.StandardLevelSchemeTests
 {
     public class CalculateTokensForLevelShould
     {

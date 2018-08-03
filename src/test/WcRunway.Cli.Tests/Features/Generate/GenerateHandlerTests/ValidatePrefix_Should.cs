@@ -1,12 +1,10 @@
 ﻿using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using WcRunway.Cli.Features.Generate;
-using WcRunway.Core.Infrastructure.Data.Providers.MySql;
+using WcOffers.Cli.Features.Generate;
 using Xunit;
+using WcData.GameContext;
 
-namespace WcRunway.Cli.Tests.Features.Generate.GenerateHandlerTests
+namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
 {
     public class ValidatePrefix_Should : IClassFixture<ExecuteFixture> //, IDisposable
     {

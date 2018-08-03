@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using WcRunway.Core.Domain.Offers;
+using WcCore.Domain.Offers;
 
 namespace WcData.Implementation.Sheets.Extensions
 {

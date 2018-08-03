@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using WcRunway.Core.Domain.Offers;
+using WcCore.Domain.Offers;
 
-namespace WcRunway.Core.Domain.Quality
+namespace WcCore.Domain.Quality
 {
     public class OfferJiraTicketManager
     {

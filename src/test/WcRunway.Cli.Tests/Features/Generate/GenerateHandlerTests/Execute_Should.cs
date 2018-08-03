@@ -1,13 +1,11 @@
 ﻿using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using WcRunway.Cli.Features.Generate;
-using WcRunway.Core.Domain.Offers;
-using WcRunway.Core.Infrastructure.Data.Providers.MySql;
+using WcOffers.Cli.Features.Generate;
+using WcCore.Domain.Offers;
 using Xunit;
+using WcData.GameContext;
 
-namespace WcRunway.Cli.Tests.Features.Generate.GenerateHandlerTests
+namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
 {
     /*
      * This class specifically tests the generic features of Execute() that aren't tied to the option switches

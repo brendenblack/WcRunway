@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WcRunway.Core.Domain.Offers;
+using WcCore.Domain.Offers;
 
-namespace WcRunway.Core.Domain.Offers
+namespace WcCore.Domain.Offers
 {
     public class OfferSkeleton
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WcRunway.Core.Domain.Game
+namespace WcCore.Domain.Game
 {
     public interface IUnitData
     {

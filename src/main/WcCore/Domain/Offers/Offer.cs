@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcRunway.Core.Domain.Offers
+namespace WcCore.Domain.Offers
 {
     /// <summary>
     /// Models an offer as represented inside the War Commander offer tool

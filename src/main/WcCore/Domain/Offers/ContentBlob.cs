@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcRunway.Core.Domain.Offers
+namespace WcCore.Domain.Offers
 {
     public class ContentBlob
     {

@@ -1,18 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using WcRunway.Cli.Features.Generate;
-using WcRunway.Core.Domain;
-using WcRunway.Core.Domain.Game;
-using WcRunway.Core.Domain.Offers;
-using WcRunway.Core.Domain.Users;
-using WcRunway.Core.Infrastructure.Data.Providers.MySql;
+using WcCore.Domain;
+using WcCore.Domain.Game;
+using WcCore.Domain.Offers;
+using WcCore.Domain.Users;
+using WcData.Sheets;
+using WcData.GameContext;
 
-namespace WcRunway.Cli.Tests.Features.Generate.GenerateHandlerTests
+namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
 {
     public class ExecuteFixture
     {

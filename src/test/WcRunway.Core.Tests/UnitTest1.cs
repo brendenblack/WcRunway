@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace WcRunway.Core.Tests
+namespace WcCore.Tests
 {
     public class UnitTest1
     {

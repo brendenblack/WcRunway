@@ -332,3 +332,4 @@ ASALocalRun/
 /src/WcRunway.Cli/appsettings.json
 /src/WcRunway.Cli/appsettings.dev.json
 /src/main/WcCore/client_secret.json
+/src/main/WcOffers.Cli/appsettings.dev.json

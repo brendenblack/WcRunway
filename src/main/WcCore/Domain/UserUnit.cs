@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcRunway.Core.Domain
+namespace WcCore.Domain
 {
     public class UserUnit
     {

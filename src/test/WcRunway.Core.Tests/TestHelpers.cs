@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcRunway.Core.Tests
+namespace WcCore.Tests
 {
     public class TestHelpers
     {
