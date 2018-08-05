@@ -1,12 +1,10 @@
 ﻿using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using WcCore.Domain.Offers;
-using WcCore.Domain.Quality;
+using WcOffers;
 using Xunit;
 
-namespace WcCore.Tests.Domain.Quality.OfferJiraTicketManagerTests
+namespace WcOffersTests.OfferJiraTicketManagerTests
 {
     public class CreateIssueDescription_Should
     {

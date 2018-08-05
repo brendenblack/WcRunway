@@ -56,6 +56,7 @@ namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
             };
 
             this.sut.Execute(opts);
+            // TODO: when running all tests at once this returns null but works in isolation; concurrency problem somewhere
             var offer = this.sb2.Offers.FirstOrDefault(o => o.OfferCode == "Test123Unl");
 
             offer.ShouldNotBeNull();

@@ -10,12 +10,20 @@ using WcData.GameContext;
 using WcData.Implementation;
 using WcData.Implementation.MySql;
 using WcData.Implementation.Sheets;
+using WcData.Sheets;
 
 namespace WcData.Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
 
+        /// <summary>
+        /// Adds connections to the various Google Sheets used by design to store and manipulate data in the game. This information is not guaranteed to 
+        /// be the current in-game state.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="optionsAction"></param>
+        /// <returns></returns>
         public static IServiceCollection AddSheets(this IServiceCollection services, Action<SheetsOptions> optionsAction)
         {
             var opts = new SheetsOptions();
@@ -33,8 +41,10 @@ namespace WcData.Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<SheetsConnectorService>();
 
-            //services.AddSingleton<IUnitData, SheetsUnitData>();
-            //services.AddTransient<IOfferData, SheetsOfferData>();
+            services.AddSingleton<IUnitData, SheetsUnitData>();
+            services.AddSingleton<IOfferData, SheetsOfferData>();
+
+            services.AddTransient<IGameData, SheetsGameData>();
 
             return services;
         }

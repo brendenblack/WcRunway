@@ -1,13 +1,6 @@
-﻿using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using WcCore.Domain.Offers;
-using WcCore.Domain.Quality;
-using Xunit;
+﻿using WcOffers;
 
-namespace WcCore.Tests.Domain.Quality.OfferJiraTicketManagerTests
+namespace WcOffersTests.OfferJiraTicketManagerTests
 {
     public class CreateIssueForOffer_Should
     {

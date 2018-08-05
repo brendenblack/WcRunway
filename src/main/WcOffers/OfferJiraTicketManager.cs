@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WcCore.Domain.Offers;
 
-namespace WcCore.Domain.Quality
+namespace WcOffers
 {
     public class OfferJiraTicketManager
     {

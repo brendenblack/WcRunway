@@ -12,7 +12,37 @@ namespace WcCore.Tests.Domain.TokenRunwayCalculatorTests
     {
         public CalculateRemainingCostsAtLevel_Should()
         {
-            this.units = new List<Unit>(); // TODO
+            this.units = new List<Unit>
+            {
+                new Unit(251)
+                {
+                    Name = "Phalanx",
+                    Levels = new List<Level>
+                    {
+                        new Level { Number = 1 },
+                        new Level { Number = 2 },
+                        new Level { Number = 3 },
+                        new Level { Number = 4 },
+                        new Level { Number = 5 },
+                        new Level { Number = 6 },
+                        new Level { Number = 7 },
+                        new Level { Number = 8 },
+                        new Level { Number = 9 },
+                        new Level { Number = 10 },
+                        new Level { Number = 11, UpgradeSkuCosts = new List<UpgradeSkuCost> { new UpgradeSkuCost("unit_upgrade_cor_phalanx", 1) } },
+                        new Level { Number = 12, UpgradeSkuCosts = new List<UpgradeSkuCost> { new UpgradeSkuCost("unit_upgrade_cor_phalanx", 2) } },
+                        new Level { Number = 13, UpgradeSkuCosts = new List<UpgradeSkuCost> { new UpgradeSkuCost("unit_upgrade_cor_phalanx", 3) } },
+                        new Level { Number = 14, UpgradeSkuCosts = new List<UpgradeSkuCost> { new UpgradeSkuCost("unit_upgrade_cor_phalanx", 4) } },
+                        new Level { Number = 15, UpgradeSkuCosts = new List<UpgradeSkuCost> { new UpgradeSkuCost("unit_upgrade_cor_phalanx", 5) } },
+                        new Level { Number = 16, UpgradeSkuCosts = new List<UpgradeSkuCost> { new UpgradeSkuCost("unit_upgrade_cor_phalanx", 6) } },
+                        new Level { Number = 17, UpgradeSkuCosts = new List<UpgradeSkuCost> { new UpgradeSkuCost("unit_upgrade_cor_phalanx", 7) } },
+                        new Level { Number = 18, UpgradeSkuCosts = new List<UpgradeSkuCost> { new UpgradeSkuCost("unit_upgrade_cor_phalanx", 8) } },
+                        new Level { Number = 19, UpgradeSkuCosts = new List<UpgradeSkuCost> { new UpgradeSkuCost("unit_upgrade_cor_phalanx", 9) } },
+                        new Level { Number = 20, UpgradeSkuCosts = new List<UpgradeSkuCost> { new UpgradeSkuCost("unit_upgrade_cor_phalanx", 10) } },
+                    }
+                }
+            };
+
             this.sut = new TokenRunwayCalculator();
         }
 

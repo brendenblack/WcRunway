@@ -23,7 +23,7 @@ namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
         /// <summary>
         /// Available units for testing include 217 Juggernaut with levels and 257 War Rig withoiut levels
         /// </summary>
-        public IGameContext GameContext { get; private set; }
+        public IGameData GameContext { get; private set; }
         public IUnitOwnership UnitOwnership { get; private set; }
 
         public UniqueOfferGenerator OfferGenerator { get; private set; }
@@ -36,9 +36,9 @@ namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
             this.OfferGenerator = SetupOfferGenerator(OfferData);
         }
 
-        public IGameContext SetupGameContext()
+        public IGameData SetupGameContext()
         {
-            var mockGameCtx = new Mock<IGameContext>();
+            var mockGameCtx = new Mock<IGameData>();
 
             var warrig = new Unit(257) { Name = "War Rig" };
             var juggernaut = new Unit(217) { Name = "Juggernaut" };

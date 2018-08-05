@@ -5,19 +5,20 @@ using System.Linq;
 using WcCore.Domain.Game;
 using WcCore.Domain.Offers;
 using WcData.GameContext;
+using WcData.Sheets;
 
 namespace WcOffers.Cli.Features.Generate
 {
     public class GenerateHandler
     {
         private readonly ILogger<GenerateHandler> log;
-        private readonly IGameContext gameContext;
+        private readonly IGameData gameContext;
         private readonly UniqueOfferGenerator gen;
         private readonly Sandbox2Context sb2;
 
         public static int ERR_UNIT_NOT_FOUND = 10;
         
-        public GenerateHandler(ILogger<GenerateHandler> log, IGameContext gameContext, UniqueOfferGenerator gen, Sandbox2Context sb2)
+        public GenerateHandler(ILogger<GenerateHandler> log, IGameData gameContext, UniqueOfferGenerator gen, Sandbox2Context sb2)
         {
             this.log = log;
             this.gameContext = gameContext;

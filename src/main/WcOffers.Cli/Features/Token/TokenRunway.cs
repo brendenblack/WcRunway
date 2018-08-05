@@ -1,15 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Linq;
 using WcCore.Domain.Game;
+using WcData.Sheets;
 
 namespace WcOffers.Cli.Features.Token
 {
     public class TokenRunway
     {
-        private readonly IGameContext game;
+        private readonly IGameData game;
         private readonly ILogger<TokenRunway> log;
 
-        public TokenRunway(ILogger<TokenRunway> logger, IGameContext gameBible)
+        public TokenRunway(ILogger<TokenRunway> logger, IGameData gameBible)
         {
             this.game = gameBible;
             this.log = logger;
