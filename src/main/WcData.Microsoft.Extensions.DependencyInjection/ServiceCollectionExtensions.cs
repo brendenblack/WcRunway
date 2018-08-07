@@ -39,6 +39,7 @@ namespace WcData.Microsoft.Extensions.DependencyInjection
                     .UnderlyingCredential as ServiceAccountCredential;
             }
 
+            services.AddSingleton(credential);
             services.AddSingleton<SheetsConnectorService>();
 
             services.AddSingleton<IUnitData, SheetsUnitData>();
@@ -60,14 +61,17 @@ namespace WcData.Microsoft.Extensions.DependencyInjection
             var opts = new GameContextOptions();
             optionsAction.Invoke(opts);
 
-            var sb2conn = $"server={opts.Url};database={opts.Name};uid={opts.Username};pwd={opts.Password};ssl-mode=none";
+            var connectionString = $"server={opts.Url};database={opts.Name};uid={opts.Username};pwd={opts.Password};ssl-mode=none";
 
             switch (opts.Environment)
             {//.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).
-                case GameContexts.LIVE:
+                case GameContexts.LIVE_MAIN:
                     throw new NotImplementedException("A connection to live is not yet supported");
+                case GameContexts.LIVE_SLAVE:
+                    services.AddDbContext<LiveSlaveContext>(opt => opt.UseMySQL(connectionString));
+                    break;
                 case GameContexts.SANDBOX2:
-                    services.AddDbContext<Sandbox2Context>(opt => opt.UseMySQL(sb2conn));
+                    services.AddDbContext<Sandbox2Context>(opt => opt.UseMySQL(connectionString));
                     break;
                 default:
                     break;

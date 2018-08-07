@@ -4,5 +4,5 @@ using System.Text;
 
 namespace WcData.GameContext
 {
-    public enum GameContexts {  SANDBOX2, LIVE };
+    public enum GameContexts {  SANDBOX2, LIVE_MAIN, LIVE_SLAVE };
 }

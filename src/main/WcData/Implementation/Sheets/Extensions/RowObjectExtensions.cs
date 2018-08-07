@@ -55,15 +55,23 @@ namespace WcData.Implementation.Sheets.Extensions
 
         public static int ReadColumnAsInteger(this IList<object> row, int columnIndex, int defaultValue = 0)
         {
-            try
+            if (Int32.TryParse(row[columnIndex]?.ToString(), out int result))
             {
-                int result = Int32.Parse(row[columnIndex].ToString()); // .ToString() ?? "";
                 return result;
             }
-            catch (Exception)
+            else
             {
                 return defaultValue;
             }
+            //try
+            //{
+            //    int result = Int32.Parse(row[columnIndex].ToString()); // .ToString() ?? "";
+            //    return result;
+            //}
+            //catch (Exception)
+            //{
+            //    return defaultValue;
+            //}
         }
 
         /// <summary>
@@ -75,15 +83,17 @@ namespace WcData.Implementation.Sheets.Extensions
         /// <returns></returns>
         public static string ReadColumnAsString(this IList<object> row, int columnIndex, string defaultValue = "")
         {
-            try
-            {
-                string result = row[columnIndex].ToString();
-                return result;
-            }
-            catch (Exception)
-            {
-                return defaultValue;
-            }
+            return row[columnIndex]?.ToString() ?? defaultValue;
+
+            //try
+            //{
+            //    string result = row[columnIndex].ToString();
+            //    return result;
+            //}
+            //catch (Exception)
+            //{
+            //    return defaultValue;
+            //}
         }
     }
 }

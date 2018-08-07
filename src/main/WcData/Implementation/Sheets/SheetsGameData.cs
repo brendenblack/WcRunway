@@ -11,10 +11,10 @@ namespace WcData.Implementation.Sheets
     /// </summary>
     public class SheetsGameData : IGameData
     {
-        private readonly SheetsOfferData offerData;
-        private readonly SheetsUnitData unitData;
+        private readonly IOfferData offerData;
+        private readonly IUnitData unitData;
 
-        public SheetsGameData(SheetsOfferData offerData, SheetsUnitData unitData)
+        public SheetsGameData(IOfferData offerData, IUnitData unitData)
         {
             this.offerData = offerData;
             this.unitData = unitData;
