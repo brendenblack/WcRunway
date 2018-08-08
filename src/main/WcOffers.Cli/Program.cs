@@ -173,9 +173,8 @@ namespace WcOffers.Cli
             services.AddLogging((builder) => builder.SetMinimumLevel(LogLevel.Trace));
 
             // Add SB2 database connection
-            services.AddGameContext(opt =>
+            services.AddSandbox2(opt =>
             {
-                opt.Environment = GameContexts.SANDBOX2;
                 opt.Url = config["data:sandbox2:url"];
                 opt.Name = config["data:sandbox2:name"];
                 opt.Username = config["data:sandbox2:username"];

@@ -18,5 +18,8 @@ namespace WcGraph.Models
 
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("levels")]
+        public IList<UnitLevel> Levels { get; set; } = new List<UnitLevel>();
     }
 }

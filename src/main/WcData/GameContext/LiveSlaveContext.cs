@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using WcCore.Domain;
 using WcCore.Domain.Offers;
 using WcData.Implementation.MySql;
 
@@ -17,5 +18,11 @@ namespace WcData.GameContext
         }
 
         public DbSet<Offer> Offers { get; set; }
+
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<Unit> Units { get; set; }
+
+        public DbSet<UserUnit> UserAcademy { get; set; }
     }
 }

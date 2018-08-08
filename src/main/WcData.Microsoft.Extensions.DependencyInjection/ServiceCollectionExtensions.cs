@@ -56,14 +56,14 @@ namespace WcData.Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="optionsAction"></param>
         /// <returns></returns>
-        public static IServiceCollection AddGameContext(this IServiceCollection services, Action<GameContextOptions> optionsAction)
+        public static IServiceCollection AddGameContext(this IServiceCollection services, GameContexts gameContext, Action<GameContextOptions> optionsAction)
         {
             var opts = new GameContextOptions();
             optionsAction.Invoke(opts);
 
             var connectionString = $"server={opts.Url};database={opts.Name};uid={opts.Username};pwd={opts.Password};ssl-mode=none";
 
-            switch (opts.Environment)
+            switch (gameContext)
             {//.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).
                 case GameContexts.LIVE_MAIN:
                     throw new NotImplementedException("A connection to live is not yet supported");
@@ -79,6 +79,18 @@ namespace WcData.Microsoft.Extensions.DependencyInjection
             
             return services;
         }
+
+        public static IServiceCollection AddSandbox2(this IServiceCollection services, Action<GameContextOptions> optionsAction)
+        {
+            return services.AddGameContext(GameContexts.SANDBOX2, optionsAction);
+        }
+
+        public static IServiceCollection AddLiveSlave(this IServiceCollection services, Action<GameContextOptions> optionsAction)
+        {
+            return services.AddGameContext(GameContexts.LIVE_SLAVE, optionsAction);
+        }
+
+
 
         public static IServiceCollection AddSnowflake(this IServiceCollection services, Action<SnowflakeOptions> optionsAction)
         {

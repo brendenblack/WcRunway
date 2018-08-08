@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using WcCore.Domain;
 using WcCore.Domain.Offers;
 
 namespace WcData.Implementation.MySql
@@ -10,8 +11,8 @@ namespace WcData.Implementation.MySql
     {
         public static void DefineModel(ModelBuilder builder)
         {
+            #region Offer
             builder.Entity<Offer>().ToTable("offers");
-
             builder.Entity<Offer>().HasKey(o => o.Id);
 
             builder.Entity<Offer>().Ignore(o => o.StartTime);
@@ -42,6 +43,54 @@ namespace WcData.Implementation.MySql
             builder.Entity<Offer>().Property(o => o.Deleted).HasColumnName("is_deleted");
             builder.Entity<Offer>().Property(o => o.Enabled).HasColumnName("is_enabled");
             builder.Entity<Offer>().Property(o => o.Prerequisite).HasColumnName("pre_req");
+            #endregion
+
+            #region User
+            builder.Entity<User>().ToTable("users");
+            builder.Entity<User>().HasKey(u => u.Id);
+
+            builder.Entity<User>().Ignore(u => u.AddTime);
+            builder.Entity<User>().Ignore(u => u.LastSeen);
+            builder.Entity<User>().Ignore(u => u.UnlockedUnits);
+            builder.Entity<User>().Ignore(u => u.Country);
+            builder.Entity<User>().Ignore(u => u.Gender);
+
+            builder.Entity<User>().Property(u => u.Id).HasColumnName("userid");
+            builder.Entity<User>().Property(u => u.KixeyeId).HasColumnName("kxid");
+            builder.Entity<User>().Property(u => u.FacebookId).HasColumnName("fbid");
+            builder.Entity<User>().Property(u => u.AddTimeEpochSeconds).HasColumnName("addtime");
+            builder.Entity<User>().Property(u => u.LastSeenEpochSeconds).HasColumnName("seentime");
+            builder.Entity<User>().Property(u => u.FirstName).HasColumnName("first_name");
+            builder.Entity<User>().Property(u => u.LastName).HasColumnName("last_name");
+            builder.Entity<User>().Property(u => u.EmailAddress).HasColumnName("email");
+            #endregion
+
+            #region Unit
+            builder.Entity<Unit>().Ignore(u => u.Levels);
+            #endregion
+
+
+            #region UserUnit
+            builder.Entity<UserUnit>().ToTable("user_academy");
+            builder.Entity<UserUnit>().HasKey(u => u.Id);
+            builder.Entity<UserUnit>()
+                .HasOne(u => u.User)
+                .WithMany(u => u.UnlockedUnits)
+                .HasForeignKey(u => u.UserId);
+            builder.Entity<UserUnit>()
+                .HasOne(u => u.Unit)
+                .WithMany()
+                .HasForeignKey(u => u.UnitId);
+
+            builder.Entity<UserUnit>().Ignore(u => u.Created);
+
+            builder.Entity<UserUnit>().Property(u => u.UserId).HasColumnName("userid");
+            builder.Entity<UserUnit>().Property(u => u.Level).HasColumnName("level");
+            builder.Entity<UserUnit>().Property(u => u.Skin).HasColumnName("skin");
+            builder.Entity<UserUnit>().Property(u => u.Status).HasColumnName("status");
+            builder.Entity<UserUnit>().Property(u => u.UnitId).HasColumnName("type");
+            builder.Entity<UserUnit>().Property(u => u.CreatedEpochSeconds).HasColumnName("created");
+            #endregion
         }
     }
 }

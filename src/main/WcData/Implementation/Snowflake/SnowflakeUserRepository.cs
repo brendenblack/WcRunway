@@ -44,9 +44,9 @@ namespace WcCore.Infrastructure.Data.Users
                     user.Id = reader.GetInt32(0);
                     user.EmailAddress = reader.GetString(3);
 
-                    user.AddTime = new DateTime(reader.GetInt32(1));
-                    user.LastSeenTime = new DateTime(reader.GetInt32(2));
-                    user.TimePlayed = new TimeSpan(reader.GetInt32(4));
+                    user.AddTimeEpochSeconds = reader.GetInt32(1);
+                    user.LastSeenEpochSeconds = reader.GetInt32(2);
+                    //user.TimePlayed = new TimeSpan(reader.GetInt32(4));
 
                     user.Country = reader.GetString(5) ?? "unknown";
                     user.Gender = reader.GetString(6) ?? "unknown";
@@ -78,9 +78,9 @@ namespace WcCore.Infrastructure.Data.Users
                     user.Id = reader.GetInt32(0);
                     user.EmailAddress = reader.GetString(3);
 
-                    user.AddTime = new DateTime(reader.GetInt32(1));
-                    user.LastSeenTime = new DateTime(reader.GetInt32(2));
-                    user.TimePlayed = new TimeSpan(reader.GetInt32(4));
+                    user.AddTimeEpochSeconds = reader.GetInt32(1);
+                    user.LastSeenEpochSeconds = reader.GetInt32(2);
+                    //user.TimePlayed = new TimeSpan(reader.GetInt32(4));
 
                     user.Country = reader.GetString(5) ?? "unknown";
                     user.Gender = reader.GetString(6) ?? "unknown";

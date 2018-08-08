@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,8 @@ namespace WcGraph.Infrastructure
         {
             var settings = new JsonSerializerSettings
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
             string json = JsonConvert.SerializeObject(source, settings);

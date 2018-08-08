@@ -176,6 +176,7 @@ namespace WcData.Implementation.Sheets
                     level.UpgradeCostOil = row.ReadColumnAsInteger(COL_UPGRADE_COST_OIL);
                     level.UpgradeCostThorium = row.ReadColumnAsInteger(COL_UPGRADE_COST_THORIUM);
                     level.UpgradeCostGold = row.ReadColumnAsInteger(COL_UPGRADE_COST_GOLD);
+                    level.UpgradeTimeSeconds = row.ReadColumnAsInteger(COL_UPGRADE_TIME);
 
                     var upgradeSku = row.ReadColumnAsString(COL_UPGRADE_SKU);
                     var upgradeSkuCost = row.ReadColumnAsString(COL_UPGRADE_SKU_COST);

@@ -7,9 +7,6 @@ namespace WcData.Microsoft.Extensions.DependencyInjection
 {
     public class GameContextOptions
     {
-
-        public GameContexts Environment { get; set; }
-
         public string Url { get; set; } 
         public string ConnectionString
         {

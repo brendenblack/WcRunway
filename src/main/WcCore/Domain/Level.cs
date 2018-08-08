@@ -18,10 +18,22 @@ namespace WcCore.Domain
         public int UpgradeCostThorium { get; set; } = -1;
         public int UpgradeCostGold { get; set; } = -1;
 
+        public int UpgradeTimeSeconds { get; set; } = 0;
+
+        public TimeSpan UpgradeTime
+        {
+            get
+            {
+                return TimeSpan.FromSeconds(UpgradeTimeSeconds);
+            }
+            set
+            {
+                UpgradeTimeSeconds = Convert.ToInt32(value.TotalSeconds);
+            }
+        }
+
         public LevelUpgradeCost UpgradeCost { get; set; }
 
-
-        public int UpgradeAcademyLevel { get; set; }
 
 
         public string UpgradeSku { get; set; }
@@ -31,8 +43,6 @@ namespace WcCore.Domain
         {
             this.UpgradeSkuCosts.Add(new UpgradeSkuCost(sku, quantity));
         }
-
-        private int UpgradeTime { get; set; }
         
     }
 }

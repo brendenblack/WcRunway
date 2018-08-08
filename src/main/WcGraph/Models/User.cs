@@ -7,16 +7,16 @@ namespace WcGraph.Models
 {
     public class User
     {
-        [JsonProperty("UserID")]
+        [JsonProperty("id")]
         public int Id { get; set; }
 
-        [JsonProperty("KXID", NullValueHandling = NullValueHandling.Ignore)]
-        public int KXID { get; set; }
+        [JsonProperty("kxid", NullValueHandling = NullValueHandling.Ignore)]
+        public string KXID { get; set; }
 
-        [JsonProperty("FBID", NullValueHandling = NullValueHandling.Ignore)]
-        public int FBID { get; set; }
+        [JsonProperty("fbid", NullValueHandling = NullValueHandling.Ignore)]
+        public long? FBID { get; set; }
 
-        [JsonProperty("AddTime")]
+        [JsonProperty("addtime")]
         public long AddTime { get; set; }
         
         [JsonIgnore]
