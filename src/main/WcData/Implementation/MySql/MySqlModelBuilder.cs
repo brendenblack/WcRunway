@@ -91,6 +91,24 @@ namespace WcData.Implementation.MySql
             builder.Entity<UserUnit>().Property(u => u.UnitId).HasColumnName("type");
             builder.Entity<UserUnit>().Property(u => u.CreatedEpochSeconds).HasColumnName("created");
             #endregion
+
+            #region UserTopup
+            builder.Entity<UserTopup>().ToTable("user_topups");
+            builder.Entity<UserTopup>().HasKey(ut => ut.Id);
+            builder.Entity<UserTopup>()
+                .HasOne(ut => ut.User)
+                .WithMany()
+                .HasForeignKey(ut => ut.UserId);
+
+            builder.Entity<UserTopup>().Ignore(ut => ut.UpdateTime);
+            builder.Entity<UserTopup>().Ignore(ut => ut.AddTime);
+
+            builder.Entity<UserTopup>().Property(ut => ut.AddTimeEpochSeconds).HasColumnName("addtime");
+            builder.Entity<UserTopup>().Property(ut => ut.UpdateTimeEpochSeconds).HasColumnName("updatetime");
+            builder.Entity<UserTopup>().Property(ut => ut.Stage).HasColumnName("stage");
+            builder.Entity<UserTopup>().Property(ut => ut.Amount).HasColumnName("procamount");
+            //builder.Entity<UserTopup>().Property(ut => ut.AddTimeEpochSeconds).HasColumnName("add_time");
+            #endregion
         }
     }
 }

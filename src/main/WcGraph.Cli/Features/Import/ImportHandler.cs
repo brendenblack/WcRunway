@@ -20,9 +20,7 @@ namespace WcGraph.Cli.Features.Import
         private readonly LiveSlaveContext db;
 
 
-        private readonly long LAST_SEEN_CUTOFF = 1525882590; // TODO: dynamically calculate
-
-
+        private readonly long LAST_SEEN_CUTOFF = (DateTimeOffset.Now - TimeSpan.FromDays(7)).ToUnixTimeSeconds();
 
         public ImportHandler(ILogger<ImportHandler> logger, IGameData gameData, LiveSlaveContext db)
         {
@@ -81,7 +79,7 @@ namespace WcGraph.Cli.Features.Import
         {
             if (importLevels)
             {
-
+                // TODO
             }
 
 
@@ -161,18 +159,20 @@ namespace WcGraph.Cli.Features.Import
 
         }
 
+        // TODO: break ownership
         public void ImportUnitOwnership()
         {
             var timer = new Stopwatch();
-            
+
+            var totalSet = this.db.UserAcademy
+                .AsNoTracking()
+                .Where(u => u.User.LastSeenEpochSeconds >= LAST_SEEN_CUTOFF)
+                .Select(u => new { u.UserId, u.UnitId })
+                .GroupBy(u => u.UserId)
+                .ToDictionary(u => u.Key, u => u.ToList());
 
             foreach (var unit in this.gameData.Units.Reverse())
             {
-                if (unit.Name == "Rifleman" || unit.Name == "Heavy Gunner")
-                {
-                    continue;
-                }
-
                 timer.Start();
                 Console.WriteLine("Beginning query for owners of {0}", unit.Name);
                 this.db.Database.SetCommandTimeout(180);
