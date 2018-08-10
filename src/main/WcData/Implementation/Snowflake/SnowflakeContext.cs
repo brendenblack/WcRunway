@@ -1,11 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Snowflake.Data.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using WcCore.Domain.Battles;
+using WcData.Implementation.Snowflake.Extensions;
 using WcData.Snowflake;
 using WcData.Snowflake.Models;
+using WcData.Snowflake.Models.Attack;
 
 namespace WcData.Implementation.Snowflake
 {
@@ -116,7 +120,60 @@ namespace WcData.Implementation.Snowflake
             throw new NotImplementedException();
         }
 
-        public IEnumerable<PveAttack> FetchAttacksByUser(int userId, DateTimeOffset from, DateTimeOffset to)
+        public IEnumerable<AttackBlob> FetchAttacksByUser(int userId, DateTimeOffset from, DateTimeOffset to)
+        {
+            var attacks = new List<AttackBlob>();
+            var query = new StringBuilder()
+                .AppendLine("SELECT SRC FROM wc.public.raw_para_json")
+                .AppendLine("  WHERE game_id = 'WC'")
+                .AppendLine("    AND env = 'prod'")
+                .AppendLine("    AND game_user_id = (?)")
+                //.AppendLine("    AND dt_pst BETWEEN (?) AND (?)")
+                .AppendLine("    AND dt_pst BETWEEN '2018-08-07' AND '2018-08-09'")
+                .AppendLine("    AND tag = 'attack'")
+                .AppendLine("    AND SRC:enemy_type = 'PVE';");
+
+            using (IDbConnection conn = new SnowflakeDbConnection())
+            {
+                log.LogDebug("Opening connection to Snowflake");
+                conn.ConnectionString = this.connection.ConnectionString;
+                conn.Open();
+
+                log.LogDebug("Creating command");
+                IDbCommand cmd = conn.CreateCommand();
+                cmd.CommandText = query.ToString();
+
+                var userIdParameter = cmd.CreateParameter();
+                userIdParameter.ParameterName = "1";
+                userIdParameter.Value = userId;
+                userIdParameter.DbType = DbType.Int32;
+                cmd.Parameters.Add(userIdParameter);
+
+                //var fromParameter = cmd.CreateParameter();
+                //fromParameter.ParameterName = "2";
+                //fromParameter.Value = from.Date.Date;
+                //fromParameter.DbType = DbType.Date;
+                //cmd.Parameters.Add(fromParameter);
+
+                //var toParameter = cmd.CreateParameter();
+                //toParameter.ParameterName = "3";
+                //toParameter.Value = to.Date.Date; // to.ToString("yyyy-mm-dd");
+                //toParameter.DbType = DbType.Date;
+                //cmd.Parameters.Add(toParameter);
+
+                log.LogDebug("Executing command");
+                IDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var attack = JsonConvert.DeserializeObject<AttackBlob>(reader.GetString(0));
+
+                    attacks.Add(attack);
+                }
+            }
+            return attacks;
+        }
+
+        public IEnumerable<PveAttack> FetchAttacksByUser2(int userId, DateTimeOffset from, DateTimeOffset to)
         {
             var attacks = new List<PveAttack>();
             var query = new StringBuilder()
@@ -134,19 +191,28 @@ namespace WcData.Implementation.Snowflake
                 .AppendLine("    SRC:missiles_shot_down,")
                 .AppendLine("    SRC:defender_level,")
                 .AppendLine("    SRC:defender_location,")
+                .AppendLine("    parse_json(SRC:attacker_platoon_metadata) as platoon_positioning,")
+                .AppendLine("    parse_json(SRC:units_deployed) as units_deployed")
+                .AppendLine("    SRC:metal,")
+                .AppendLine("    SRC:oil,")
+                .AppendLine("    SRC:thorium,")
+                .AppendLine("    CASE WHEN SRC:win = '1' THEN 'win' WHEN SRC:retreat = '1' THEN 'retreat' ELSE 'defeat' END as result")
                 .AppendLine("  FROM wc.public.raw_para_json")
                 .AppendLine("  WHERE game_id = 'WC'")
                 .AppendLine("    AND env = 'prod'")
                 .AppendLine("    AND game_user_id = (?)")
-                .AppendLine("    AND dt_pst BETWEEN '(?)' AND '(?)'")
-                .AppendLine("    AND tag = attack")
+                //.AppendLine("    AND dt_pst BETWEEN (?) AND (?)")
+                .AppendLine("    AND dt_pst BETWEEN '2018-08-07' AND '2018-08-09'")
+                .AppendLine("    AND tag = 'attack'")
                 .AppendLine("    AND SRC:enemy_type = 'PVE';");
 
             using (IDbConnection conn = new SnowflakeDbConnection())
             {
+                log.LogDebug("Opening connection to Snowflake");
                 conn.ConnectionString = this.connection.ConnectionString;
                 conn.Open();
 
+                log.LogDebug("Creating command");
                 IDbCommand cmd = conn.CreateCommand();
                 cmd.CommandText = query.ToString();
 
@@ -156,37 +222,60 @@ namespace WcData.Implementation.Snowflake
                 userIdParameter.DbType = DbType.Int32;
                 cmd.Parameters.Add(userIdParameter);
 
-                var fromParameter = cmd.CreateParameter();
-                fromParameter.ParameterName = "2";
-                fromParameter.Value = from.ToString("yyyy-mm-dd");
-                fromParameter.DbType = DbType.Date;
-                cmd.Parameters.Add(fromParameter);
+                //var fromParameter = cmd.CreateParameter();
+                //fromParameter.ParameterName = "2";
+                //fromParameter.Value = from.Date.Date;
+                //fromParameter.DbType = DbType.Date;
+                //cmd.Parameters.Add(fromParameter);
 
-                var toParameter = cmd.CreateParameter();
-                toParameter.ParameterName = "2";
-                toParameter.Value = to.ToString("yyyy-mm-dd");
-                toParameter.DbType = DbType.Date;
-                cmd.Parameters.Add(toParameter);
+                //var toParameter = cmd.CreateParameter();
+                //toParameter.ParameterName = "3";
+                //toParameter.Value = to.Date.Date; // to.ToString("yyyy-mm-dd");
+                //toParameter.DbType = DbType.Date;
+                //cmd.Parameters.Add(toParameter);
 
+                log.LogDebug("Executing command");
                 IDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     log.LogTrace("Consuming line");
 
-                    var sector = reader.GetInt32(1);
+                    var sector = reader.ReadColumnAsInt(1);
+                    var baseType = reader.ReadColumnAsString(2);
+                    var enemyBase = PveBase.OfType(baseType)
+                        .InSector(sector)
+                        .AtCoordinates(reader.ReadColumnAsInt(5), reader.ReadColumnAsInt(6))
+                        .AtLevel(reader.ReadColumnAsInt(11))
+                        .Build();
+
+                    
                     var attack = new PveAttack
                     {
-                        Id = reader.GetString(0),
+                        Id = reader.ReadColumnAsString(0),
                         AttackerId = userId,
-                        AttackerLocation = new Location(sector, reader.GetInt32(3), reader.GetInt32(4)),
-                        DefenderLocation = new Location(sector, reader.GetInt32(5), reader.GetInt32(6)),
-                        DamageToAttacker = reader.GetInt64(7),
-                        DamageToDefender = reader.GetInt64(8),
-                        MissilesUsed = reader.GetInt32(9),
-                        MissilesShotDown = reader.GetInt32(10),
-                        DefenderLevel = reader.GetInt32(11),
-                        DefenderType = reader.GetString(12)
+                        AttackerLocation = new Location(sector, reader.ReadColumnAsInt(3), reader.ReadColumnAsInt(4)),
+                        DefenderLocation = new Location(sector, reader.ReadColumnAsInt(5), reader.ReadColumnAsInt(6)),
+                        DamageToAttacker = reader.ReadColumnAsLong(7),
+                        DamageToDefender = reader.ReadColumnAsLong(8),
+                        MissilesUsed = reader.ReadColumnAsInt(9),
+                        MissilesShotDown = reader.ReadColumnAsInt(10),
+                        DefenderLevel = reader.ReadColumnAsInt(11),
+                        DefenderType = reader.ReadColumnAsString(2),
+                        MetalClaimed = reader.ReadColumnAsInt(15),
+                        OilClaimed = reader.ReadColumnAsInt(16),
+                        ThoriumClaimed = reader.ReadColumnAsInt(17)
                     };
+
+
+                    var platoonMetaJson = reader.GetString(13); //.Replace("\n", "");
+                    var platoonPositions = JsonConvert.DeserializeObject<List<PlatoonAttackStagingLocation>>(platoonMetaJson);
+                    //attack.AttackingPlatoonLocations.AddRange(platoonPositions);
+
+                    var unitsDeployedJson = reader.GetString(14);
+                    var unitsDeployed = JsonConvert.DeserializeObject<List<DeployedUnit>>(unitsDeployedJson);
+                    attack.UnitsDeployed.AddRange(unitsDeployed);
+
+
                     attacks.Add(attack);
                 }
             }

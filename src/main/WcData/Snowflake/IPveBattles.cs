@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using WcData.Snowflake.Models;
+using WcData.Snowflake.Models.Attack;
 
 namespace WcData.Snowflake
 {
@@ -9,6 +10,6 @@ namespace WcData.Snowflake
     {
         IEnumerable<PveAttack> FetchAttacks(string baseType, int baseLevel);
 
-        IEnumerable<PveAttack> FetchAttacksByUser(int userId, DateTimeOffset from, DateTimeOffset to);
+        IEnumerable<AttackBlob> FetchAttacksByUser(int userId, DateTimeOffset from, DateTimeOffset to);
     }
 }

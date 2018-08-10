@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using WcData.Snowflake.Models.Attack;
 
 namespace WcData.Snowflake.Models
 {
@@ -32,6 +34,22 @@ namespace WcData.Snowflake.Models
 
         public int NumberOfSquadsRetreated { get; set; }
 
+        public int MetalClaimed { get; set; }
+        public int OilClaimed { get; set; }
+        public int ThoriumClaimed { get; set; }
 
+        public Dictionary<int, int> BaseDefenders { get; } = new Dictionary<int, int>();
+
+        public List<PlatoonAttackStagingLocation> AttackingPlatoonLocations { get; } = new List<PlatoonAttackStagingLocation>();
+
+        public string GetPlatoonIdAtHex(int hex)
+        {
+            return AttackingPlatoonLocations
+                .Where(pl => pl.Hex == hex)
+                .Select(pl => pl.PlatoonId)
+                .FirstOrDefault();
+        }
+
+        public List<DeployedUnit> UnitsDeployed { get; set; } = new List<DeployedUnit>();
     }
 }

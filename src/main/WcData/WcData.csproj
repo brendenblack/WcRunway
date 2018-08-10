@@ -16,8 +16,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Snowflake.Data" Version="1.0.3" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Implementation\Snowflake\Extensions\" />
-  </ItemGroup>
 </Project>

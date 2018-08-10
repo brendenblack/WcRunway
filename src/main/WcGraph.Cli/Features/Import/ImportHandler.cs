@@ -169,12 +169,13 @@ namespace WcGraph.Cli.Features.Import
 
         }
 
+        // TODO: how to parameterize this
         public void ImportBattles()
         {
-            var attacks = pve.FetchAttacksByUser(5, DateTimeOffset.Now, DateTimeOffset.Now);
+            var attacks = pve.FetchAttacksByUser(34359485, DateTimeOffset.Now.AddDays(-2), DateTimeOffset.Now);
             foreach (var attack in attacks)
             {
-                logger.LogInformation(attack.Id);
+                
             }
         }
 
