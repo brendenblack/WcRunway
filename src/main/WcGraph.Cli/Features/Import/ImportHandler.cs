@@ -175,7 +175,8 @@ namespace WcGraph.Cli.Features.Import
             var attacks = pve.FetchAttacksByUser(34359485, DateTimeOffset.Now.AddDays(-2), DateTimeOffset.Now);
             foreach (var attack in attacks)
             {
-                
+                // TODO: map to graph objects
+
             }
         }
 
