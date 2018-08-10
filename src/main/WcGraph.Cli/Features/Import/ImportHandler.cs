@@ -9,6 +9,7 @@ using System.Text;
 using System.Timers;
 using WcData.GameContext;
 using WcData.Sheets;
+using WcData.Snowflake;
 using WcGraph.Infrastructure;
 
 namespace WcGraph.Cli.Features.Import
@@ -18,15 +19,15 @@ namespace WcGraph.Cli.Features.Import
         private readonly ILogger<ImportHandler> logger;
         private readonly IGameData gameData;
         private readonly LiveSlaveContext db;
-
-
+        private readonly IPveBattles pve;
         private readonly long LAST_SEEN_CUTOFF = (DateTimeOffset.Now - TimeSpan.FromDays(7)).ToUnixTimeSeconds();
 
-        public ImportHandler(ILogger<ImportHandler> logger, IGameData gameData, LiveSlaveContext db)
+        public ImportHandler(ILogger<ImportHandler> logger, IGameData gameData, LiveSlaveContext db, IPveBattles pve)
         {
             this.logger = logger;
             this.gameData = gameData;
             this.db = db;
+            this.pve = pve;
         }
 
         public int Execute(ImportOptions opts)
@@ -70,6 +71,10 @@ namespace WcGraph.Cli.Features.Import
                 }
             }
 
+            if (opts.ShouldImportPveAttacks)
+            {
+                ImportBattles();
+            }
 
             return 0;
 
@@ -157,6 +162,20 @@ namespace WcGraph.Cli.Features.Import
             timer.Stop();
             Console.WriteLine("Insert finished after {0}", timer.Elapsed);
 
+        }
+
+        public void ImportBases()
+        {
+
+        }
+
+        public void ImportBattles()
+        {
+            var attacks = pve.FetchAttacksByUser(5, DateTimeOffset.Now, DateTimeOffset.Now);
+            foreach (var attack in attacks)
+            {
+                logger.LogInformation(attack.Id);
+            }
         }
 
         // TODO: break ownership

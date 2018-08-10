@@ -22,5 +22,8 @@ namespace WcGraph.Cli.Features.Import
         
         [Option('o', Required = false, Default = false)]
         public bool ShouldImportUnitOwnership { get; set; }
+
+        [Option('a', Required = false, Default = false)]
+        public bool ShouldImportPveAttacks { get; set; }
     }
 }

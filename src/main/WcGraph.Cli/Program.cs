@@ -71,6 +71,12 @@ namespace WcGraph.Cli
             // Add connection to game data stored in Google Sheets
             services.AddSheets(opts => { opts.ClientSecretPath = Path.GetFullPath("client_secret.json"); });
 
+            services.AddSnowflake(opts =>
+            {
+                opts.Account = config["data:snowflake:account"];
+                opts.Username = config["data:snowflake:username"];
+                opts.Password = config["data:snowflake:password"];
+            });
 
             services.AddTransient<ImportHandler>();
         }

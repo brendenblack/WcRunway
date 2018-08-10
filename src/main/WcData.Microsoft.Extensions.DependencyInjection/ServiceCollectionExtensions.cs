@@ -10,7 +10,9 @@ using WcData.GameContext;
 using WcData.Implementation;
 using WcData.Implementation.MySql;
 using WcData.Implementation.Sheets;
+using WcData.Implementation.Snowflake;
 using WcData.Sheets;
+using WcData.Snowflake;
 
 namespace WcData.Microsoft.Extensions.DependencyInjection
 {
@@ -51,7 +53,7 @@ namespace WcData.Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Adds a connection to a MySql game database. Can be added more than once to add different environments
+        /// Adds a connection to a MySql game database. Can be added more than once to add different environments. Prefer <see cref="AddSandbox2(IServiceCollection, Action{GameContextOptions})"/> and <see cref="AddLiveSlave(IServiceCollection, Action{GameContextOptions})"/>
         /// </summary>
         /// <param name="services"></param>
         /// <param name="optionsAction"></param>
@@ -80,11 +82,23 @@ namespace WcData.Microsoft.Extensions.DependencyInjection
             return services;
         }
 
+        /// <summary>
+        /// Creates a connection to the Sandbox2 MySql database and allows use of the <see cref="ISandbox2Context"/> interface
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="optionsAction"></param>
+        /// <returns></returns>
         public static IServiceCollection AddSandbox2(this IServiceCollection services, Action<GameContextOptions> optionsAction)
         {
             return services.AddGameContext(GameContexts.SANDBOX2, optionsAction);
         }
 
+        /// <summary>
+        /// Creates a connection to the Live Slave MySql database and allows use of the <see cref="ILiveSlaveContext"/> interface
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="optionsAction"></param>
+        /// <returns></returns>
         public static IServiceCollection AddLiveSlave(this IServiceCollection services, Action<GameContextOptions> optionsAction)
         {
             return services.AddGameContext(GameContexts.LIVE_SLAVE, optionsAction);
@@ -96,6 +110,11 @@ namespace WcData.Microsoft.Extensions.DependencyInjection
         {
             var opts = new SnowflakeOptions();
             optionsAction.Invoke(opts);
+
+            var conn = new SnowflakeConnectionDetails(opts.Account, opts.Username, opts.Password, opts.Database, opts.Schema);
+            services.AddSingleton<SnowflakeConnectionDetails>(conn);
+            services.AddTransient<IPveBattles, SnowflakeContext>();
+
 
             return services;
         }
