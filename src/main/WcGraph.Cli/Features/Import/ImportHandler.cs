@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Neo4j.Driver.V1;
 using System;
@@ -11,20 +13,23 @@ using WcData.GameContext;
 using WcData.Sheets;
 using WcData.Snowflake;
 using WcGraph.Infrastructure;
+using WcGraph.Models;
 
 namespace WcGraph.Cli.Features.Import
 {
     public class ImportHandler
     {
         private readonly ILogger<ImportHandler> logger;
+        private readonly IMapper mapper;
         private readonly IGameData gameData;
         private readonly LiveSlaveContext db;
         private readonly IPveBattles pve;
         private readonly long LAST_SEEN_CUTOFF = (DateTimeOffset.Now - TimeSpan.FromDays(7)).ToUnixTimeSeconds();
 
-        public ImportHandler(ILogger<ImportHandler> logger, IGameData gameData, LiveSlaveContext db, IPveBattles pve)
+        public ImportHandler(ILogger<ImportHandler> logger, IMapper mapper, IGameData gameData, LiveSlaveContext db, IPveBattles pve)
         {
             this.logger = logger;
+            this.mapper = mapper;
             this.gameData = gameData;
             this.db = db;
             this.pve = pve;
@@ -172,10 +177,39 @@ namespace WcGraph.Cli.Features.Import
         // TODO: how to parameterize this
         public void ImportBattles()
         {
-            var attacks = pve.FetchAttacksByUser(34359485, DateTimeOffset.Now.AddDays(-2), DateTimeOffset.Now);
+            var userId = 34359485; // TODO: test value
+
+            var user = db.Users.FirstOrDefault(u => u.Id == userId);
+
+            var user2 = db.Users
+                .Where(u => u.Id == userId)
+                .ProjectTo<User>();
+
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"Unable to find a user with id {userId}");
+            }
+
+            var attacks = pve.FetchAttacksByUser(user.Id, DateTimeOffset.Now.AddDays(-2), DateTimeOffset.Now);
             foreach (var attack in attacks)
             {
-                // TODO: map to graph objects
+                var baseInstance = mapper.Map<BaseInstance>(attack);
+                //var defenderInstance = new BaseInstance
+                //{
+                //    Base = new Base
+                //    {
+                //        Level = attack.DefenderLevel,
+                //        Type = attack.EnemyType
+                //    },
+                //    Sector = attack.Sector,
+                //    XCoordinate = attack.DefenderX,
+                //    YCoordinate = attack.DefenderY
+                //};
+
+                var battle = mapper.Map<PveBattle>(attack);
+
+
 
             }
         }

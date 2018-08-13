@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using AutoMapper;
+using CommandLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -58,6 +59,8 @@ namespace WcGraph.Cli
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             services.AddLogging((builder) => builder.SetMinimumLevel(LogLevel.Trace));
+
+            services.AddAutoMapper(typeof(Program));
 
             // Add Live - Slave database connection
             services.AddLiveSlave(opt =>

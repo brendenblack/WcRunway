@@ -42,6 +42,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcGraph", "src\main\WcGraph
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcGraph.Cli", "src\main\WcGraph.Cli\WcGraph.Cli.csproj", "{E4F78F01-768F-41D7-B6FF-3A11E60906F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcGraph.CliTests", "src\test\WcGraph.CliTests\WcGraph.CliTests.csproj", "{A74E3D4E-D8B1-4376-83F5-1AC0609C8266}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,10 @@ Global
 		{E4F78F01-768F-41D7-B6FF-3A11E60906F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4F78F01-768F-41D7-B6FF-3A11E60906F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4F78F01-768F-41D7-B6FF-3A11E60906F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A74E3D4E-D8B1-4376-83F5-1AC0609C8266}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A74E3D4E-D8B1-4376-83F5-1AC0609C8266}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A74E3D4E-D8B1-4376-83F5-1AC0609C8266}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A74E3D4E-D8B1-4376-83F5-1AC0609C8266}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,6 +123,7 @@ Global
 		{C4F57716-E06C-4FCB-8592-D14818A0FBA6} = {D6798101-4FA3-42EB-8CA6-D979EF03AFC0}
 		{BDC5E65A-590F-4891-B726-7475852285E7} = {C4F57716-E06C-4FCB-8592-D14818A0FBA6}
 		{E4F78F01-768F-41D7-B6FF-3A11E60906F1} = {C4F57716-E06C-4FCB-8592-D14818A0FBA6}
+		{A74E3D4E-D8B1-4376-83F5-1AC0609C8266} = {C4F57716-E06C-4FCB-8592-D14818A0FBA6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44173A92-FD47-4691-AB41-2E7EC6F300E6}
