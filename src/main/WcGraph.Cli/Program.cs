@@ -3,11 +3,13 @@ using CommandLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Neo4j.Driver.V1;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using WcData.Microsoft.Extensions.DependencyInjection;
 using WcGraph.Cli.Features.Import;
+using WcGraph.Data;
 
 namespace WcGraph.Cli
 {
@@ -58,7 +60,7 @@ namespace WcGraph.Cli
         {
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
-            services.AddLogging((builder) => builder.SetMinimumLevel(LogLevel.Trace));
+            services.AddLogging((builder) => builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace));
 
             services.AddAutoMapper(typeof(Program));
 
@@ -80,6 +82,11 @@ namespace WcGraph.Cli
                 opts.Username = config["data:snowflake:username"];
                 opts.Password = config["data:snowflake:password"];
             });
+
+
+            var driver = GraphDatabase.Driver("bolt://127.0.0.1:7687", AuthTokens.Basic("neo4j", "password"));
+            services.AddTransient<IDriver>(d => driver);
+            services.AddTransient<PveBattleRepository>();
 
             services.AddTransient<ImportHandler>();
         }

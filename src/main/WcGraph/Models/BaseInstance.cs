@@ -13,5 +13,13 @@ namespace WcGraph.Models
         public int XCoordinate { get; set; }
         
         public int YCoordinate { get; set; }
+
+        public string Id
+        {
+            get
+            {
+                return $"{Base.Type}-{Base.Level}-{Sector}-{XCoordinate}-{YCoordinate}";
+            }
+        }
     }
 }

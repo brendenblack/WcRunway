@@ -16,5 +16,21 @@ namespace WcData.GameContext.Models
         public int UserId { get; set; }
 
         public User User { get; set; }
+
+        public int Level { get; set; }
+
+        public int Skin { get; set; }
+
+        public int Status { get; set; }
+
+        public long CreatedEpochSeconds { get; set; } = 0;
+
+        public DateTimeOffset Created
+        {
+            get
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(CreatedEpochSeconds).ToOffset(TimeSpan.FromHours(-7));
+            }
+        }
     }
 }

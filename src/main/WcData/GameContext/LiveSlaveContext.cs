@@ -2,8 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WcCore.Domain;
-using WcCore.Domain.Offers;
+using WcData.GameContext.Models;
 using WcData.Implementation.MySql;
 
 namespace WcData.GameContext
@@ -14,7 +13,7 @@ namespace WcData.GameContext
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            MySqlModelBuilder.DefineModel(builder);
+            // MySqlModelBuilder.DefineModel(builder);
         }
 
         public DbSet<Offer> Offers { get; set; }

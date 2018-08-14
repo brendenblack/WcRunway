@@ -194,7 +194,7 @@ namespace WcData.Snowflake.Models.Attack
         public string Type { get; set; }
 
         [JsonProperty("u")]
-        public string U { get; set; }
+        public int UserId { get; set; }
 
         [JsonProperty("units_deployed")]
         [JsonConverter(typeof(EmbeddedJsonConverter))]

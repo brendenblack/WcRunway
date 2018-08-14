@@ -9,7 +9,7 @@ namespace WcData.GameContext
 
         DbSet<User> Users { get; }
 
-        DbSet<Unit> Units { get; }
+        // DbSet<Unit> Units { get; }
 
         DbSet<UserUnit> UserAcademy { get; }
     }

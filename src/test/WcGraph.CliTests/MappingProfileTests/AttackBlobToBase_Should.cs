@@ -27,7 +27,6 @@ namespace WcGraph.CliTests.MappingProfileTests
             var result = mapper.Map<Base>(blob);
 
             result.Level.ShouldBe(blob.DefenderLevel);
-            result.Type.ShouldBe(blob.EnemyType);
         }
 
         [Fact]

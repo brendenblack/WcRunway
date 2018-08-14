@@ -15,11 +15,15 @@ namespace WcGraph.CliTests.MappingProfileTests
             Blob = new AttackBlob
             {
                 DefenderLevel = 100,
-                EnemyType = "test_enemy"
+                EnemyType = "test_enemy",
+                AttackerRubiSessions = 2,
+                AttackerRubiDuration = 12345,
+                BattleDuration = 123456,
+                RxTs = DateTimeOffset.FromUnixTimeSeconds(1533759906).ToOffset(TimeSpan.FromHours(-7))
             };
 
-            Mapper.Initialize(cfg => cfg.AddProfile(new MappingProfile()));
-            mapper = Mapper.Instance;
+            var mapperConfig = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfile()));
+            mapper = new Mapper(mapperConfig);
         }
 
 

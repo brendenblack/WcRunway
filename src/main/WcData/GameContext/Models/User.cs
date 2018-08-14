@@ -14,7 +14,7 @@ namespace WcData.GameContext.Models
         public int Id { get; set; }
 
         [Column("fbid")]
-        public long FacebookId { get; set; }
+        public long? FacebookId { get; set; }
 
         [Column("kxid")]
         public string KixeyeId { get; set; }
@@ -52,6 +52,13 @@ namespace WcData.GameContext.Models
 
         [Column("last_name")]
         public string LastName { get; set; }
+
+     
+
+
+
+
+
 
     }
 }

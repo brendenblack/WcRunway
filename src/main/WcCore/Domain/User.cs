@@ -8,7 +8,7 @@ namespace WcCore.Domain
     {
         public int Id { get; set; }
 
-        public long FacebookId { get; set; }
+        public long? FacebookId { get; set; }
         public string KixeyeId { get; set; }
 
         public string EmailAddress { get; set; }

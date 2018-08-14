@@ -12,6 +12,7 @@ using System.Timers;
 using WcData.GameContext;
 using WcData.Sheets;
 using WcData.Snowflake;
+using WcGraph.Data;
 using WcGraph.Infrastructure;
 using WcGraph.Models;
 
@@ -129,10 +130,10 @@ namespace WcGraph.Cli.Features.Import
                 .Select(u => new Models.User
                 {
                     Id = u.Id,
-                    FBID = u.FacebookId,
-                    KXID = u.KixeyeId,
-                    AddTime = u.AddTimeEpochSeconds,
-                    EmailAddress = u.EmailAddress
+                    //FBID = u.FacebookId,
+                    //KXID = u.KixeyeId,
+                    //AddTime = u.AddTimeEpochSeconds,
+                    //EmailAddress = u.EmailAddress
                 })
                 .AsNoTracking()
                 .ToList();
@@ -179,14 +180,15 @@ namespace WcGraph.Cli.Features.Import
         {
             var userId = 34359485; // TODO: test value
 
-            var user = db.Users.FirstOrDefault(u => u.Id == userId);
+           var user = db.Users.FirstOrDefault(u => u.Id == userId);
 
             var user2 = db.Users
                 .Where(u => u.Id == userId)
-                .ProjectTo<User>();
+                .ProjectTo<User>(mapper.ConfigurationProvider)
+                .FirstOrDefault();
 
 
-            if (user == null)
+            if (user == null || user2 == null)
             {
                 throw new KeyNotFoundException($"Unable to find a user with id {userId}");
             }
@@ -194,21 +196,15 @@ namespace WcGraph.Cli.Features.Import
             var attacks = pve.FetchAttacksByUser(user.Id, DateTimeOffset.Now.AddDays(-2), DateTimeOffset.Now);
             foreach (var attack in attacks)
             {
-                var baseInstance = mapper.Map<BaseInstance>(attack);
-                //var defenderInstance = new BaseInstance
-                //{
-                //    Base = new Base
-                //    {
-                //        Level = attack.DefenderLevel,
-                //        Type = attack.EnemyType
-                //    },
-                //    Sector = attack.Sector,
-                //    XCoordinate = attack.DefenderX,
-                //    YCoordinate = attack.DefenderY
-                //};
-
                 var battle = mapper.Map<PveBattle>(attack);
 
+                foreach (var staging in attack.AttackerPlatoonStagingLocations)
+                {
+                    battle.PlatoonStaging[staging.Hex] = new Platoon { Owner = user2, Id = staging.PlatoonId };
+                }
+
+                var repo = new ClientPveBattleRepository();
+                repo.AddBattle(battle);
 
 
             }
@@ -222,7 +218,7 @@ namespace WcGraph.Cli.Features.Import
             var totalSet = this.db.UserAcademy
                 .AsNoTracking()
                 .Where(u => u.User.LastSeenEpochSeconds >= LAST_SEEN_CUTOFF)
-                .Select(u => new { u.UserId, u.UnitId })
+                .Select(u => new { u.UserId, u.Id})
                 .GroupBy(u => u.UserId)
                 .ToDictionary(u => u.Key, u => u.ToList());
 
@@ -233,13 +229,13 @@ namespace WcGraph.Cli.Features.Import
                 this.db.Database.SetCommandTimeout(180);
                 var userUnits = this.db.UserAcademy
                     .AsNoTracking()
-                    .Where(u => u.UnitId == unit.Id && u.User.LastSeenEpochSeconds >= LAST_SEEN_CUTOFF)
-                    .Select(u => new Models.UserUnit
+                    .Where(u => u.Id == unit.Id && u.User.LastSeenEpochSeconds >= LAST_SEEN_CUTOFF)
+                    .Select(u => new UserUnit
                     {
                         Id = u.Id,
                         Created = u.CreatedEpochSeconds,
                         Status = u.Status,
-                        UnitId = u.UnitId,
+                        UnitId = u.Id,
                         UserId = u.UserId
                     })
                     .ToList();

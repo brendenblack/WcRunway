@@ -10,9 +10,6 @@ namespace WcData.GameContext.Implementation
     {
         public GameDbContext(DbContextOptions<GameDbContext> options) : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        { 
-        }
 
         public DbSet<Offer> Offers { get; set; }
 
