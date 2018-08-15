@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using WcGraph.ComponentModel.DataAnnotations.Schema;
 
 namespace WcGraph.Models
 {
     public class PveBattle
     {
-
+        [GraphIndex]
+        [GraphLabel("attack_id")]
         public string Id { get; set; }
     
         public int AttackerId { get; set; }
 
+        [GraphRelationship("ATTACK_ON")]
         public virtual BaseInstance Target { get; set; }
 
         public DateTimeOffset Timestamp { get; set; }

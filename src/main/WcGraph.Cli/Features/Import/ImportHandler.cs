@@ -194,17 +194,22 @@ namespace WcGraph.Cli.Features.Import
             }
 
             var attacks = pve.FetchAttacksByUser(user.Id, DateTimeOffset.Now.AddDays(-2), DateTimeOffset.Now);
+            var test = new UnitRepository();
             foreach (var attack in attacks)
             {
                 var battle = mapper.Map<PveBattle>(attack);
 
-                foreach (var staging in attack.AttackerPlatoonStagingLocations)
-                {
-                    battle.PlatoonStaging[staging.Hex] = new Platoon { Owner = user2, Id = staging.PlatoonId };
-                }
 
-                var repo = new ClientPveBattleRepository();
-                repo.AddBattle(battle);
+
+                //foreach (var staging in attack.AttackerPlatoonStagingLocations)
+                //{
+                //    battle.PlatoonStaging[staging.Hex] = new Platoon { Owner = user2, Id = staging.PlatoonId };
+                //}
+
+                test.Write(battle);
+
+                //var repo = new ClientPveBattleRepository();
+                //repo.AddBattle(battle);
 
 
             }
