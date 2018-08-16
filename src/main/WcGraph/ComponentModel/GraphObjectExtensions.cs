@@ -12,7 +12,13 @@ namespace WcGraph.ComponentModel
         public static string GetNodeName(this Object obj)
         {
             var nodeAttr = obj.GetType().GetCustomAttributes(typeof(GraphNodeAttribute), true).FirstOrDefault() as GraphNodeAttribute;
-            return (string.IsNullOrWhiteSpace(nodeAttr.Name)) ? nodeAttr.Name : nameof(obj);
+
+            if (nodeAttr == null)
+            {
+                // TODO: throw;
+            }
+
+            return (string.IsNullOrWhiteSpace(nodeAttr?.Name)) ? obj.GetType().Name : nodeAttr.Name;
         }
 
         public static IEnumerable<PropertyInfo> GetIndexProperties(this Object obj)

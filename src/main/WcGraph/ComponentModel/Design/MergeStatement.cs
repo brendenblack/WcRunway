@@ -8,7 +8,7 @@ namespace WcGraph.ComponentModel.Design
 {
     public class MergeStatement
     {
-        public MergeStatement(string variableName, string nodeType, Dictionary<string,string> indexProperties = null)
+        public MergeStatement(string variableName, string nodeType, Dictionary<string,string> indexProperties = null, Dictionary<string, string> nonIndexProperties = null)
         {
             VariableName = variableName;
 
@@ -20,6 +20,7 @@ namespace WcGraph.ComponentModel.Design
             }
 
             IndexProperties = indexProperties;
+            NonIndexProperties = nonIndexProperties;
         }
 
         public string VariableName { get; }
@@ -28,21 +29,22 @@ namespace WcGraph.ComponentModel.Design
 
         public Dictionary<string, string> IndexProperties { get; set; } = new Dictionary<string, string>();
 
+        public Dictionary<string, string> NonIndexProperties { get; set; } = new Dictionary<string, string>();
+
         public override string ToString()
         {
             var indexProperties = String.Join(',', IndexProperties.Select(x => x.Key + ": " + x.Value).ToArray());
 
-            return $"MERGE ({VariableName}:{NodeType} {{ {IndexProperties} }})";
+            return $"({VariableName}:{NodeType} {{ {indexProperties} }})";
         }
 
-        public static MergeStatement For(Object obj, int count = 1)
+        public static MergeStatement For(Object obj, string variableName = "a")
         {
             var nodeName = obj.GetNodeName();
-            var varName = nodeName.ToSnakeCase() + "_" + count;
 
             var indexProperties = obj.GetIndexProperties();
 
-            var merge = new MergeStatement(varName, nodeName);
+            var merge = new MergeStatement(variableName, nodeName);
             foreach (var p in indexProperties)
             {
                 var indexKey = p.GetLabelName();

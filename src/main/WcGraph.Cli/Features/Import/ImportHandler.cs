@@ -194,7 +194,7 @@ namespace WcGraph.Cli.Features.Import
             }
 
             var attacks = pve.FetchAttacksByUser(user.Id, DateTimeOffset.Now.AddDays(-2), DateTimeOffset.Now);
-            var test = new UnitRepository();
+            var test = new GraphContext();
             foreach (var attack in attacks)
             {
                 var battle = mapper.Map<PveBattle>(attack);

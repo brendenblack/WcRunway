@@ -11,16 +11,28 @@ using WcGraph.ComponentModel.Design;
 
 namespace WcGraph.Data
 {
-    public class UnitRepository
+    public class GraphContext
     {
-        public UnitRepository()
+        public GraphContext()
         {
-            var g = new Neo4jClient.BoltGraphClient("bolt://127.0.0.1:7687/graph/db", "neo4j", "password");
+            var g = new BoltGraphClient("bolt://127.0.0.1:7687/graph/db", "neo4j", "password");
             g.Connect();
             graph = g;
+            labelBehaviour = LabelBehaviour.OPT_IN;
+            mergeBehaviour = MergeBehaviour.ON_CREATE;
+        }
+
+        public GraphContext(GraphConfiguration config)
+        {
+            var g = new BoltGraphClient(config.Address, config.Username, config.Password);
+            g.Connect();
+            graph = g;
+            labelBehaviour = config.LabelBehaviour;
         }
 
         IGraphClient graph;
+        private readonly LabelBehaviour labelBehaviour;
+        private readonly MergeBehaviour mergeBehaviour;
 
         /// <summary>
         /// Adds a node to the graph, including its entire relationship tree. All non-null navigation properties will be MERGE'd in to the graph and only if
@@ -33,53 +45,86 @@ namespace WcGraph.Data
             var isGraphNode = typeof(T).GetCustomAttributes(typeof(GraphNodeAttribute), true).Any();
             if (!isGraphNode)
             {
-                throw new InvalidOperationException("Unable to persist an object that is not annotated with the GraphNode attribute");
+                throw new InvalidOperationException($"Unable to persist an object of type {typeof(T)}. Entities must be annotated with the GraphNode attribute");
             }
-
-            // Find all non-null navigation properties (annotated with relationship)
-            // recursively create 
 
             var variableNameIndex = 1;
 
-            
-            var cypher = graph.Cypher;
-
-            var indexProperties = typeof(T).GetProperties().Where(p => Attribute.IsDefined(p, typeof(GraphIndexAttribute)));
+            var indexProperties = typeof(T)
+                .GetProperties()
+                .Where(p => Attribute.IsDefined(p, typeof(GraphIndexAttribute)));
 
             if (indexProperties.Count() <= 0)
             {
-                throw new NotImplementedException("Unable to persist an object that does not have any indices defined. Add the GraphIndex attribute on an appropriate, unique column");
+                throw new NotImplementedException("Unable to persist an object that does not have any indices defined. Add the GraphIndex attribute to one or more appropriate, unique properties of " + typeof(T));
             }
 
+            // Ensure that the index exists for each property declared as an index for this 
             if (checkIndices)
             {
-                // Ensure that the index exists for each property declared as an index for this 
                 foreach (var index in indexProperties)
                 {
                     var indexName = index.GetLabelName();
                     if (!graph.CheckIndexExists(indexName, IndexFor.Node))
                     {
-                        var config = new IndexConfiguration()
-                        {
-                            Provider = IndexProvider.lucene,
-                            Type = IndexType.exact
-                        };
-                        graph.CreateIndex(indexName, config, IndexFor.Node);
+                        var cql = graph.Cypher
+                            .Create($"INDEX ON :{obj.GetNodeName()}({indexName})")
+                            .CreateUniqueConstraint($"a:{obj.GetNodeName()}", $"a.{indexName}");
+
+                        var q = graph.Cypher.Query;
+
+                        cql.ExecuteWithoutResults();
                     }
                 }
             }
 
 
-            var merge = MergeStatement.For(obj, variableNameIndex);
+            var merge = MergeStatement.For(obj, "a1");
             variableNameIndex++;
 
-            cypher.Merge(merge.ToString());
+            var cypher = graph.Cypher
+                .Merge(merge.ToString());
 
-            var nonIndexProperties = typeof(T).GetProperties().Where(p => Attribute.IsDefined(p, typeof(GraphIndexAttribute)));
+            Dictionary<string, object> labelDictionary = new Dictionary<string, object>();
+            var nonIndexProperties = typeof(T).GetProperties().Where(p => !Attribute.IsDefined(p, typeof(GraphIndexAttribute)));
             if (nonIndexProperties.Count() > 0)
             {
-                cypher.OnCreate();
-                // TODO: make map of primitive properties
+                foreach (var p in nonIndexProperties)
+                {
+                    if (p.PropertyType.IsPrimitive)
+                    {
+                        labelDictionary.Add(p.GetLabelName(), p.GetValue(obj));
+                    }
+                }
+
+                if (mergeBehaviour != MergeBehaviour.NEVER)
+                {
+                    if (mergeBehaviour == MergeBehaviour.ON_CREATE)
+                    {
+                        cypher = cypher.OnCreate();
+                    }
+                    foreach (var label in labelDictionary)
+                    {
+                        switch (System.Type.GetTypeCode(label.Value.GetType()))
+                        {
+                            case TypeCode.Int16:
+                            case TypeCode.Int32:
+                            case TypeCode.Int64:
+                                cypher = cypher.Set($"{merge.VariableName}.{label.Key} = {label.Value}");
+                                break;
+                            case TypeCode.String:
+                                cypher = cypher.Set($"{merge.VariableName}.{label.Key} = '{label.Value}'");
+                                break;
+                            case TypeCode.Object:
+                                // TODO
+                                break;
+                        }
+                    }
+
+                    
+                }
+                //cypher.OnCreate();
+                // TODO: add properties
             }
 
 
@@ -90,33 +135,37 @@ namespace WcGraph.Data
 
             foreach (var property in navigationProperties)
             {
-                var attr = property.GetType().GetCustomAttribute(typeof(GraphRelationshipAttribute), true) as GraphRelationshipAttribute;
-                // Get the navigation property object, ensuring it isn't null
-                var val = property.GetValue(obj);
-                if (val != null)
+                var attr = property.GetCustomAttribute(typeof(GraphRelationshipAttribute), true) as GraphRelationshipAttribute;
+                if (attr != null)
                 {
-                    // ensure that the object is annotated with the GraphNode attribute
-                    if (val.GetType().GetCustomAttributes(typeof(GraphNodeAttribute), true).Any())
+                    // Get the navigation property object, ensuring it isn't null
+                    var val = property.GetValue(obj);
+                    if (val != null)
                     {
-                        var merge2 = MergeStatement.For(val);
-                        if (attr.Direction == RelationshipDirection.Incoming)
+                        // ensure that the object is annotated with the GraphNode attribute
+                        if (val.GetType().GetCustomAttributes(typeof(GraphNodeAttribute), true).Any())
                         {
-                            cypher.Merge(merge2.ToString())
-                                .Merge($"{merge.VariableName}<-[:{attr.Name}]-[{merge2.VariableName})");
+                            var merge2 = MergeStatement.For(val);
+                            if (attr.Direction == RelationshipDirection.Incoming)
+                            {
+                                cypher = cypher.Merge(merge2.ToString())
+                                    .Merge($"{merge.VariableName}<-[:{attr.Name}]-[{merge2.VariableName})");
+                            }
+                            else
+                            {
+                                cypher = cypher.Merge(merge2.ToString())
+                                    .Merge($"{merge.VariableName}-[:{attr.Name}]->[{merge2.VariableName})");
+                            }
                         }
-                        else
-                        {
-                            cypher.Merge(merge2.ToString())
-                                .Merge($"{merge.VariableName}-[:{attr.Name}]->[{merge2.VariableName})");
-                        }
-                    } 
 
 
-                }
-                if (attr.Direction == RelationshipDirection.Outgoing)
-                {
-                    // Ensure that the other side of the relationship is not null and marked as a graph node
-                    
+                    }
+
+                    if (attr.Direction == RelationshipDirection.Outgoing)
+                    {
+                        // Ensure that the other side of the relationship is not null and marked as a graph node
+
+                    }
                 }
                 
             }
@@ -124,15 +173,9 @@ namespace WcGraph.Data
 
 
 
-            //var varName = nodeName.ToSnakeCase() + "_1";
+            var query = cypher.Query;
 
-            //var indexPropertiesList = new List<string>();
-            //foreach (var p in indexProperties)
-            //{
-            //    var propertyType = p.GetType();
-            //    var value = p.GetValue(obj) as string;
-
-            //}
+            return;
         }
 
         public void WriteAll<T>(List<T> objs)
@@ -179,13 +222,14 @@ namespace WcGraph.Data
             //    .WithParams(new
 
        
-
+        [Obsolete]
         public string GetNodeNameFromObject(Object obj)
         {
             var nodeAttr = obj.GetType().GetCustomAttributes(typeof(GraphNodeAttribute), true).FirstOrDefault() as GraphNodeAttribute;
             return (string.IsNullOrWhiteSpace(nodeAttr.Name)) ? nodeAttr.Name : nameof(obj);
         }
-
+        
+        [Obsolete]
         public string GetLabelNameFromPropertyInfo(PropertyInfo info)
         {
             var attr = info.GetCustomAttributes(typeof(GraphLabelAttribute), true).FirstOrDefault() as GraphLabelAttribute;
@@ -200,30 +244,6 @@ namespace WcGraph.Data
             }
         }
 
-        //public string MakeMergeOrCreateStatementFromObject(Object obj)
-        //{
-
-        //    var indexProperties = obj.GetIndexProperties();
-        //    if (indexProperties.Count() > 0)
-        //    {
-        //        var merge = MergeStatement.For(obj);
-        //        // MERGE
-        //    }
-        //    else
-        //    {
-        //        // CREATE
-        //    }
-
-        //    var varName = nodeName.ToSnakeCase() + "_1";
-
-        //    var indexPropertiesList = new List<string>();
-        //    foreach (var p in indexProperties)
-        //    {
-        //        var propertyType = p.GetType();
-        //        var value = p.GetValue(obj) as string;
-
-        //    }
-        //}
 
         public void IdentifyRelationships(Object obj)
         {

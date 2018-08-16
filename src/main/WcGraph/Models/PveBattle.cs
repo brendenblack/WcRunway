@@ -6,6 +6,7 @@ using WcGraph.ComponentModel.DataAnnotations.Schema;
 
 namespace WcGraph.Models
 {
+    [GraphNode]
     public class PveBattle
     {
         [GraphIndex]
