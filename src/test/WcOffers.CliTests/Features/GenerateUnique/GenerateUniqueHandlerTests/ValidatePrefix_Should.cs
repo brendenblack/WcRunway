@@ -1,10 +1,10 @@
 ﻿using Shouldly;
 using System;
-using WcOffers.Cli.Features.Generate;
+using WcOffers.Cli.Features.GenerateUnique;
 using Xunit;
 using WcData.GameContext;
 
-namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
+namespace WcOffers.Cli.Tests.Features.Generate.GenerateUniqueHandlerTests
 {
     public class ValidatePrefix_Should : IClassFixture<ExecuteFixture> //, IDisposable
     {
@@ -12,13 +12,13 @@ namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
         {
             this.fixture = fixture;
             this.sb2 = fixture.SetupSandbox2($"Execute_{new Guid().ToString()}");
-            var genLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            this.sut = new GenerateHandler(genLogger, fixture.GameContext, fixture.OfferGenerator, sb2);
+            var genLogger = TestHelpers.CreateLogger<GenerateUniqueHandler>();
+            this.sut = new GenerateUniqueHandler(genLogger, fixture.GameContext, fixture.OfferGenerator, sb2);
         }
 
         private readonly ExecuteFixture fixture;
         private readonly Sandbox2Context sb2;
-        private readonly GenerateHandler sut;
+        private readonly GenerateUniqueHandler sut;
 
         [Fact]
         public void ReturnExpectedPrefix()

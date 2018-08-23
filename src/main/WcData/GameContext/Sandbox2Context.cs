@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WcData.Implementation.MySql;
-using WcCore.Domain.Offers;
+using WcData.GameContext.Models;
 
 namespace WcData.GameContext
 {

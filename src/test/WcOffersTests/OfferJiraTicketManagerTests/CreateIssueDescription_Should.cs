@@ -1,6 +1,6 @@
 ﻿using Shouldly;
 using System;
-using WcCore.Domain.Offers;
+using WcData.GameContext.Models;
 using WcOffers;
 using Xunit;
 

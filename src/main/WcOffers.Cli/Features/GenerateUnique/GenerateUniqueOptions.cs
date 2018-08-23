@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcOffers.Cli.Features.Generate
+namespace WcOffers.Cli.Features.GenerateUnique
 {
-    [Verb("generate", HelpText = "Generate offers and their related components")]
-    public class GenerateOptions
+    [Verb("generate-unique", HelpText = "Generate standard offers for Unique units")]
+    public class GenerateUniqueOptions
     {
 
         //[Option('U', "unit", Required = true, HelpText = "Generates the indicated offers based on the unit")]
@@ -25,7 +25,10 @@ namespace WcOffers.Cli.Features.Generate
 
         [Option('l', "levels", Required = false, Default = false, HelpText = "Generate offers for level buckets for the indicated unit")]
         public bool IncludeLevels { get; set; }
-        
+
+        [Option('L', "level-step", Required = false, Default = false, HelpText = "Generate offers for individual elvels for the indicated unit. Mutually exclusive with -l/--level")]
+        public bool IncludeLevelSteps { get; set; }
+
         [Option('o', "omega", Required = false, Default = false, HelpText = "Generate an offer of Omega parts for the indicated unit")]
         public bool IncludeOmegaParts { get; set; }
 

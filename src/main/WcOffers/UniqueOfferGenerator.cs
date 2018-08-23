@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WcData.Sheets;
-using WcCore.Domain;
-using WcCore.Domain.Offers;
+using WcData.Sheets.Models;
+using WcData.GameContext.Models;
 
 namespace WcOffers
 {
@@ -50,7 +50,7 @@ namespace WcOffers
             if (skeleton == null)
             {
                 log.LogWarning("No custom copy exists for an unlock of {0} ({1}); a generic offer will be created with no content or displayed item values", unit.Name, unit.Id);
-                skeleton = new OfferSkeleton
+                skeleton = new WcCore.Domain.Offers.OfferSkeleton
                 {
                     Title = $"Unlock the {unit.Name}!",
                     Description = $"Offer includes an UNLOCK of the powerful {unit.Name.ToUpper()}!",

@@ -3,22 +3,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WcCore.Domain.Game;
-using WcCore.Domain.Offers;
 using WcData.GameContext;
+using WcData.GameContext.Models;
 using WcData.Sheets;
 
-namespace WcOffers.Cli.Features.Generate
+namespace WcOffers.Cli.Features.GenerateUnique
 {
-    public class GenerateHandler
+    public class GenerateUniqueHandler
     {
-        private readonly ILogger<GenerateHandler> log;
+        private readonly ILogger<GenerateUniqueHandler> log;
         private readonly IGameData gameContext;
         private readonly UniqueOfferGenerator gen;
         private readonly Sandbox2Context sb2;
 
         public static int ERR_UNIT_NOT_FOUND = 10;
         
-        public GenerateHandler(ILogger<GenerateHandler> log, IGameData gameContext, UniqueOfferGenerator gen, Sandbox2Context sb2)
+        public GenerateUniqueHandler(ILogger<GenerateUniqueHandler> log, IGameData gameContext, UniqueOfferGenerator gen, Sandbox2Context sb2)
         {
             this.log = log;
             this.gameContext = gameContext;
@@ -26,7 +26,7 @@ namespace WcOffers.Cli.Features.Generate
             this.sb2 = sb2;
         }
 
-        public int Execute(GenerateOptions opts)
+        public int Execute(GenerateUniqueOptions opts)
         {
             // Validate the prefix
             string prefix;

@@ -1,11 +1,11 @@
 ﻿using Shouldly;
 using System;
-using WcOffers.Cli.Features.Generate;
+using WcOffers.Cli.Features.GenerateUnique;
 using WcCore.Domain.Offers;
 using Xunit;
 using WcData.GameContext;
 
-namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
+namespace WcOffers.Cli.Tests.Features.Generate.GenerateUniqueHandlerTests
 {
     /*
      * This class specifically tests the generic features of Execute() that aren't tied to the option switches
@@ -16,20 +16,20 @@ namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
         {
             this.fixture = fixture;
             this.sb2 = fixture.SetupSandbox2($"Execute_{new Guid().ToString()}");
-            var genLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            this.sut = new GenerateHandler(genLogger, fixture.GameContext, fixture.OfferGenerator, sb2);
+            var genLogger = TestHelpers.CreateLogger<GenerateUniqueHandler>();
+            this.sut = new GenerateUniqueHandler(genLogger, fixture.GameContext, fixture.OfferGenerator, sb2);
         }
 
         private readonly ExecuteFixture fixture;
         private readonly Sandbox2Context sb2;
-        private readonly GenerateHandler sut;
+        private readonly GenerateUniqueHandler sut;
 
         [Theory]
         [InlineData("")]
         [InlineData(null)]
         public void ReturnNegative1WhenPrefixInvalid(string prefix)
         {
-            var opts = new GenerateOptions { OfferCodePrefix = prefix };
+            var opts = new GenerateUniqueOptions { OfferCodePrefix = prefix };
 
             var exitCode = this.sut.Execute(opts);
 
@@ -42,7 +42,7 @@ namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
             var existingOffer = new Offer() { OfferCode = "InUseTest123" };
             this.sb2.Offers.Add(existingOffer);
             this.sb2.SaveChanges();
-            var opts = new GenerateOptions { OfferCodePrefix = "InUseTest", UnitId = 217 };
+            var opts = new GenerateUniqueOptions { OfferCodePrefix = "InUseTest", UnitId = 217 };
 
             var exitCode = this.sut.Execute(opts);
 
@@ -52,7 +52,7 @@ namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
         [Fact]
         public void ReturnNegative1WhenUnitNotFound()
         {
-            var opts = new GenerateOptions { OfferCodePrefix = "AvailPrefix", UnitId = 1908237 };
+            var opts = new GenerateUniqueOptions { OfferCodePrefix = "AvailPrefix", UnitId = 1908237 };
 
             var exitCode = this.sut.Execute(opts);
 

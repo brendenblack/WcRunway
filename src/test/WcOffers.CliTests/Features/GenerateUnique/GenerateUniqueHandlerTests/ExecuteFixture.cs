@@ -9,7 +9,7 @@ using WcCore.Domain.Users;
 using WcData.Sheets;
 using WcData.GameContext;
 
-namespace WcOffers.Cli.Tests.Features.Generate.GenerateHandlerTests
+namespace WcOffers.Cli.Tests.Features.Generate.GenerateUniqueHandlerTests
 {
     public class ExecuteFixture
     {
