@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WcCore.Domain;
 using WcData.Sheets;
+using WcData.Sheets.Models;
 
-namespace WcData.Implementation.Sheets
+namespace WcData.Sheets.Implementation
 {
     /// <summary>
     /// An object that encapsulate all of the various data sheets in one injectable class

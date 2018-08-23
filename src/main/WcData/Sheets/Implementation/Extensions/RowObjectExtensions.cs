@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using WcCore.Domain.Offers;
+using WcData.Sheets.Models;
 
-namespace WcData.Implementation.Sheets.Extensions
+namespace WcData.Sheets.Implementation.Extensions
 {
     public static class RowObjectExtensions
     {

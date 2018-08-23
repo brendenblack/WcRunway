@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcCore.Domain.Users
+namespace WcData.GameContext
 {
     public interface IUnitOwnership
     {

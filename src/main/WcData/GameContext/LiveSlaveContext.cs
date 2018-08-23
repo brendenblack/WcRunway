@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using WcData.GameContext.Models;
-using WcData.Implementation.MySql;
 
 namespace WcData.GameContext
 {

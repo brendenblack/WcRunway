@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WcCore.Domain;
-using WcCore.Domain.Offers;
+using WcData.Sheets.Models;
 using WcOffers;
 using Xunit;
 
-namespace WcOffers.Tests.Domain.Offers.UniqueOfferGeneratorTests
+namespace WcOffersTests.UniqueOfferGeneratorTests
 {
     public class CreateTechOffers_Should : IClassFixture<UniqueOfferGeneratorFixture>, IDisposable
     {

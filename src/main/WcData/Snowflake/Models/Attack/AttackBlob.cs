@@ -2,8 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WcData.Implementation.Snowflake;
-using WcData.Implementation.Snowflake.Converters;
+using WcData.Snowflake.Implementation.Converters;
 
 namespace WcData.Snowflake.Models.Attack
 {

@@ -4,8 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WcCore.Domain.Game;
-using WcCore.Domain.Offers;
+using WcData.Sheets.Models;
 using Xunit;
 
 namespace WcOffers.Cli.Tests

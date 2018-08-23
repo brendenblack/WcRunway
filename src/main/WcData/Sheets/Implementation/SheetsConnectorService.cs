@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace WcData.Implementation.Sheets
+namespace WcData.Sheets.Implementation
 {
     public class SheetsConnectorService
     {

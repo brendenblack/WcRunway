@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WcCore.Domain.Game;
 using WcData.GameContext;
 using WcData.GameContext.Models;
 using WcData.Sheets;

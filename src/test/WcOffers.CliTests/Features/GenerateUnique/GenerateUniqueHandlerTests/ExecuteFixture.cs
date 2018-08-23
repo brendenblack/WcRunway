@@ -2,12 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
-using WcCore.Domain;
-using WcCore.Domain.Game;
-using WcCore.Domain.Offers;
-using WcCore.Domain.Users;
 using WcData.Sheets;
 using WcData.GameContext;
+using WcData.Sheets.Models;
 
 namespace WcOffers.Cli.Tests.Features.Generate.GenerateUniqueHandlerTests
 {

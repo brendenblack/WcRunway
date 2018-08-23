@@ -3,13 +3,12 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
-using WcCore.Domain.Offers;
-using WcCore.Domain.Users;
 using WcData.GameContext;
 using WcData.Sheets;
+using WcData.Sheets.Models;
 using WcOffers;
 
-namespace WcOffers.Tests.Domain.Offers.UniqueOfferGeneratorTests
+namespace WcOffersTests.UniqueOfferGeneratorTests
 {
     public class UniqueOfferGeneratorFixture : IDisposable
     {

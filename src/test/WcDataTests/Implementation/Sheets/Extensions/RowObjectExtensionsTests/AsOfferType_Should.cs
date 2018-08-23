@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WcCore.Domain.Offers;
-using WcData.Implementation.Sheets.Extensions;
+using WcData.Sheets.Implementation.Extensions;
+using WcData.Sheets.Models;
 using Xunit;
 
 namespace WcData.Tests.Implementation.Sheets.Extensions.RowObjectExtensionsTests

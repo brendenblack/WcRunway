@@ -4,7 +4,7 @@ using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WcData.Implementation.Snowflake;
+using WcData.Snowflake.Implementation;
 using Xunit;
 
 namespace WcData.Tests.Infrastructure.Data.Providers.Snowflake.SnowflakeContextTests

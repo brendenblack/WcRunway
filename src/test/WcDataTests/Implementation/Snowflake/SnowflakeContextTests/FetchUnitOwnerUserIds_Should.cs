@@ -1,5 +1,5 @@
 ﻿using Shouldly;
-using WcData.Implementation.Snowflake;
+using WcData.Snowflake.Implementation;
 using Xunit;
 
 namespace WcData.Tests.Infrastructure.Data.Providers.Snowflake.SnowflakeContextTests

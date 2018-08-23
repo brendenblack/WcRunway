@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcData.Implementation.Sheets
+namespace WcData.Sheets.Implementation
 {
     public abstract class BaseSheetsData
     {

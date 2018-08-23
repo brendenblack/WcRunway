@@ -29,7 +29,7 @@ namespace WcOffers
         /// <param name="prefix">What prefix to apply to the offer code</param>
         /// <param name="priority">Optional. The priority to assign to the offer, higher priorit offers will display before lower priority ones</param>
         /// <returns></returns>
-        public Offer CreateUnlockOffer(Unit unit, string prefix, int priority = 0)
+        public Offer CreateUnlockOffer(WcData.Sheets.Models.Unit unit, string prefix, int priority = 0)
         {
             if (unit == null || string.IsNullOrWhiteSpace(prefix))
             {
@@ -50,7 +50,7 @@ namespace WcOffers
             if (skeleton == null)
             {
                 log.LogWarning("No custom copy exists for an unlock of {0} ({1}); a generic offer will be created with no content or displayed item values", unit.Name, unit.Id);
-                skeleton = new WcCore.Domain.Offers.OfferSkeleton
+                skeleton = new OfferSkeleton
                 {
                     Title = $"Unlock the {unit.Name}!",
                     Description = $"Offer includes an UNLOCK of the powerful {unit.Name.ToUpper()}!",
@@ -99,7 +99,7 @@ namespace WcOffers
         /// <param name="unlockAsPrereq">Optional. For the first level offer, specifies whether a generated unlock offer should be a prerequisite</param>
         /// <param name="priority">Optional. The priority to assign to the offer, higher priorit offers will display before lower priority ones</param>
         /// <returns></returns>
-        public List<Offer> CreateLevelOffers(Unit unit, string prefix, bool unlockAsPrereq = true, int priority = 0)
+        public List<Offer> CreateLevelOffers(WcData.Sheets.Models.Unit unit, string prefix, bool unlockAsPrereq = true, int priority = 0)
         {
             var offers = new List<Offer>();
 
@@ -342,7 +342,7 @@ namespace WcOffers
             return offers;
         }
 
-        public Offer CreateOmegaPartsOffer(Unit unit, string prefix, int priority = 0)
+        public Offer CreateOmegaPartsOffer(WcData.Sheets.Models.Unit unit, string prefix, int priority = 0)
         {
             if (unit == null || string.IsNullOrWhiteSpace(prefix))
             {
@@ -401,7 +401,7 @@ namespace WcOffers
             return offer;
         }
 
-        public Offer CreateElitePartsOffer(Unit unit, string prefix, int priority = 0)
+        public Offer CreateElitePartsOffer(WcData.Sheets.Models.Unit unit, string prefix, int priority = 0)
         {
             if (unit == null || string.IsNullOrWhiteSpace(prefix))
             {
@@ -459,7 +459,7 @@ namespace WcOffers
             return offer;
         }
 
-        public List<Offer> CreateTechOffers(Unit unit, string prefix, int priority = 0)
+        public List<Offer> CreateTechOffers(WcData.Sheets.Models.Unit unit, string prefix, int priority = 0)
         {
             if (unit == null || string.IsNullOrWhiteSpace(prefix))
             {

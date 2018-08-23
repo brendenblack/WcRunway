@@ -22,8 +22,8 @@ namespace WcOffers
 
         public OfferJiraTicketManager(string url, string username, string password)
         {
-            jira = Jira.CreateRestClient(url);
-            jira.RestClient.RestSharpClient.Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator("", "bearer");
+            //jira = Jira.CreateRestClient(url);
+            //jira.RestClient.RestSharpClient.Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator("", "bearer");
         }
 
 

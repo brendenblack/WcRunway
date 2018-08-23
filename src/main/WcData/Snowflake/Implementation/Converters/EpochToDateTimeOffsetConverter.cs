@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcData.Implementation.Snowflake.Converters
+namespace WcData.Snowflake.Implementation.Converters
 {
     public class EpochToDateTimeOffsetConverter : DateTimeConverterBase
     {

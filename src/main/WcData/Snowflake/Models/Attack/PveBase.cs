@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcCore.Domain.Battles
+namespace WcData.Snowflake.Models.Attack
 {
     public class PveBase
     {

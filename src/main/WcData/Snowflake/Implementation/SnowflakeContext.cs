@@ -5,13 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using WcCore.Domain.Battles;
-using WcData.Implementation.Snowflake.Extensions;
+using WcData.Snowflake.Implementation.Extensions;
 using WcData.Snowflake;
 using WcData.Snowflake.Models;
 using WcData.Snowflake.Models.Attack;
 
-namespace WcData.Implementation.Snowflake
+namespace WcData.Snowflake.Implementation
 {
     public class SnowflakeContext : IPveBattles
     {

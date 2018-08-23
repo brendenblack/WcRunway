@@ -1,10 +1,10 @@
 ﻿using Shouldly;
 using System;
-using WcCore.Domain;
+using WcData.Sheets.Models;
 using WcOffers;
 using Xunit;
 
-namespace WcOffers.Tests.Domain.Offers.UniqueOfferGeneratorTests
+namespace WcOffersTests.UniqueOfferGeneratorTests
 {
     public class CreateUnlockOffer_Should : IClassFixture<UniqueOfferGeneratorFixture>, IDisposable
     {

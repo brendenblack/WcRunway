@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WcCore.Domain.Offers;
 
 namespace WcData.Sheets
 {

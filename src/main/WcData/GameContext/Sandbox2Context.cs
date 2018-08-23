@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WcData.Implementation.MySql;
 using WcData.GameContext.Models;
 
 namespace WcData.GameContext
@@ -10,7 +9,7 @@ namespace WcData.GameContext
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            MySqlModelBuilder.DefineModel(builder);
+            //MySqlModelBuilder.DefineModel(builder);
         }
 
         public DbSet<Offer> Offers { get; set; }

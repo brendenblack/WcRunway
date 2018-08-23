@@ -1,9 +1,9 @@
 ﻿using Shouldly;
 using System;
 using WcOffers.Cli.Features.GenerateUnique;
-using WcCore.Domain.Offers;
 using Xunit;
 using WcData.GameContext;
+using WcData.GameContext.Models;
 
 namespace WcOffers.Cli.Tests.Features.Generate.GenerateUniqueHandlerTests
 {

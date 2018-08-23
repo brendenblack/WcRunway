@@ -7,12 +7,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using WcData.GameContext;
-using WcData.Implementation;
-using WcData.Implementation.MySql;
-using WcData.Implementation.Sheets;
-using WcData.Implementation.Snowflake;
+using WcData.GameContext.Implementation;
+using WcData.Sheets.Implementation;
 using WcData.Sheets;
 using WcData.Snowflake;
+using WcData.Snowflake.Implementation;
 
 namespace WcData.Microsoft.Extensions.DependencyInjection
 {
@@ -70,10 +69,17 @@ namespace WcData.Microsoft.Extensions.DependencyInjection
                 case GameContexts.LIVE_MAIN:
                     throw new NotImplementedException("A connection to live is not yet supported");
                 case GameContexts.LIVE_SLAVE:
-                    services.AddDbContext<LiveSlaveContext>(opt => opt.UseMySQL(connectionString));
+                    var liveSlaveOptions = new DbContextOptionsBuilder<GameDbContext>()
+                        .UseMySQL(connectionString)
+                        .Options;
+                    services.AddSingleton<ILiveSlaveContext>(s => new GameDbContext(liveSlaveOptions));
+                    //services.AddDbContext<LiveSlaveContext>(opt => opt.UseMySQL(connectionString));
                     break;
                 case GameContexts.SANDBOX2:
-                    services.AddDbContext<Sandbox2Context>(opt => opt.UseMySQL(connectionString));
+                    var dbopts = new DbContextOptionsBuilder<GameDbContext>()
+                        .UseMySQL(connectionString)
+                        .Options;
+                    services.AddSingleton<ISandbox2Context>(s => new GameDbContext(dbopts));
                     break;
                 default:
                     break;

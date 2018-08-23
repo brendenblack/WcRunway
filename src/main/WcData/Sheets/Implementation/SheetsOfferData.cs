@@ -5,11 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using WcData.Implementation.Sheets.Extensions;
+using WcData.Sheets.Implementation.Extensions;
 using WcData.Sheets;
-using WcCore.Domain.Offers;
+using WcData.Sheets.Models;
 
-namespace WcData.Implementation.Sheets
+namespace WcData.Sheets.Implementation
 {
     public class SheetsOfferData : BaseSheetsData, IOfferData
     {

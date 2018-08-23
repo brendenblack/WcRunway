@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcData.Implementation.Snowflake
+namespace WcData.Snowflake.Implementation
 {
     public class SnowflakeConnectionDetails
     {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Linq;
-using WcCore.Domain.Game;
 using WcData.Sheets;
 
 namespace WcOffers.Cli.Features.Token

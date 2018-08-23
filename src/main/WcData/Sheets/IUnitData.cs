@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WcCore.Domain;
+using WcData.Sheets.Models;
 
 namespace WcData.Sheets
 {

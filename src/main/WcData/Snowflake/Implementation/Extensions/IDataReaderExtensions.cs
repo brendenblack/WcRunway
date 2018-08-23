@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace WcData.Implementation.Snowflake.Extensions
+namespace WcData.Snowflake.Implementation.Extensions
 {
     public static class IDataReaderExtensions
     {

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WcCore.Domain;
-using WcCore.Domain.Offers;
+using WcData.GameContext.Models;
+using WcData.Sheets.Models;
+using Unit = WcData.Sheets.Models.Unit;
 
-namespace WcOffers.Tests.Domain.Offers.UniqueOfferGeneratorTests
+namespace WcOffersTests.UniqueOfferGeneratorTests
 {
     public class StandardUniqueLevelOffersFixture : UniqueOfferGeneratorFixture
     {

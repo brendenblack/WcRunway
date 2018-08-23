@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using WcData.Implementation.Snowflake;
+using WcData.Snowflake.Implementation;
 
 namespace WcData.Tests.Infrastructure.Data.Providers.Snowflake.SnowflakeContextTests
 {
