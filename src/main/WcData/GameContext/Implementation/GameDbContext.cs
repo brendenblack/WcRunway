@@ -10,6 +10,7 @@ namespace WcData.GameContext.Implementation
     {
         public GameDbContext(DbContextOptions<GameDbContext> options) : base(options) { }
 
+        
 
         public DbSet<Offer> Offers { get; set; }
 

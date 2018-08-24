@@ -6,5 +6,7 @@ namespace WcData.Sheets
     public interface IOfferData
     {
         List<OfferSkeleton> Skeletons { get; }
+
+        List<OfferTemplate> Templates { get; }
     }
 }

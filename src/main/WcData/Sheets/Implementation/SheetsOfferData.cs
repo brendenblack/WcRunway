@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using WcData.Sheets.Implementation.Extensions;
 using WcData.Sheets;
 using WcData.Sheets.Models;
+using System.Linq;
 
 namespace WcData.Sheets.Implementation
 {
@@ -54,6 +55,72 @@ namespace WcData.Sheets.Implementation
                 }
 
                 return skeletons;
+            }
+        }
+
+        public bool IsTemplatesStale { get; set; } = true;
+
+        private List<OfferTemplate> _templates = new List<OfferTemplate>();
+        public List<OfferTemplate> Templates
+        {
+            get
+            {
+                if (IsTemplatesStale)
+                {
+                    log.LogDebug("Offer template data is stale, refetching...");
+                    Task.WaitAll(Update());
+                }
+
+                return _templates;
+            }
+        }
+
+
+        public async Task UpdateTemplates()
+        {
+            var range = "Templates!A2:N";
+
+            SpreadsheetsResource.ValuesResource.GetRequest request = sheets.Spreadsheets.Values.Get(sheetId, range);
+            ValueRange response = await request.ExecuteAsync();
+            var values = response.Values;
+
+            if (values != null && values.Count > 0)
+            {
+                for (var i = 0; i < values.Count; i++)
+                {
+                    var row = values[i];
+                    try
+                    {
+                        var template = new OfferTemplate
+                        {
+                            Id = i+1,
+                            Description = row.ReadColumnAsString(0),
+                            Tags = row.ReadColumnAsString(1).Split(',').ToList(),
+                            OfferTitle = row.ReadColumnAsString(2),
+                            OfferDescription = row.ReadColumnAsString(3),
+                            OfferIconTitle = row.ReadColumnAsString(4),
+                            OfferIconDescription = row.ReadColumnAsString(5),
+                            OfferCost = row.ReadColumnAsInteger(6),
+                            OfferFullCost = row.ReadColumnAsInteger(7),
+                            OfferCostSku = row.ReadColumnAsString(8, "gold"),
+                            OfferDuration = row.ReadColumnAsInteger(9),
+                            OfferContent = row.ReadColumnAsString(10),
+                            OfferDisplay = row.ReadColumnAsString(11),
+                            OfferTemplateId = row.ReadColumnAsInteger(12),
+                            OfferMaxQuantity = row.ReadColumnAsInteger(13)
+                        };
+
+                        _templates.Add(template);
+                    }
+                    catch (IndexOutOfRangeException e)
+                    {
+                        log.LogError("Unable to read row as an offer skeleton, skipping");
+                    }
+                }
+            }
+            else
+            {
+                log.LogWarning("No values returned from sheet {0}", sheetId);
             }
         }
 

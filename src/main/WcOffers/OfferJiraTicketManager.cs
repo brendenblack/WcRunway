@@ -79,5 +79,18 @@ namespace WcOffers
             return description;
 
         }
+
+        public async Task SubmitToQa(Issue issue, string user = "")
+        {
+            issue.Resolution = "Resolved";
+            new WorkflowTransitionUpdates();
+            await issue.WorkflowTransitionAsync("Send to QA");
+
+            if (!string.IsNullOrWhiteSpace(user))
+            {
+                issue.Assignee = user;
+                await issue.SaveChangesAsync();
+            }
+        }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WcData.Sheets.Implementation;
 
-namespace WcData.Tests.Infrastructure.Data.Providers.GoogleSheets.SheetsUnitDataTests
+namespace WcDataTests.Sheets.Implementation.SheetsUnitDataTests
 {
     public class RefreshUnitsFixture : IDisposable
     {

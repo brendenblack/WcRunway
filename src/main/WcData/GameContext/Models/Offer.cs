@@ -90,7 +90,7 @@ namespace WcData.GameContext.Models
         [Column("max_qty")]
         public int MaxQuantity { get; set; } = 1;
 
-        [Column("coldown")]
+        [Column("cooldown")]
         public int Cooldown { get; set; } = 0;
 
         [Column("cooldown_type")]

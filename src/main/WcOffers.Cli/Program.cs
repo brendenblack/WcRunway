@@ -11,6 +11,7 @@ using WcData.GameContext;
 using WcData.Microsoft.Extensions.DependencyInjection;
 using WcOffers.Cli.Features.Data;
 using WcOffers.Cli.Features.GenerateUnique;
+using WcOffers.Cli.Features.ListTemplates;
 using WcOffers.Cli.Features.Quality;
 using WcOffers.Cli.Features.Test;
 using WcOffers.Cli.Features.Token;
@@ -58,12 +59,13 @@ namespace WcOffers.Cli
                     with.CaseSensitive = true;
                     });
 
-                Parser.Default.ParseArguments<TokenOptions, DataOptions, GenerateUniqueOptions, QualityOptions, TestOptions>(args)
+                Parser.Default.ParseArguments<TokenOptions, DataOptions, GenerateUniqueOptions, QualityOptions, TestOptions, ListTemplatesOptions>(args)
                    .MapResult(
                         (TokenOptions o) => container.GetService<TokenRunway>().Execute(o),
                         (GenerateUniqueOptions o) => container.GetService<GenerateUniqueHandler>().Execute(o),
                         (QualityOptions o) => container.GetService<QualityHandler>().Execute(o),
                         (TestOptions o) => container.GetService<TestHandler>().Execute(o),
+                        (ListTemplatesOptions o) => container.GetService<ListTemplatesHandler>().Execute(o),
                         (errs) => HandleParseError(errs));
             }
             catch (Exception e)

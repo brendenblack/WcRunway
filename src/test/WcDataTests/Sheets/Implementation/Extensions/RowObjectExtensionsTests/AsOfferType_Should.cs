@@ -6,7 +6,7 @@ using WcData.Sheets.Implementation.Extensions;
 using WcData.Sheets.Models;
 using Xunit;
 
-namespace WcData.Tests.Implementation.Sheets.Extensions.RowObjectExtensionsTests
+namespace WcDataTests.Sheets.Implementation.Extensions.RowObjectExtensionsTests
 {
     public class AsOfferType_Should
     {

@@ -4,7 +4,7 @@ using WcData.Sheets.Implementation;
 using WcData.Sheets.Models;
 using Xunit;
 
-namespace WcData.Tests.Infrastructure.Data.Providers.GoogleSheets.SheetsUnitDataTests
+namespace WcDataTests.Sheets.Implementation.SheetsUnitDataTests
 {
     public class RefreshUnits_Should : IClassFixture<RefreshUnitsFixture>
     {

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using WcData.Microsoft.Extensions.DependencyInjection;
 using WcOffers.Cli.Features.GenerateUnique;
+using WcOffers.Cli.Features.ListTemplates;
 using WcOffers.Cli.Features.Quality;
 using WcOffers.Cli.Features.Test;
 using WcOffers.Cli.Features.Token;
@@ -62,6 +63,7 @@ namespace WcOffers.Cli
             services.AddTransient<GenerateUniqueHandler>();
             services.AddTransient<QualityHandler>();
             services.AddTransient<TestHandler>();
+            services.AddTransient<ListTemplatesHandler>();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using WcOffers;
+﻿using Atlassian.Jira;
+using WcOffers;
 
 namespace WcOffersTests.OfferJiraTicketManagerTests
 {
@@ -6,7 +7,9 @@ namespace WcOffersTests.OfferJiraTicketManagerTests
     {
         public CreateIssueForOffer_Should()
         {
-            sut = new OfferJiraTicketManager("https://jira.sjc.kixeye.com", "", "");
+            var jira = Jira.CreateRestClient("https://jira.sjc.kixeye.com", "", "");
+            var logger = TestHelpers.CreateLogger<OfferJiraTicketManager>();
+            sut = new OfferJiraTicketManager(logger, jira);
         }
 
         private readonly OfferJiraTicketManager sut;
