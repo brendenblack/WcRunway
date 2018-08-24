@@ -36,8 +36,5 @@ namespace WcGraph.CliTests.MappingProfileTests
 
             result.Type.ShouldBe(blob.EnemyType);
         }
-
-
-
     }
 }

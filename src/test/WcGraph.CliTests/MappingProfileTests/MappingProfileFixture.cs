@@ -16,6 +16,7 @@ namespace WcGraph.CliTests.MappingProfileTests
             {
                 DefenderLevel = 100,
                 EnemyType = "test_enemy",
+                AttackLocation = "test_enemy",
                 AttackerRubiSessions = 2,
                 AttackerRubiDuration = 12345,
                 BattleDuration = 123456,

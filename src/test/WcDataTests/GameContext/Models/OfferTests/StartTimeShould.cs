@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WcCore.Domain.Offers;
+using WcData.GameContext.Models;
 using Xunit;
 
-namespace WcCore.Tests.Domain.Offers.OfferTests
+namespace WcDataTests.GameContext.Models.OfferTests
 {
     public class StartTimeShould
     {

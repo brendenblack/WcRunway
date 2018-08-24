@@ -1,4 +1,5 @@
 ﻿using Atlassian.Jira;
+using Microsoft.Extensions.Logging;
 using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
@@ -19,16 +20,18 @@ namespace WcOffers
          */
 
         private readonly Jira jira;
+        private readonly ILogger<OfferJiraTicketManager> logger;
 
-        public OfferJiraTicketManager(string url, string username, string password)
+        public OfferJiraTicketManager(ILogger<OfferJiraTicketManager> logger, Jira jira)
         {
-            //jira = Jira.CreateRestClient(url);
-            //jira.RestClient.RestSharpClient.Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator("", "bearer");
+            this.logger = logger;
+            this.jira = jira;
         }
 
 
-        public async Task CreateIssueForOffer(Offer offer)
+        public async Task<Issue> CreateIssueForOffer(Offer offer)
         {
+            logger.LogDebug("Creating issue for offer {}", offer.OfferCode);
             var issue = jira.CreateIssue("WC");
             issue.Type = "Offer";
             issue.Summary = offer.OfferCode;
@@ -36,7 +39,10 @@ namespace WcOffers
             issue.FixVersions.Add("Offers");
             issue["Severity"] = "3 - Normal";
 
-            await issue.SaveChangesAsync();
+            var createdIssue = await issue.SaveChangesAsync();
+            return issue;
+
+
         }
 
         public async Task<bool> CheckForExistingTicket(Offer offer)

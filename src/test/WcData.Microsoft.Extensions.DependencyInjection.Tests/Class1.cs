@@ -7,15 +7,15 @@ namespace WcData.Microsoft.Extensions.DependencyInjection.Tests
 {
     public class Class1
     {
-        [Fact]
-        public void test()
-        {
-            IServiceCollection services = new ServiceCollection();
+        //[Fact]
+        //public void test()
+        //{
+        //    IServiceCollection services = new ServiceCollection();
 
-            services.AddSheets(opts => { opts.ClientSecretPath = "client_secret.json"; });
+        //    services.AddSheets(opts => { opts.ClientSecretPath = "client_secret.json"; });
 
-            var provider = services.BuildServiceProvider();
-            // provider.GetRequiredService<>
-        }
+        //    var provider = services.BuildServiceProvider();
+        //    // provider.GetRequiredService<>
+        //}
     }
 }

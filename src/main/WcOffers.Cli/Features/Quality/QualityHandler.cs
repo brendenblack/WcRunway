@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Atlassian.Jira;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,15 @@ namespace WcOffers.Cli.Features.Quality
 
                 if (offer != null)
                 {
-                    Task.Run(() => jira.CreateIssueForOffer(offer)).Wait();
+                    logger.LogInformation($"Creating JIRA issue for offer {offer.OfferCode}");
+
+                    Task.Run(async () => 
+                    {
+                        var issue = await jira.CreateIssueForOffer(offer);
+                        logger.LogInformation("Issue created with key {}", issue.Key.Value);
+                    }).Wait();
+
+                    
                 }
                 else
                 {

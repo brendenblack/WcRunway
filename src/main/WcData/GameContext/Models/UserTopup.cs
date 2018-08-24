@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WcCore.Domain
+namespace WcData.GameContext.Models
 {
     public class UserTopup
     {
