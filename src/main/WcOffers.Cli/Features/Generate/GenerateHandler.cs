@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WcData.GameContext;
+using WcData.GameContext.Models;
 using WcData.Sheets;
 
 namespace WcOffers.Cli.Features.Generate
@@ -13,9 +14,9 @@ namespace WcOffers.Cli.Features.Generate
         private readonly ILogger<GenerateHandler> logger;
         private readonly IOfferData offerData;
         private readonly ISandbox2Context sb2;
-        private readonly TemplateOfferGenerator gen;
+        private readonly TemplatedOfferGenerator gen;
 
-        public GenerateHandler(ILogger<GenerateHandler> logger, IOfferData offerData, ISandbox2Context sb2, TemplateOfferGenerator gen)
+        public GenerateHandler(ILogger<GenerateHandler> logger, IOfferData offerData, ISandbox2Context sb2, TemplatedOfferGenerator gen)
         {
             this.logger = logger;
             this.offerData = offerData;
@@ -39,7 +40,7 @@ namespace WcOffers.Cli.Features.Generate
             }
 
             Dictionary<string, string> parameters = new Dictionary<string, string>();
-            if (opts.Parameters != null && opts.Parameters.Count > 0)
+            if (opts.Parameters != null && opts.Parameters.Count() > 0)
             {
                 foreach (var pair in opts.Parameters)
                 {
@@ -59,10 +60,18 @@ namespace WcOffers.Cli.Features.Generate
             }
 
             var offer = gen.GenerateOfferFromTemplate(template, opts.OfferCode, parameters);
+
+            // Check offer for any remaining placeholder values
+            if (offer.)
+
+
+
             sb2.Offers.Add(offer);
             sb2.SaveChanges();
             return 0;
             
         }
+
+        
     }
 }

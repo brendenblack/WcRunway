@@ -14,7 +14,12 @@ namespace WcOffers.Cli.Features.Generate
         [Option('c', "code", Required = true, HelpText = "The offer code to assign to the generated offer. Maximum of 20 characters")]
         public string OfferCode { get; set; }
 
-        [Option('p', "param", Required = false, HelpText = "A list of key/value pairs (in the form of key=value) that will be substitutded in the template")]
-        public List<string> Parameters { get; set; }
+        [Option('p', "prereq", Required = false, HelpText = "The code of an offer to use as a prerequisite")]
+        public string Prerequisite { get; set; }
+
+        [Option('D', "params", Required = false, HelpText = "A list of key/value pairs (in the form of key1=value1 key2=\"my value 2\") that will be substitutded in the template")]
+        public IEnumerable<string> Parameters { get; set; }
+
+
     }
 }

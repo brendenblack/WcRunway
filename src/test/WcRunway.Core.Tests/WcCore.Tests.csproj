@@ -30,8 +30,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Domain\Offers\" />
-  </ItemGroup>
-
 </Project>

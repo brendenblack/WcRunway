@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using WcData.Snowflake.Implementation;
+using WcDataTests;
 
 namespace WcData.Tests.Infrastructure.Data.Providers.Snowflake.SnowflakeContextTests
 {

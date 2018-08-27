@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using WcData.Microsoft.Extensions.DependencyInjection;
+using WcOffers.Cli.Features.Generate;
 using WcOffers.Cli.Features.GenerateUnique;
 using WcOffers.Cli.Features.ListTemplates;
 using WcOffers.Cli.Features.Quality;
@@ -34,6 +35,8 @@ namespace WcOffers.Cli
             // Add connection to game data stored in Google Sheets
             services.AddSheets(opts => { opts.ClientSecretPath = "client_secret.json"; });
 
+            var accountname = config["data:snowflake:account"];
+
             services.AddSnowflake(opt =>
             {
                 opt.Account = config["data:snowflake:account"];
@@ -59,11 +62,13 @@ namespace WcOffers.Cli
             //services.AddTransient<UniqueOfferGenerator>();
             //services.AddTransient<IOfferData, SheetsOfferData>();
 
+            services.AddTransient<TemplatedOfferGenerator>();
             services.AddTransient<TokenRunway>();
             services.AddTransient<GenerateUniqueHandler>();
             services.AddTransient<QualityHandler>();
             services.AddTransient<TestHandler>();
             services.AddTransient<ListTemplatesHandler>();
+            services.AddTransient<GenerateHandler>();
         }
     }
 }

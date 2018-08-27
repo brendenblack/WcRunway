@@ -68,7 +68,7 @@ namespace WcData.Sheets.Implementation
                 if (IsTemplatesStale)
                 {
                     log.LogDebug("Offer template data is stale, refetching...");
-                    Task.WaitAll(Update());
+                    Task.WaitAll(UpdateTemplates());
                 }
 
                 return _templates;
