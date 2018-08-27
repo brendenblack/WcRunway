@@ -22,21 +22,22 @@ namespace WcOffers
 
         public Offer GenerateOfferFromTemplate(OfferTemplate template, string offerCode, Dictionary<string,string> parameters = null, string prerequisite = "", int priority = 0)
         {
+            // TODO: validate offerCode
 
             var offer = new Offer
             {
                 OfferCode = offerCode,
                 Priority = priority,
-                Title = template.OfferTitle,
-                Description = template.OfferDescription,
-                IconTitle = template.OfferIconTitle,
-                IconDescription = template.OfferIconDescription,
-                ContentJson = template.OfferContent,
-                DisplayedItemsJson = template.OfferDisplay,
+                Title = template.OfferTitle ?? "",
+                Description = template.OfferDescription ?? "",
+                IconTitle = template.OfferIconTitle ?? "",
+                IconDescription = template.OfferIconDescription ?? "",
+                ContentJson = template.OfferContent ?? "{ \"gold\": 0 }",
+                DisplayedItemsJson = template.OfferDisplay ?? "[]",
                 Duration = template.OfferDuration,
                 Cost = template.OfferCost,
                 FullCost = template.OfferFullCost,
-                CostSku = template.OfferCostSku,
+                CostSku = template.OfferCostSku ?? "gold",
                 StartTime = DateTimeOffset.Now,
                 EndTime = DateTimeOffset.Now + TimeSpan.FromDays(3),
                 MaxQuantity = template.OfferMaxQuantity,
@@ -46,14 +47,19 @@ namespace WcOffers
                 Prerequisite = prerequisite
             };
 
+            if (parameters == null)
+            {
+                parameters = new Dictionary<string, string>();
+            }
+
             foreach (var key in parameters.Keys)
             {
-                offer.Title = offer.Title.Replace($"%{key}", parameters.GetValueOrDefault(key));
-                offer.Description = offer.Description.Replace($"%{key}", parameters.GetValueOrDefault(key));
-                offer.IconTitle = offer.IconTitle.Replace($"%{key}", parameters.GetValueOrDefault(key));
-                offer.IconDescription = offer.IconDescription.Replace($"%{key}", parameters.GetValueOrDefault(key));
-                offer.ContentJson = offer.ContentJson.Replace($"%{key}", parameters.GetValueOrDefault(key));
-                offer.DisplayedItemsJson = offer.DisplayedItemsJson.Replace($"%{key}", parameters.GetValueOrDefault(key));
+                offer.Title = offer.Title.Replace($"%{key}%", parameters.GetValueOrDefault(key));
+                offer.Description = offer.Description.Replace($"%{key}%", parameters.GetValueOrDefault(key));
+                offer.IconTitle = offer.IconTitle.Replace($"%{key}%", parameters.GetValueOrDefault(key));
+                offer.IconDescription = offer.IconDescription.Replace($"%{key}%", parameters.GetValueOrDefault(key));
+                offer.ContentJson = offer.ContentJson.Replace($"%{key}%", parameters.GetValueOrDefault(key));
+                offer.DisplayedItemsJson = offer.DisplayedItemsJson.Replace($"%{key}%", parameters.GetValueOrDefault(key));
             }
 
 
