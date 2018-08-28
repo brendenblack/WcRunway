@@ -59,12 +59,33 @@ namespace WcOffers.Cli.Features.Generate
                 return -1;
             }
 
+            if (opts.Cost.HasValue)
+            {
+                logger.LogInformation("Overriding template's cost value of {} with {}", template.OfferCost, opts.Cost.HasValue);
+                template.OfferCost = opts.Cost.Value;
+            }
+
+            if (opts.FullCost.HasValue)
+            {
+                logger.LogInformation("Overriding template's full cost value of {} with {}", template.OfferFullCost, opts.FullCost.HasValue);
+                template.OfferFullCost = opts.FullCost.Value;
+            }
+
+            if (opts.MaxQuantity.HasValue)
+            {
+                logger.LogInformation("Overriding template's max quantity value of {} with {}", template.OfferMaxQuantity, opts.MaxQuantity.HasValue);
+                template.OfferMaxQuantity = opts.MaxQuantity.Value;
+            }
+
             var offer = gen.GenerateOfferFromTemplate(template, opts.OfferCode, parameters);
 
             // Check offer for any remaining placeholder values
-            if (offer.)
-
-
+            int placeholders = gen.CheckOfferForPlaceholder(offer);
+            if (placeholders > 0 && opts.FailOnWarn)
+            {
+                logger.LogError("Cancelling offer generation because warnings were found. No database changes have been made.");
+                return -1;
+            }
 
             sb2.Offers.Add(offer);
             sb2.SaveChanges();

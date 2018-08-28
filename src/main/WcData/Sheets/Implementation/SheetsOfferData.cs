@@ -93,7 +93,7 @@ namespace WcData.Sheets.Implementation
                     {
                         var template = new OfferTemplate
                         {
-                            Id = i+1,
+                            Id = i+2, // add 2 to align id with row (which is 1-index) and skipping the header row
                             Description = row.ReadColumnAsString(0),
                             Tags = row.ReadColumnAsString(1).Split(',').ToList(),
                             OfferTitle = row.ReadColumnAsString(2),

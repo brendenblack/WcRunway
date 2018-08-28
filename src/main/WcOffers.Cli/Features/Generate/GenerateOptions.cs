@@ -11,7 +11,7 @@ namespace WcOffers.Cli.Features.Generate
         [Value(0, Required = true, HelpText = "The ID of the template to generate. IDs can be discovered by executing the list-templates command")]
         public int TemplateId { get; set; }
 
-        [Option('c', "code", Required = true, HelpText = "The offer code to assign to the generated offer. Maximum of 20 characters")]
+        [Option('o', "offer-code", Required = true, HelpText = "The offer code to assign to the generated offer. Maximum of 20 characters")]
         public string OfferCode { get; set; }
 
         [Option('p', "prereq", Required = false, HelpText = "The code of an offer to use as a prerequisite")]
@@ -20,6 +20,16 @@ namespace WcOffers.Cli.Features.Generate
         [Option('D', "params", Required = false, HelpText = "A list of key/value pairs (in the form of key1=value1 key2=\"my value 2\") that will be substitutded in the template")]
         public IEnumerable<string> Parameters { get; set; }
 
+        [Option('c', "cost", Required = false, HelpText = "Allows overriding of the templated offer's cost")]
+        public int? Cost { get; set; }
 
+        [Option('C', "full-cost", Required = false, HelpText = "Allows overriding of the templated offer's full cost")]
+        public int? FullCost { get; set; }
+
+        [Option('q', "quantity", Required = false, HelpText = "Allows overriding of the templated offer's max quantity")]
+        public int? MaxQuantity { get; set; }
+
+        [Option('w', "fail-on-warn", Required = false, HelpText = "Do not write to the database when warnings are raised")]
+        public bool FailOnWarn { get; set; } = false;
     }
 }
