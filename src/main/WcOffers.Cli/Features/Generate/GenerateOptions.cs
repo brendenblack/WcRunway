@@ -29,7 +29,7 @@ namespace WcOffers.Cli.Features.Generate
         [Option('q', "quantity", Required = false, HelpText = "Allows overriding of the templated offer's max quantity")]
         public int? MaxQuantity { get; set; }
 
-        [Option('w', "fail-on-warn", Required = false, HelpText = "Do not write to the database when warnings are raised")]
-        public bool FailOnWarn { get; set; } = false;
+        [Option('i', "ignore-warn", Required = false, Default = false, HelpText = "Any warnings generated will cause the process to fail to prevent writing invalid data to the database. Specify this option to ignore any warnings and generate an offer regardless")]
+        public bool IgnoreWarnings { get; set; }
     }
 }

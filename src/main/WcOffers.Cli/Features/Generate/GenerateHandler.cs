@@ -81,10 +81,18 @@ namespace WcOffers.Cli.Features.Generate
 
             // Check offer for any remaining placeholder values
             int placeholders = gen.CheckOfferForPlaceholder(offer);
-            if (placeholders > 0 && opts.FailOnWarn)
+
+
+            if (placeholders > 0 && opts.IgnoreWarnings)
             {
-                logger.LogError("Cancelling offer generation because warnings were found. No database changes have been made.");
+                logger.LogError("Cancelling offer generation because warning were raised. No database changes have been made.");
                 return -1;
+            }
+
+
+            if (missingFields > 0 || placeholders > 0)
+            {
+                logger.LogWarning("Generating offer despite {} warning(s) because the ignore warnings flag was set");
             }
 
             sb2.Offers.Add(offer);
