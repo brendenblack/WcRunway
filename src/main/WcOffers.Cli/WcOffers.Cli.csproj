@@ -3,6 +3,11 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <StartupObject>WcOffers.Cli.Program</StartupObject>
+    <Authors>Brenden Black</Authors>
+    <Product>War Commander Offers</Product>
+    <Version>0.1.0</Version>
+    <Description>Command line tool for offer administration</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

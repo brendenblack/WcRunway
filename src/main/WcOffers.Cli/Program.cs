@@ -23,7 +23,7 @@ namespace WcOffers.Cli
     {
         private static ServiceProvider container;
 
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             var exitCode = 0;
 
@@ -75,9 +75,6 @@ namespace WcOffers.Cli
                 log.LogError(e.Message);
                 exitCode = 1;
             }
-
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
 
             NLog.LogManager.Shutdown();
 

@@ -39,18 +39,9 @@ namespace WcOffers.Cli.Features.Generate
                 return -1;
             }
 
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            if (opts.Parameters != null && opts.Parameters.Count() > 0)
-            {
-                foreach (var pair in opts.Parameters)
-                {
-                    if (pair.Contains('='))
-                    {
-                        var split = pair.Split('=');
-                        parameters.Add(split[0], split[1]);
-                    }
-                }
-            }
+            logger.LogDebug("Checking provided options for parameters");
+            var parameters = ReadParameters(opts);
+            logger.LogDebug("Found {} parameters", parameters.Count);
 
             var template = offerData.Templates.FirstOrDefault(t => t.Id == opts.TemplateId);
             if (template == null)
@@ -89,7 +80,7 @@ namespace WcOffers.Cli.Features.Generate
                 return -1;
             }
 
-
+            var missingFields = 0;
             if (missingFields > 0 || placeholders > 0)
             {
                 logger.LogWarning("Generating offer despite {} warning(s) because the ignore warnings flag was set");
@@ -101,6 +92,39 @@ namespace WcOffers.Cli.Features.Generate
             
         }
 
-        
+
+        public Dictionary<string, string> ReadParameters(GenerateOptions opts)
+        {
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+
+            if (opts.Parameters != null && opts.Parameters.Count() > 0)
+            {
+                foreach (var pair in opts.Parameters)
+                {
+                    if (pair.Contains('='))
+                    {
+                        var split = pair.Split('=');
+                        if (split.Count() == 2)
+                        {
+                            if (!split[0].Trim().Contains(" "))
+                            {
+                                parameters.Add(split[0].Trim(), split[1].Trim());
+                            }
+                            else
+                            {
+                                logger.LogInformation("Key '{}' is illegal and will be ignored. Parameter keys cannot have white space.", split[0].Trim());
+                            }
+                        }
+                        else
+                        {
+                            logger.LogDebug("Splitting '{}' yielded an unexpected {} item(s), skipping", pair, split.Count());
+                        }
+                    }
+                }
+            }
+
+            return parameters;
+        }
+
     }
 }
