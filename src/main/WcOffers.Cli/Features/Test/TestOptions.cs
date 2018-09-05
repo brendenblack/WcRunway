@@ -6,7 +6,7 @@ using System.Text;
 namespace WcOffers.Cli.Features.Test
 {
     [Verb("test", HelpText = "Perform arbitrary development tests")]
-    public class TestOptions
+    public class TestOptions : CommandLineOptions
     {
         [Option("sandbox2", Required = false, Default = false)]
         public bool TestSandbox2 { get; set; }

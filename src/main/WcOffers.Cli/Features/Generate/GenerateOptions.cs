@@ -6,7 +6,7 @@ using System.Text;
 namespace WcOffers.Cli.Features.Generate
 {
     [Verb("generate", HelpText = "Generate offers based on a template. Template IDs can be discovered by executing the list-templates command")]
-    public class GenerateOptions
+    public class GenerateOptions : CommandLineOptions
     {
         [Value(0, Required = true, HelpText = "The ID of the template to generate. IDs can be discovered by executing the list-templates command")]
         public int TemplateId { get; set; }

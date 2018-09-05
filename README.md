@@ -26,7 +26,7 @@ This project pulls heavily from Snowflake for cohorting, MySql for writing offer
 #### WcOffers.Cli
 A command-line interface to allow:
 1) An analyst to administer the various phases of an offer on an ad-hoc basis
-2) Jenkins integration for scheduling and JIRA-reactive actions   
+2) Jenkins integration for scheduling and JIRA-reactive actions 
 
 ### Testing
 #### WcRunway.Core.Tests

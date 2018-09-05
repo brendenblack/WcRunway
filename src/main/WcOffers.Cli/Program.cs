@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using WcData.GameContext;
 using WcData.Microsoft.Extensions.DependencyInjection;
+using WcOffers.Cli.Features;
 using WcOffers.Cli.Features.Data;
 using WcOffers.Cli.Features.Generate;
 using WcOffers.Cli.Features.GenerateUnique;
@@ -21,74 +22,66 @@ namespace WcOffers.Cli
 {
     class Program
     {
-        private static ServiceProvider container;
-
         static void Main(string[] args)
         {
-            var exitCode = 0;
-
-            // load configuration
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true)
-                .AddJsonFile("appsettings.dev.json", true)
-                .AddEnvironmentVariables();
-            IConfiguration config = builder.Build();
-
-            // Build the container
-            var serviceCollection = new ServiceCollection();
-            new Startup().ConfigureServices(serviceCollection, config);
-            container = serviceCollection.BuildServiceProvider();
-
-            // Configure console logging
-            container.GetRequiredService<ILoggerFactory>()
-                .AddNLog(new NLogProviderOptions
-                {
-                    CaptureMessageTemplates = true,
-                    CaptureMessageProperties = true
+            // Setup input parser
+            var parser = new Parser(with => {
+                with.EnableDashDash = true;
+                with.CaseSensitive = true;
                 });
-            NLog.LogManager.LoadConfiguration("nlog.config");
-           
-            // Create logger
-            var log = container.GetService<ILoggerFactory>().CreateLogger<Program>();
-          
-            // Handle input
-            try
-            {
-                var parser = new Parser(with => {
-                    with.EnableDashDash = true;
-                    with.CaseSensitive = true;
-                    });
 
-                Parser.Default.ParseArguments<TokenOptions, DataOptions, GenerateUniqueOptions, QualityOptions, TestOptions, ListTemplatesOptions, GenerateOptions>(args)
-                   .MapResult(
-                        (TokenOptions o) => container.GetService<TokenRunway>().Execute(o),
-                        (GenerateUniqueOptions o) => container.GetService<GenerateUniqueHandler>().Execute(o),
-                        (QualityOptions o) => container.GetService<QualityHandler>().Execute(o),
-                        (TestOptions o) => container.GetService<TestHandler>().Execute(o),
-                        (GenerateOptions o) => container.GetService<GenerateHandler>().Execute(o),
-                        (ListTemplatesOptions o) => container.GetService<ListTemplatesHandler>().Execute(o),
-                        (errs) => HandleParseError(errs));
-            }
-            catch (Exception e)
-            {
-                log.LogError(e.Message);
-                exitCode = 1;
-            }
+            // Handle arguments
+            int exitCode = Parser.Default.ParseArguments<TokenOptions, DataOptions, GenerateUniqueOptions, QualityOptions, TestOptions, ListTemplatesOptions, GenerateOptions>(args)
+                .MapResult(
+                    (CommandLineOptions o) =>
+                    {
+                        IConfiguration config = Startup.LoadConfiguration(o);
+                        var serviceCollection = new ServiceCollection();
+                        Startup.ConfigureServices(serviceCollection, config);
+                        ServiceProvider container = serviceCollection.BuildServiceProvider();
 
-            NLog.LogManager.Shutdown();
+                        return Execute(container, o);
+                    },
+                    //(TokenOptions o) => container.GetService<TokenRunway>().Execute(o),
+                    //(GenerateUniqueOptions o) => container.GetService<GenerateUniqueHandler>().Execute(o),
+                    //(QualityOptions o) => container.GetService<QualityHandler>().Execute(o),
+                    //(TestOptions o) => container.GetService<TestHandler>().Execute(o),
+                    //(GenerateOptions o) => container.GetService<GenerateHandler>().Execute(o),
+                    //(ListTemplatesOptions o) => container.GetService<ListTemplatesHandler>().Execute(o),
+                    (errs) => HandleParseError(errs));
+
 
             Environment.Exit(exitCode);
         }
 
+        public static int Execute(ServiceProvider container, CommandLineOptions opts)
+        {  
 
-        public static int ExecuteToken(TokenOptions opts)
-        {
-            Console.WriteLine("Running token runway for {0}", opts.UnitId);
-            Console.ReadKey();
-            return 0;
+            // TODO: how to configure console logging?
+            
+
+            // Create logger
+            var log = container.GetService<ILoggerFactory>().CreateLogger<Program>();
+
+            try
+            {
+                switch (opts)
+                {
+                    case GenerateOptions generateOptions:
+                        return container.GetService<GenerateHandler>().Execute(generateOptions);
+                    case TestOptions testOptions:
+                        return container.GetService<TestHandler>().Execute(testOptions);
+                    default:
+                        return -1;
+                }
+            }
+            finally
+            {
+                NLog.LogManager.Shutdown();
+            }
         }
 
+       
 
         public static int HandleParseError(IEnumerable<Error> errors)
         {
@@ -96,13 +89,10 @@ namespace WcOffers.Cli
             {
                 Console.WriteLine(error.ToString());
             }
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
+
             return -1;
         }
 
         
     }
-
-
 }

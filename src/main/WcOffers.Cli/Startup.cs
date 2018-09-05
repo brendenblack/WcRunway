@@ -2,10 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using WcData.Microsoft.Extensions.DependencyInjection;
+using WcOffers.Cli.Features;
 using WcOffers.Cli.Features.Generate;
 using WcOffers.Cli.Features.GenerateUnique;
 using WcOffers.Cli.Features.ListTemplates;
@@ -17,7 +20,36 @@ namespace WcOffers.Cli
 {
     public class Startup
     {
-        public void ConfigureServices(IServiceCollection services, IConfiguration config)
+
+
+        public static IConfiguration LoadConfiguration(CommandLineOptions opts)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables();
+
+            if (!string.IsNullOrWhiteSpace(opts.ConfigurationFile))
+            {
+
+                // TODO: allow for .ini, .json and .xml files to be passed in and handled appropriately
+                // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.1#file-configuration-provider
+                
+            }
+            else if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("")))
+            {
+                // TODO
+            }
+            else
+            {
+                builder.AddJsonFile("appsettings.json", true);
+                //.AddJsonFile("appsettings.dev.json", true)
+            }
+
+
+            return builder.Build();
+        }
+
+        public static void ConfigureServices(IServiceCollection services, IConfiguration config)
         {
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
@@ -49,19 +81,7 @@ namespace WcOffers.Cli
             services.AddSingleton(s => Jira.CreateRestClient(config["data:jira:url"], config["data:jira:username"], config["data:jira:password"]));
             services.AddTransient<OfferJiraTicketManager>();
 
-            //services.AddTransient<SnowflakeConnectionDetails>(o => new SnowflakeConnectionDetails(sfAccount, sfUsername, sfPassword, sfDatabase, sfSchema));
-
-            //services.AddSingleton(EmbeddedJsonServiceCredential.CreateCredentialFromFile()); 
-            //services.AddSingleton<SheetsConnectorService>();
-            //services.AddTransient<Warmup>();
-            //services.AddTransient<IUnitOwnership, SnowflakeContext>();
-            //services.AddTransient<ISnowflakeContext, MockSnowflakeContext>();// TODO: refactor this out
-            //services.AddSingleton<IUnitData, SheetsUnitData>();
-            //services.AddTransient<IGameContext, GameContext>();
-            //services.AddTransient<IOfferCopyBible, SheetsOfferCopyBible>();
-            //services.AddTransient<UniqueOfferGenerator>();
-            //services.AddTransient<IOfferData, SheetsOfferData>();
-
+            // TODO: load all CommandLineHandler-derived classes
             services.AddTransient<TemplatedOfferGenerator>();
             services.AddTransient<TokenRunway>();
             services.AddTransient<GenerateUniqueHandler>();
@@ -69,6 +89,18 @@ namespace WcOffers.Cli
             services.AddTransient<TestHandler>();
             services.AddTransient<ListTemplatesHandler>();
             services.AddTransient<GenerateHandler>();
+        }
+
+        public static void ConfigureLogging(ServiceProvider container, IConfiguration config)
+        {
+            container.GetRequiredService<ILoggerFactory>()
+                .AddNLog(new NLogProviderOptions
+                {
+                    CaptureMessageTemplates = true,
+                    CaptureMessageProperties = true
+                });
+
+            NLog.LogManager.LoadConfiguration("nlog.config");
         }
     }
 }
