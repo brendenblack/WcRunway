@@ -13,7 +13,6 @@ using WcOffers.Cli.Features.Generate;
 using WcOffers.Cli.Features.GenerateUnique;
 using WcOffers.Cli.Features.ListTemplates;
 using WcOffers.Cli.Features.Quality;
-using WcOffers.Cli.Features.Test;
 using WcOffers.Cli.Features.Token;
 
 namespace WcOffers.Cli
@@ -21,7 +20,14 @@ namespace WcOffers.Cli
     public class Startup
     {
 
-
+        /// <summary>
+        /// Loads in any external configuration found, based on an order of precedence: 1. config file specified on 
+        /// the command line 2. config file specified in the environment variable WC_OFFER_CONFIG 3. (default) config.ini.
+        /// 
+        /// In a development environment, appsettings.dev.json will be loaded and take priority over config.ini
+        /// </summary>
+        /// <param name="opts"></param>
+        /// <returns></returns>
         public static IConfiguration LoadConfiguration(CommandLineOptions opts)
         {
             var builder = new ConfigurationBuilder()
@@ -30,19 +36,34 @@ namespace WcOffers.Cli
 
             if (!string.IsNullOrWhiteSpace(opts.ConfigurationFile))
             {
-
+                if (!File.Exists(opts.ConfigurationFile))
+                {
+                    throw new FileNotFoundException($"Unable to find configuration file specified on the command line at {opts.ConfigurationFile}");
+                }
+                
                 // TODO: allow for .ini, .json and .xml files to be passed in and handled appropriately
                 // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.1#file-configuration-provider
-                
+                if (opts.ConfigurationFile.EndsWith(".ini"))
+                {
+                    builder.AddIniFile(opts.ConfigurationFile);
+                }
+                else if (opts.ConfigurationFile.EndsWith(".json"))
+                {
+                    builder.AddJsonFile(opts.ConfigurationFile);
+                }
+                else
+                {
+                    throw new ArgumentException($"Unable to load specified configuration file {opts.ConfigurationFile}. Files must be in INI or JSON format.");
+                }
             }
-            else if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("")))
+            else if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WC_OFFER_CONFIG")))
             {
                 // TODO
             }
             else
             {
-                builder.AddJsonFile("appsettings.json", true);
-                //.AddJsonFile("appsettings.dev.json", true)
+                builder.AddIniFile("config.ini", true)
+                    .AddJsonFile("appsettings.dev.json", true);
             }
 
 
@@ -86,13 +107,18 @@ namespace WcOffers.Cli
             services.AddTransient<TokenRunway>();
             services.AddTransient<GenerateUniqueHandler>();
             services.AddTransient<QualityHandler>();
-            services.AddTransient<TestHandler>();
             services.AddTransient<ListTemplatesHandler>();
             services.AddTransient<GenerateHandler>();
         }
 
         public static void ConfigureLogging(ServiceProvider container, IConfiguration config)
         {
+            var configfile = config["logging:nlog:config-file"];
+            if (string.IsNullOrWhiteSpace(configfile))
+            {
+                // TODO: how should this be handled?
+            }
+
             container.GetRequiredService<ILoggerFactory>()
                 .AddNLog(new NLogProviderOptions
                 {
@@ -100,7 +126,7 @@ namespace WcOffers.Cli
                     CaptureMessageProperties = true
                 });
 
-            NLog.LogManager.LoadConfiguration("nlog.config");
+            NLog.LogManager.LoadConfiguration(configfile);
         }
     }
 }

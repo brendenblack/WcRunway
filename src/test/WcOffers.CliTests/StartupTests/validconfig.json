@@ -1,0 +1,25 @@
+﻿{
+  "data": {
+    "sandbox2": {
+      "username": "sb2username",
+      "password": "sb2password",
+      "url": "wc-dev-sandbox2.mysql.com",
+      "name": "wc_dev_sandbox"
+    },
+    "snowflake": {
+      "account": "warcommander",
+      "username": "sfusername",
+      "password": "sfpassword"
+    },
+    "jira": {
+      "url": "http://jira.com",
+      "username": "jirausername",
+      "password": "jirapassword"
+    }
+  },
+  "logging": {
+    "nlog": {
+      "config-file":  "nlog.config"
+    }
+  }
+}

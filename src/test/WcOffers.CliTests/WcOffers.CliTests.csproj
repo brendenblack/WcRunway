@@ -24,4 +24,13 @@
     <ProjectReference Include="..\..\main\WcOffers\WcOffers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="StartupTests\validconfig.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StartupTests\validconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

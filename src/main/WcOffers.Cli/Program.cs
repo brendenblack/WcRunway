@@ -15,8 +15,8 @@ using WcOffers.Cli.Features.Generate;
 using WcOffers.Cli.Features.GenerateUnique;
 using WcOffers.Cli.Features.ListTemplates;
 using WcOffers.Cli.Features.Quality;
-using WcOffers.Cli.Features.Test;
 using WcOffers.Cli.Features.Token;
+using WcOffers.Cli.Features.Validate;
 
 namespace WcOffers.Cli
 {
@@ -24,15 +24,16 @@ namespace WcOffers.Cli
     {
         static void Main(string[] args)
         {
-            // Setup input parser
+            // Setup argument parser
             var parser = new Parser(with => {
                 with.EnableDashDash = true;
                 with.CaseSensitive = true;
                 });
 
-            // Handle arguments
-            int exitCode = Parser.Default.ParseArguments<TokenOptions, DataOptions, GenerateUniqueOptions, QualityOptions, TestOptions, ListTemplatesOptions, GenerateOptions>(args)
+            // Handle arguments, treating the Validation verb differently than the rest to bypass starting the container
+            int exitCode = Parser.Default.ParseArguments<ValidateOptions, CommandLineOptions>(args)
                 .MapResult(
+                    (ValidateOptions o) => new ValidateHandler().Execute(o), 
                     (CommandLineOptions o) =>
                     {
                         IConfiguration config = Startup.LoadConfiguration(o);
@@ -42,26 +43,23 @@ namespace WcOffers.Cli
 
                         return Execute(container, o);
                     },
-                    //(TokenOptions o) => container.GetService<TokenRunway>().Execute(o),
-                    //(GenerateUniqueOptions o) => container.GetService<GenerateUniqueHandler>().Execute(o),
-                    //(QualityOptions o) => container.GetService<QualityHandler>().Execute(o),
-                    //(TestOptions o) => container.GetService<TestHandler>().Execute(o),
-                    //(GenerateOptions o) => container.GetService<GenerateHandler>().Execute(o),
-                    //(ListTemplatesOptions o) => container.GetService<ListTemplatesHandler>().Execute(o),
                     (errs) => HandleParseError(errs));
 
+
+            var parsed = Parser.Default.ParseArguments<ValidateOptions, CommandLineOptions>(args);
 
             Environment.Exit(exitCode);
         }
 
         public static int Execute(ServiceProvider container, CommandLineOptions opts)
         {  
-
-            // TODO: how to configure console logging?
-            
-
             // Create logger
             var log = container.GetService<ILoggerFactory>().CreateLogger<Program>();
+
+            // TODO handlers
+            // (TokenOptions o) => container.GetService<TokenRunway>().Execute(o),
+            // (GenerateUniqueOptions o) => container.GetService<GenerateUniqueHandler>().Execute(o),
+            // (ListTemplatesOptions o) => container.GetService<ListTemplatesHandler>().Execute(o),
 
             try
             {
@@ -69,11 +67,17 @@ namespace WcOffers.Cli
                 {
                     case GenerateOptions generateOptions:
                         return container.GetService<GenerateHandler>().Execute(generateOptions);
-                    case TestOptions testOptions:
-                        return container.GetService<TestHandler>().Execute(testOptions);
+                    case QualityOptions qualityOptions:
+                        return container.GetService<QualityHandler>().Execute(qualityOptions);
                     default:
                         return -1;
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                log.LogError("An exception ocurred while attempting to execute this request", e);
+                return -1;
             }
             finally
             {

@@ -33,5 +33,7 @@ namespace WcOffers.Cli.Tests
 
             return offer;
         }
+
+
     }
 }

@@ -26,7 +26,7 @@ namespace WcOffers.Cli.Features.Generate
 
         public int Execute(GenerateOptions opts)
         {
-
+            // Validate the provided offer code
             if (string.IsNullOrWhiteSpace(opts.OfferCode))
             {
                 logger.LogError("An offer code must be provided");
@@ -38,8 +38,11 @@ namespace WcOffers.Cli.Features.Generate
                 logger.LogError("The provided offer code of {} is already in use", opts.OfferCode);
                 return -1;
             }
+            logger.LogDebug("Creating offer with code {}", opts.OfferCode);
+            // TODO: trim offer code to <= 20 characters
 
-            logger.LogDebug("Checking provided options for parameters");
+            // Clean parameters
+            logger.LogDebug("Checking provided options for parameters... ");
             var parameters = ReadParameters(opts);
             logger.LogDebug("Found {} parameters", parameters.Count);
 
@@ -48,6 +51,10 @@ namespace WcOffers.Cli.Features.Generate
             {
                 logger.LogError("Unable to find an offer template with ID {}", opts.TemplateId);
                 return -1;
+            }
+            else
+            {
+                logger.LogDebug("Using offer template {} - {}", template.Id, template.Description);
             }
 
             if (opts.Cost.HasValue)
@@ -74,7 +81,7 @@ namespace WcOffers.Cli.Features.Generate
             int placeholders = gen.CheckOfferForPlaceholder(offer);
 
 
-            if (placeholders > 0 && opts.IgnoreWarnings)
+            if (placeholders > 0 && !opts.IgnoreWarnings)
             {
                 logger.LogError("Cancelling offer generation because warning were raised. No database changes have been made.");
                 return -1;
@@ -84,6 +91,11 @@ namespace WcOffers.Cli.Features.Generate
             if (missingFields > 0 || placeholders > 0)
             {
                 logger.LogWarning("Generating offer despite {} warning(s) because the ignore warnings flag was set");
+            }
+
+            if (!string.IsNullOrWhiteSpace(opts.Prerequisite))
+            {
+                offer.Prerequisite = opts.Prerequisite;
             }
 
             sb2.Offers.Add(offer);
@@ -101,6 +113,7 @@ namespace WcOffers.Cli.Features.Generate
             {
                 foreach (var pair in opts.Parameters)
                 {
+                    logger.LogTrace("Examining provided key/value pair {}", pair);
                     if (pair.Contains('='))
                     {
                         var split = pair.Split('=');
@@ -120,7 +133,15 @@ namespace WcOffers.Cli.Features.Generate
                             logger.LogDebug("Splitting '{}' yielded an unexpected {} item(s), skipping", pair, split.Count());
                         }
                     }
+                    else
+                    {
+                        logger.LogDebug("Provided key/value pair '{}' does not contain an '=' character, skipping it", pair);
+                    }
                 }
+            }
+            else
+            {
+                logger.LogTrace("No parameters have been provided");
             }
 
             return parameters;
