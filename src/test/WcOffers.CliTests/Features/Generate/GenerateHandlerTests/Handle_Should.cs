@@ -263,5 +263,55 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
             result.MaxQuantity.ShouldBe(14);
             result.Prerequisite.ShouldBe("TestPrereq");
         }
+
+        [Fact]
+        public void CreateOffer_WithParameter_WhenParametersAreValid()
+        {
+            var mockOfferData = new Mock<IOfferData>();
+            mockOfferData.Setup(o => o.Templates).Returns(new List<OfferTemplate>
+            {
+                new OfferTemplate
+                {
+                    Id = 1,
+                    OfferTitle = "%title%",
+                    OfferDescription = "description with %parametercount% parameters",
+                    OfferContent = "{ \"skus\": { \"gold\": 0 } }",
+                    OfferCost = 0,
+                    OfferCostSku = "gold",
+                    OfferFullCost = -1,
+                    OfferDisplay = "[{}]",
+                    OfferDuration = 1000,
+                    OfferIconDescription = "icon description",
+                    OfferIconTitle = "icon title",
+                    OfferMaxQuantity = 1,
+                    OfferTemplateId = 6
+                }
+            });
+            var generatorLogger = TestHelpers.CreateLogger<TemplatedOfferGenerator>();
+            var gen = new TemplatedOfferGenerator(generatorLogger, mockOfferData.Object);
+            var options = new DbContextOptionsBuilder<GameDbContext>()
+               .UseInMemoryDatabase(databaseName: "dbAbc")
+               .Options;
+            ISandbox2Context sb2 = new GameDbContext(options);
+            var generateLogger = TestHelpers.CreateLogger<GenerateHandler>();
+            var sut = new GenerateHandler(generateLogger, mockOfferData.Object, sb2, gen);
+            var opts = new GenerateOptions
+            {
+                OfferCode = "TestCode2",
+                TemplateId = 1,
+                IgnoreWarnings = false,
+                Parameters = new List<string>
+                {
+                    "parametercount=2",
+                    "title=My Cool Title"
+                }
+            };
+
+            sut.Execute(opts);
+            var result = sb2.Offers.First(o => o.OfferCode == "TestCode2");
+
+            result.Description.ShouldBe("description with 2 parameters");
+            result.Title.ShouldBe("My Cool Title");
+        }
     }
 }

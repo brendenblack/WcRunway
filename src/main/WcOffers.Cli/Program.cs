@@ -70,6 +70,7 @@ namespace WcOffers.Cli
                     case QualityOptions qualityOptions:
                         return container.GetService<QualityHandler>().Execute(qualityOptions);
                     default:
+                        log.LogError("Unable to locate a handler for {}", opts.GetType().Name);
                         return -1;
                 }
             }

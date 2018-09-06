@@ -4,19 +4,21 @@ using System.Text;
 
 namespace WcData.Sheets.Models
 {
-    public class OfferTemplate
+    /// <summary>
+    /// Represents an offer template that is meant to be as part of a collection that will chain together,
+    /// and one offer has a prerequisite on the prior one. E.g. base expansion and resource compression
+    /// </summary>
+    public class OfferGroupTemplate
     {
-        public int Id { get; set; }
+        /// <summary>
+        /// The group that this template belongs to
+        /// </summary>
+        public string GroupId { get; set; }
 
         /// <summary>
-        /// A description of the template; what sort of offer the template represents
+        /// What order this particular template should be within the group
         /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Descriptive tags that aid in searching for a family of templates
-        /// </summary>
-        public List<string> Tags { get; set; }
+        public int Ordinal { get; set; }
 
         public string OfferTitle { get; set; }
 
@@ -44,4 +46,3 @@ namespace WcData.Sheets.Models
 
     }
 }
-                                         

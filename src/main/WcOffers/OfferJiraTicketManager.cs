@@ -41,13 +41,12 @@ namespace WcOffers
 
             var createdIssue = await issue.SaveChangesAsync();
             return issue;
-
-
         }
 
         public async Task<bool> CheckForExistingTicket(Offer offer)
         {
-            return await new Task<bool>(() => { return true;  });
+            // TODO
+            throw new NotImplementedException();
         }
 
         public string CreateIssueDescription(Offer offer, string comment = "")

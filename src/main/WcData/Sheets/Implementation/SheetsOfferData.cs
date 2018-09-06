@@ -12,6 +12,7 @@ using System.Linq;
 
 namespace WcData.Sheets.Implementation
 {
+    // TODO: extract sheet ids & ranges to config, inject in SheetsConnectorService
     public class SheetsOfferData : BaseSheetsData, IOfferData
     {
         #region column mapping
@@ -42,6 +43,7 @@ namespace WcData.Sheets.Implementation
             this.log = logger;
         }
 
+        #region Uniques tab (aka skeletons)
         private List<OfferSkeleton> skeletons = new List<OfferSkeleton>();
 
         public List<OfferSkeleton> Skeletons
@@ -51,13 +53,66 @@ namespace WcData.Sheets.Implementation
                 if (IsStale)
                 {
                     log.LogDebug("Offer skeleton data is stale, refetching...");
-                    Task.WaitAll(Update());
+                    Task.WaitAll(UpdateSkeletons());
                 }
 
                 return skeletons;
             }
         }
 
+        public async Task UpdateSkeletons()
+        {
+            log.LogDebug("Clearing {} offer skeleton(s)", skeletons?.Count ?? 0);
+            this.skeletons.Clear();
+
+            var range = "Uniques!A2:L";
+            log.LogDebug("Retrieving records from range {0}", range);
+
+            SpreadsheetsResource.ValuesResource.GetRequest request = sheets.Spreadsheets.Values.Get(sheetId, range);
+            ValueRange response = await request.ExecuteAsync();
+
+            log.LogDebug("Received response of {0} from range {0} (major dimension: {1})", response.Values?.Count ?? 0, response.Range, response.MajorDimension);
+            var values = response.Values;
+
+            if (values != null && values.Count > 0)
+            {
+                foreach (var row in values)
+                {
+                    try
+                    {
+                        var skeleton = new OfferSkeleton
+                        {
+                            UnitId = row.ReadColumnAsInteger(COL_UNIT_ID),
+                            OfferType = row.ReadColumnAsOfferType(COL_OFFER_TYPE), // .[COL_OFFER_TYPE].AsOfferType(),
+                            Title = row.ReadColumnAsString(COL_TITLE),
+                            Description = row.ReadColumnAsString(COL_DESCRIPTION), // ?: row[COL_DESCRIPTION].ToString(),
+                            IconTitle = row.ReadColumnAsString(COL_ICON_TITLE),
+                            IconDescription = row.ReadColumnAsString(COL_ICON_DESCRIPTION),
+                            Cost = row.ReadColumnAsInteger(COL_COST),
+                            FullCost = row.ReadColumnAsInteger(COL_FULL_COST),
+                            CostSku = row.ReadColumnAsString(COL_COST_SKU, "gold"),
+                            Duration = row.ReadColumnAsInteger(COL_DURATION, 28800),
+                            Content = row.ReadColumnAsString(COL_CONTENT, "{\"gold\": 0 }"),
+                            DisplayedItems = row.ReadColumnAsString(COL_DISPLAY, "[]"),
+                            MaximumQuanity = row.ReadColumnAsInteger(COL_MAX_QUANTITY, 1)
+                        };
+
+                        this.skeletons.Add(skeleton);
+                    }
+                    catch (IndexOutOfRangeException e)
+                    {
+                        log.LogError("Unable to read row as an offer skeleton, skipping");
+                    }
+                }
+            }
+            else
+            {
+                log.LogWarning("No values returned from sheet {0}", sheetId);
+            }
+        }
+        #endregion
+
+        #region Templates tab
         public bool IsTemplatesStale { get; set; } = true;
 
         private List<OfferTemplate> _templates = new List<OfferTemplate>();
@@ -123,56 +178,49 @@ namespace WcData.Sheets.Implementation
                 log.LogWarning("No values returned from sheet {0}", sheetId);
             }
         }
+        #endregion
 
-        public async Task Update()
+        #region Group Templates tab
+        public bool IsGroupTemplatesStale { get; set; } = true;
+        private List<OfferGroupTemplate> _groupTemplates = new List<OfferGroupTemplate>();
+        public List<OfferGroupTemplate> GroupTemplates
         {
-            log.LogDebug("Clearing {} offer skeleton(s)", skeletons?.Count ?? 0);
-            this.skeletons.Clear();
+            get
+            {
+                if (IsGroupTemplatesStale)
+                {
+                    log.LogDebug("Offer group template data is stale, refetching...");
+                    Task.WaitAll(UpdateGroupTemplates());
+                }
 
-            var range = "Uniques!A2:L";
-            log.LogDebug("Retrieving records from range {0}", range);
+                return _groupTemplates;
+            }
+        }
+
+        public async Task UpdateGroupTemplates()
+        {
+            var range = "Group Templates!A2:N";
 
             SpreadsheetsResource.ValuesResource.GetRequest request = sheets.Spreadsheets.Values.Get(sheetId, range);
             ValueRange response = await request.ExecuteAsync();
-
-            log.LogDebug("Received response of {0} from range {0} (major dimension: {1})", response.Values?.Count ?? 0, response.Range, response.MajorDimension);
             var values = response.Values;
 
             if (values != null && values.Count > 0)
             {
-                foreach (var row in values)
+                for (var i = 0; i < values.Count; i++)
                 {
+                    var row = values[i];
                     try
                     {
-                        var skeleton = new OfferSkeleton
-                        {
-                            UnitId = row.ReadColumnAsInteger(COL_UNIT_ID),
-                            OfferType = row.ReadColumnAsOfferType(COL_OFFER_TYPE), // .[COL_OFFER_TYPE].AsOfferType(),
-                            Title = row.ReadColumnAsString(COL_TITLE),
-                            Description = row.ReadColumnAsString(COL_DESCRIPTION), // ?: row[COL_DESCRIPTION].ToString(),
-                            IconTitle = row.ReadColumnAsString(COL_ICON_TITLE),
-                            IconDescription = row.ReadColumnAsString(COL_ICON_DESCRIPTION),
-                            Cost = row.ReadColumnAsInteger(COL_COST),
-                            FullCost = row.ReadColumnAsInteger(COL_FULL_COST),
-                            CostSku = row.ReadColumnAsString(COL_COST_SKU, "gold"),
-                            Duration = row.ReadColumnAsInteger(COL_DURATION, 28800),
-                            Content = row.ReadColumnAsString(COL_CONTENT, "{\"gold\": 0 }"),
-                            DisplayedItems = row.ReadColumnAsString(COL_DISPLAY, "[]"),
-                            MaximumQuanity = row.ReadColumnAsInteger(COL_MAX_QUANTITY, 1)
-                        };
-
-                        this.skeletons.Add(skeleton);
                     }
-                    catch (IndexOutOfRangeException e)
+                    catch (Exception e)
                     {
-                        log.LogError("Unable to read row as an offer skeleton, skipping");
+
                     }
                 }
             }
-            else
-            {
-                log.LogWarning("No values returned from sheet {0}", sheetId);
-            }
         }
+        #endregion
+
     }
 }
