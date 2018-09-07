@@ -14,7 +14,7 @@ using WcOffers.Cli.Features.Generate;
 using WcOffers.Cli.Tests;
 using Xunit;
 
-namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
+namespace WcOffers.CliTests.Features.Generate.GenerateTemplateHandlerTests
 {
     public class Handle_Should
     {
@@ -29,9 +29,9 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
             var mockSb2 = new Mock<ISandbox2Context>();
             var generatorLogger = TestHelpers.CreateLogger<TemplatedOfferGenerator>();
             var gen = new TemplatedOfferGenerator(generatorLogger, mockOfferData.Object);
-            var handlerLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            var sut = new GenerateHandler(handlerLogger, mockOfferData.Object, mockSb2.Object, gen);
-            var opts = new GenerateOptions { OfferCode = null };
+            var handlerLogger = TestHelpers.CreateLogger<GenerateTemplateHandler>();
+            var sut = new GenerateTemplateHandler(handlerLogger, mockOfferData.Object, mockSb2.Object, gen);
+            var opts = new GenerateTemplateOptions { OfferCode = null };
 
             var result = sut.Execute(opts);
 
@@ -51,9 +51,9 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
             var existingOffer = new Offer { OfferCode = "TestCode1" };
             sb2.Offers.Add(existingOffer);
             sb2.SaveChanges();
-            var generateLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            var sut = new GenerateHandler(generateLogger, mockOfferData.Object, sb2, gen);
-            var opts = new GenerateOptions { OfferCode = "TestCode1" };
+            var generateLogger = TestHelpers.CreateLogger<GenerateTemplateHandler>();
+            var sut = new GenerateTemplateHandler(generateLogger, mockOfferData.Object, sb2, gen);
+            var opts = new GenerateTemplateOptions { OfferCode = "TestCode1" };
 
             var result = sut.Execute(opts);
 
@@ -71,9 +71,9 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
                .UseInMemoryDatabase(databaseName: "ReturnErrorCodeWhenOfferCodeIsInUse")
                .Options;
             ISandbox2Context sb2 = new GameDbContext(options);
-            var generateLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            var sut = new GenerateHandler(generateLogger, mockOfferData.Object, sb2, gen);
-            var opts = new GenerateOptions { OfferCode = "TestCode1", TemplateId = 1 };
+            var generateLogger = TestHelpers.CreateLogger<GenerateTemplateHandler>();
+            var sut = new GenerateTemplateHandler(generateLogger, mockOfferData.Object, sb2, gen);
+            var opts = new GenerateTemplateOptions { OfferCode = "TestCode1", TemplateId = 1 };
 
             var result = sut.Execute(opts);
 
@@ -109,9 +109,9 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
                .UseInMemoryDatabase(databaseName: "ReturnErrorCode_WhenIgnoreWarningsIsFalse_AndMissingParametersRaiseWarnings")
                .Options;
             ISandbox2Context sb2 = new GameDbContext(options);
-            var generateLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            var sut = new GenerateHandler(generateLogger, mockOfferData.Object, sb2, gen);
-            var opts = new GenerateOptions
+            var generateLogger = TestHelpers.CreateLogger<GenerateTemplateHandler>();
+            var sut = new GenerateTemplateHandler(generateLogger, mockOfferData.Object, sb2, gen);
+            var opts = new GenerateTemplateOptions
             {
                 OfferCode = "TestCode2",
                 TemplateId = 1,
@@ -152,9 +152,9 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
                .UseInMemoryDatabase(databaseName: "NotSaveOffer_WhenIgnoreWarningsIsFalse_AndMissingParametersRaiseWarnings")
                .Options;
             ISandbox2Context sb2 = new GameDbContext(options);
-            var generateLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            var sut = new GenerateHandler(generateLogger, mockOfferData.Object, sb2, gen);
-            var opts = new GenerateOptions
+            var generateLogger = TestHelpers.CreateLogger<GenerateTemplateHandler>();
+            var sut = new GenerateTemplateHandler(generateLogger, mockOfferData.Object, sb2, gen);
+            var opts = new GenerateTemplateOptions
             {
                 OfferCode = "TestCode3",
                 Parameters = new List<string>
@@ -199,9 +199,9 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
                .UseInMemoryDatabase(databaseName: "dbAbc")
                .Options;
             ISandbox2Context sb2 = new GameDbContext(options);
-            var generateLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            var sut = new GenerateHandler(generateLogger, mockOfferData.Object, sb2, gen);
-            var opts = new GenerateOptions
+            var generateLogger = TestHelpers.CreateLogger<GenerateTemplateHandler>();
+            var sut = new GenerateTemplateHandler(generateLogger, mockOfferData.Object, sb2, gen);
+            var opts = new GenerateTemplateOptions
             {
                 OfferCode = "TestCode2",
                 TemplateId = 1,
@@ -242,9 +242,9 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
                .UseInMemoryDatabase(databaseName: "dbAbc")
                .Options;
             ISandbox2Context sb2 = new GameDbContext(options);
-            var generateLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            var sut = new GenerateHandler(generateLogger, mockOfferData.Object, sb2, gen);
-            var opts = new GenerateOptions
+            var generateLogger = TestHelpers.CreateLogger<GenerateTemplateHandler>();
+            var sut = new GenerateTemplateHandler(generateLogger, mockOfferData.Object, sb2, gen);
+            var opts = new GenerateTemplateOptions
             {
                 OfferCode = "TestCode2",
                 TemplateId = 1,
@@ -293,9 +293,9 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
                .UseInMemoryDatabase(databaseName: "dbAbc")
                .Options;
             ISandbox2Context sb2 = new GameDbContext(options);
-            var generateLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            var sut = new GenerateHandler(generateLogger, mockOfferData.Object, sb2, gen);
-            var opts = new GenerateOptions
+            var generateLogger = TestHelpers.CreateLogger<GenerateTemplateHandler>();
+            var sut = new GenerateTemplateHandler(generateLogger, mockOfferData.Object, sb2, gen);
+            var opts = new GenerateTemplateOptions
             {
                 OfferCode = "TestCode2",
                 TemplateId = 1,

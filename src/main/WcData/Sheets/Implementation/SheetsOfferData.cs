@@ -150,7 +150,7 @@ namespace WcData.Sheets.Implementation
                         {
                             Id = i+2, // add 2 to align id with row (which is 1-index) and skipping the header row
                             Description = row.ReadColumnAsString(0),
-                            Tags = row.ReadColumnAsString(1).Split(',').ToList(),
+                            Tags = row.ReadColumnAsString(1).Split(',').Select(s => s.Trim()).ToList(),
                             OfferTitle = row.ReadColumnAsString(2),
                             OfferDescription = row.ReadColumnAsString(3),
                             OfferIconTitle = row.ReadColumnAsString(4),

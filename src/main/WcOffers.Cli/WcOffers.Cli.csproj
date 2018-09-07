@@ -60,7 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\GenerateGroup\" />
+    <Folder Include="Features\GenerateGroupTemplate\" />
   </ItemGroup>
 
 </Project>

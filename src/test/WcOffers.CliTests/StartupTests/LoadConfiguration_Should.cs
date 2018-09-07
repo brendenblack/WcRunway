@@ -16,7 +16,7 @@ namespace WcOffers.CliTests.StartupTests
         [Fact]
         public void ThrowWhenOptionsSpecifiedFileDoesNotExist()
         {
-            var opts = new GenerateOptions
+            var opts = new GenerateTemplateOptions
             {
                ConfigurationFile = "doesnotexist.ini"
             };
@@ -27,7 +27,7 @@ namespace WcOffers.CliTests.StartupTests
         [Fact]
         public void ReadInRequiredSettingsFromValidIniFile()
         {
-            var opts = new GenerateOptions
+            var opts = new GenerateTemplateOptions
             {
                 ConfigurationFile = Path.GetFullPath("StartupTests/validconfig.ini")
             };
@@ -54,7 +54,7 @@ namespace WcOffers.CliTests.StartupTests
         [Fact]
         public void ReadInRequiredSettingsFromValidJsonFile()
         {
-            var opts = new GenerateOptions { ConfigurationFile = Path.GetFullPath("StartupTests/validconfig.json") };
+            var opts = new GenerateTemplateOptions { ConfigurationFile = Path.GetFullPath("StartupTests/validconfig.json") };
             IConfiguration config = Startup.LoadConfiguration(opts);
             var sb2Url = config["data:sandbox2:url"];
             var sb2Name = config["data:sandbox2:name"];

@@ -9,7 +9,7 @@ using WcOffers.Cli.Features.Generate;
 using WcOffers.Cli.Tests;
 using Xunit;
 
-namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
+namespace WcOffers.CliTests.Features.Generate.GenerateTemplateHandlerTests
 {
     public class ReadParameters_Should
     {
@@ -19,17 +19,17 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
             var mockSb2 = new Mock<ISandbox2Context>();
             var generatorLogger = TestHelpers.CreateLogger<TemplatedOfferGenerator>();
             var gen = new TemplatedOfferGenerator(generatorLogger, mockOfferData.Object);
-            var handlerLogger = TestHelpers.CreateLogger<GenerateHandler>();
-            sut = new GenerateHandler(handlerLogger, mockOfferData.Object, mockSb2.Object, gen);
+            var handlerLogger = TestHelpers.CreateLogger<GenerateTemplateHandler>();
+            sut = new GenerateTemplateHandler(handlerLogger, mockOfferData.Object, mockSb2.Object, gen);
         }
 
-        private readonly GenerateHandler sut;
+        private readonly GenerateTemplateHandler sut;
 
 
         [Fact]
         public void ReturnExpectedNumberOfItems()
         {
-            var opts = new GenerateOptions
+            var opts = new GenerateTemplateOptions
             {
                 Parameters =
                 new List<string> {
@@ -48,7 +48,7 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
         [Fact]
         public void ReturnValuesWithSpaces()
         {
-            var opts = new GenerateOptions
+            var opts = new GenerateTemplateOptions
             {
                 Parameters =
                 new List<string> {
@@ -64,7 +64,7 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
         [Fact]
         public void IgnoreKeysWithSpaces()
         {
-            var opts = new GenerateOptions
+            var opts = new GenerateTemplateOptions
             {
                 Parameters =
                 new List<string> {
@@ -80,7 +80,7 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
         [Fact]
         public void ReturnValidParametersWhenInvalidOnesAreIncluded()
         {
-            var opts = new GenerateOptions
+            var opts = new GenerateTemplateOptions
             {
                 Parameters =
                 new List<string> {
@@ -97,7 +97,7 @@ namespace WcOffers.CliTests.Features.Generate.GenerateHandlerTests
         [Fact]
         public void IgnoreInvalidParametersWhenValidParametersAreIncluded()
         {
-            var opts = new GenerateOptions
+            var opts = new GenerateTemplateOptions
             {
                 Parameters =
                 new List<string> {

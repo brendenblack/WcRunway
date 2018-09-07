@@ -40,6 +40,7 @@ namespace WcOffers
             issue["Severity"] = "3 - Normal";
 
             var createdIssue = await issue.SaveChangesAsync();
+            logger.LogDebug("{} - {}", issue.Key, issue.Summary);
             return issue;
         }
 

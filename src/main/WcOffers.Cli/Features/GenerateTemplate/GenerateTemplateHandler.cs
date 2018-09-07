@@ -9,14 +9,14 @@ using WcData.Sheets;
 
 namespace WcOffers.Cli.Features.Generate
 {
-    public class GenerateHandler
+    public class GenerateTemplateHandler : CommandLineHandler, ICommandLineHandler<GenerateTemplateOptions>
     {
-        private readonly ILogger<GenerateHandler> logger;
+        private readonly ILogger<GenerateTemplateHandler> logger;
         private readonly IOfferData offerData;
         private readonly ISandbox2Context sb2;
         private readonly TemplatedOfferGenerator gen;
 
-        public GenerateHandler(ILogger<GenerateHandler> logger, IOfferData offerData, ISandbox2Context sb2, TemplatedOfferGenerator gen)
+        public GenerateTemplateHandler(ILogger<GenerateTemplateHandler> logger, IOfferData offerData, ISandbox2Context sb2, TemplatedOfferGenerator gen)
         {
             this.logger = logger;
             this.offerData = offerData;
@@ -24,9 +24,9 @@ namespace WcOffers.Cli.Features.Generate
             this.gen = gen;
         }
 
-        public int Execute(GenerateOptions opts)
+        public int Execute(GenerateTemplateOptions opts)
         {
-            // Validate the provided offer code
+            // Validate the provided offer code, TODO: trim to <= 20 characters
             if (string.IsNullOrWhiteSpace(opts.OfferCode))
             {
                 logger.LogError("An offer code must be provided");
@@ -39,7 +39,6 @@ namespace WcOffers.Cli.Features.Generate
                 return -1;
             }
             logger.LogDebug("Creating offer with code {}", opts.OfferCode);
-            // TODO: trim offer code to <= 20 characters
 
             // Clean parameters
             logger.LogDebug("Checking provided options for parameters... ");
@@ -77,6 +76,11 @@ namespace WcOffers.Cli.Features.Generate
 
             var offer = gen.GenerateOfferFromTemplate(template, opts.OfferCode, parameters);
 
+            if (offer.Description.Contains("%quantity%"))
+            {
+                offer.Description = offer.Description.Replace("%quantity%", offer.MaxQuantity.ToString());
+            }
+
             // Check offer for any remaining placeholder values
             int placeholders = gen.CheckOfferForPlaceholder(offer);
 
@@ -98,6 +102,8 @@ namespace WcOffers.Cli.Features.Generate
                 offer.Prerequisite = opts.Prerequisite;
             }
 
+            offer.Priority = opts.Priority;
+
             sb2.Offers.Add(offer);
             sb2.SaveChanges();
             return 0;
@@ -105,7 +111,7 @@ namespace WcOffers.Cli.Features.Generate
         }
 
 
-        public Dictionary<string, string> ReadParameters(GenerateOptions opts)
+        public Dictionary<string, string> ReadParameters(GenerateTemplateOptions opts)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
 

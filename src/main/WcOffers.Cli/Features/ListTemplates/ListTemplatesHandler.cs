@@ -9,7 +9,7 @@ using WcData.Sheets.Models;
 
 namespace WcOffers.Cli.Features.ListTemplates
 {
-    public class ListTemplatesHandler
+    public class ListTemplatesHandler : CommandLineHandler, ICommandLineHandler<ListTemplatesOptions>
     {
         private readonly ILogger<ListTemplatesHandler> logger;
         private readonly IOfferData offerData;
@@ -30,7 +30,7 @@ namespace WcOffers.Cli.Features.ListTemplates
             if (!string.IsNullOrWhiteSpace(opts.Tag))
             {
                 templates = offerData.Templates
-                    .Where(t => t.Tags.Contains(opts.Tag))
+                    .Where(t => t.Tags.Select(tag => tag.ToUpper()).Contains(opts.Tag.ToUpper()))
                     .ToList();
 
                 logger.LogInformation("Showing {} offer templates with tag '{}'", templates.Count, opts.Tag);

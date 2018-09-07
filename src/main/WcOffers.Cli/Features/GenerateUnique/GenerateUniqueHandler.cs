@@ -8,16 +8,16 @@ using WcData.Sheets;
 
 namespace WcOffers.Cli.Features.GenerateUnique
 {
-    public class GenerateUniqueHandler
+    public class GenerateUniqueHandler : CommandLineHandler, ICommandLineHandler<GenerateUniqueOptions>
     {
         private readonly ILogger<GenerateUniqueHandler> log;
         private readonly IGameData gameContext;
         private readonly UniqueOfferGenerator gen;
-        private readonly Sandbox2Context sb2;
+        private readonly ISandbox2Context sb2;
 
         public static int ERR_UNIT_NOT_FOUND = 10;
         
-        public GenerateUniqueHandler(ILogger<GenerateUniqueHandler> log, IGameData gameContext, UniqueOfferGenerator gen, Sandbox2Context sb2)
+        public GenerateUniqueHandler(ILogger<GenerateUniqueHandler> log, IGameData gameContext, UniqueOfferGenerator gen, ISandbox2Context sb2)
         {
             this.log = log;
             this.gameContext = gameContext;
@@ -31,7 +31,7 @@ namespace WcOffers.Cli.Features.GenerateUnique
             string prefix;
             try
             {
-                prefix = ValidatePrefix(opts.OfferCodePrefix); // TODO: refactor this logic out and in to the Core project
+                prefix = ValidatePrefix(opts.OfferCodePrefix);
             }
             catch (Exception e)
             {
@@ -124,7 +124,7 @@ namespace WcOffers.Cli.Features.GenerateUnique
                 throw new ArgumentException("Invalid offer code prefix provided");
             }
 
-            prefix = (prefix.Length > 16) ? prefix.Substring(0, 16) : prefix;
+            prefix = (prefix.Length > 15) ? prefix.Substring(0, 15) : prefix;
 
             if (this.sb2.Offers.Any(o => o.OfferCode.StartsWith(prefix)))
             {

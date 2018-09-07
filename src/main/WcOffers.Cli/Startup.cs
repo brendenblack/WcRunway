@@ -2,10 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Config;
 using NLog.Extensions.Logging;
+using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using WcData.Microsoft.Extensions.DependencyInjection;
 using WcOffers.Cli.Features;
@@ -13,6 +17,7 @@ using WcOffers.Cli.Features.Generate;
 using WcOffers.Cli.Features.GenerateUnique;
 using WcOffers.Cli.Features.ListTemplates;
 using WcOffers.Cli.Features.Quality;
+using WcOffers.Cli.Features.Test;
 using WcOffers.Cli.Features.Token;
 
 namespace WcOffers.Cli
@@ -102,21 +107,75 @@ namespace WcOffers.Cli
             services.AddSingleton(s => Jira.CreateRestClient(config["data:jira:url"], config["data:jira:username"], config["data:jira:password"]));
             services.AddTransient<OfferJiraTicketManager>();
 
-            // TODO: load all CommandLineHandler-derived classes
-            services.AddTransient<TemplatedOfferGenerator>();
-            services.AddTransient<TokenRunway>();
-            services.AddTransient<GenerateUniqueHandler>();
-            services.AddTransient<QualityHandler>();
-            services.AddTransient<ListTemplatesHandler>();
-            services.AddTransient<GenerateHandler>();
+            // Add all handlers that derive from CommandLineHandler to the container (note the TODO below)
+            var handlers = Assembly.GetAssembly(typeof(Startup)).DefinedTypes
+                .Where(t => typeof(CommandLineHandler).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                .ToArray();
+
+            // TODO: make this work
+            // IsAssignableFrom always returns false because of the <T> required by the interface
+            //Assembly.GetAssembly(typeof(Startup)).DefinedTypes
+            //   .Where(t => typeof(ICommandLineHandler<CommandLineOptions>).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+            //   .ToArray();
+
+            foreach (var handlerType in handlers.Select(h => h.AsType()))
+            {
+                services.AddTransient(handlerType);
+            }
+
+            //services.AddTransient<TemplatedOfferGenerator>();
+            //services.AddTransient<TokenRunway>();
+            //services.AddTransient<GenerateUniqueHandler>();
+            //services.AddTransient<QualityHandler>();
+            //services.AddTransient<ListTemplatesHandler>();
+            //services.AddTransient<GenerateTemplateHandler>();
+            //services.AddTransient<TestHandler>();
         }
 
-        public static void ConfigureLogging(ServiceProvider container, IConfiguration config)
+        /// <summary>
+        /// Logging is used to replace console output during operation of the program, as well as optional logging to file.
+        /// The optional logging is configured by the user in the provided IConfiguration object
+        /// </summary>
+        /// <param name="container"></param>
+        /// <param name="config"></param>
+        /// <param name="consoleVerbosity"></param>
+        public static void ConfigureLogging(ServiceProvider container, IConfiguration config, NLog.LogLevel consoleVerbosity = null)
         {
-            var configfile = config["logging:nlog:config-file"];
-            if (string.IsNullOrWhiteSpace(configfile))
+            var c = new LoggingConfiguration();
+            // Console "logging" is actually the output of the program, and so it is controlled
+            // without the user configuring it
+            var consoleTarget = new ColoredConsoleTarget("target1")
             {
-                // TODO: how should this be handled?
+                Layout = @"${message} ${exception}"
+            };
+
+            c.AddTarget(consoleTarget);
+            //c.AddRuleForOneLevel(NLog.LogLevel.Off, consoleTarget, "Microsoft.EntityFrameworkCore.*");
+            c.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Info, consoleTarget, "Microsoft.*", true); // Only write errors from Microsoft.* classes to the console
+            c.AddRule(consoleVerbosity ?? NLog.LogLevel.Info, NLog.LogLevel.Fatal, consoleTarget, "*");
+
+
+
+
+            var logfile = config["logging:file"];
+            if (!string.IsNullOrWhiteSpace(logfile))
+            {
+                var logfilePattern = config["logging:pattern"];
+                if (string.IsNullOrWhiteSpace(logfilePattern))
+                {
+                    logfilePattern = @"${longdate} [${level:uppercase=true}] [${callsite}:${callsite-linenumber}] ${message} ${exception} ${all-event-properties}";
+                }
+
+                var level = NLog.LogLevel.FromString(config["logging:level"]) ?? NLog.LogLevel.Debug;
+
+                var fileTarget = new FileTarget("logfileTarget")
+                {
+                    FileName = logfile,
+                    Layout = logfilePattern                    
+                };
+                c.AddTarget(fileTarget);
+                c.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Info, consoleTarget, "Microsoft.*", true); // Only write errors from Microsoft.* classes to the console
+                c.AddRule(level, NLog.LogLevel.Fatal, fileTarget, "WcOffers.*");
             }
 
             container.GetRequiredService<ILoggerFactory>()
@@ -126,7 +185,7 @@ namespace WcOffers.Cli
                     CaptureMessageProperties = true
                 });
 
-            NLog.LogManager.LoadConfiguration(configfile);
+            NLog.LogManager.Configuration = c;
         }
     }
 }

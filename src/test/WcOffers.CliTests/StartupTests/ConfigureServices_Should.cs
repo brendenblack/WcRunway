@@ -19,7 +19,7 @@ namespace WcOffers.CliTests.StartupTests
         [Fact]
         public void AddSandbox2Context()
         {
-            var opts = new GenerateOptions { ConfigurationFile = Path.GetFullPath("StartupTests/validconfig.json") };
+            var opts = new GenerateTemplateOptions { ConfigurationFile = Path.GetFullPath("StartupTests/validconfig.json") };
             IConfiguration config = Startup.LoadConfiguration(opts);
             var serviceCollection = new ServiceCollection();
             Startup.ConfigureServices(serviceCollection, config);
@@ -31,7 +31,7 @@ namespace WcOffers.CliTests.StartupTests
         [Fact]
         public void AddSnowflakeContext()
         {
-            var opts = new GenerateOptions { ConfigurationFile = Path.GetFullPath("StartupTests/validconfig.json") };
+            var opts = new GenerateTemplateOptions { ConfigurationFile = Path.GetFullPath("StartupTests/validconfig.json") };
             IConfiguration config = Startup.LoadConfiguration(opts);
             var serviceCollection = new ServiceCollection();
             Startup.ConfigureServices(serviceCollection, config);
@@ -43,7 +43,7 @@ namespace WcOffers.CliTests.StartupTests
         [Fact]
         public void AddSheetsContext()
         {
-            var opts = new GenerateOptions { ConfigurationFile = Path.GetFullPath("StartupTests/validconfig.json") };
+            var opts = new GenerateTemplateOptions { ConfigurationFile = Path.GetFullPath("StartupTests/validconfig.json") };
             IConfiguration config = Startup.LoadConfiguration(opts);
             var serviceCollection = new ServiceCollection();
             Startup.ConfigureServices(serviceCollection, config);

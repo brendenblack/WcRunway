@@ -5,8 +5,8 @@ using System.Text;
 
 namespace WcOffers.Cli.Features.Generate
 {
-    [Verb("generate", HelpText = "Generate offers based on a template. Template IDs can be discovered by executing the list-templates command")]
-    public class GenerateOptions : CommandLineOptions
+    [Verb("gen-template", HelpText = "Generate offers based on a template. Template IDs can be discovered by executing the list-templates command")]
+    public class GenerateTemplateOptions : CommandLineOptions
     {
         [Value(0, Required = true, HelpText = "The ID of the template to generate. IDs can be discovered by executing the list-templates command")]
         public int TemplateId { get; set; }
@@ -16,6 +16,9 @@ namespace WcOffers.Cli.Features.Generate
 
         [Option('p', "prereq", Required = false, HelpText = "The code of an offer to use as a prerequisite")]
         public string Prerequisite { get; set; }
+
+        [Option('P', "priority", Required = false, Default = 0, HelpText = "Sets the priority field of the offer. Higher numbers indicate higher priority")]
+        public int Priority { get; set; }
 
         [Option('D', "params", Required = false, HelpText = "A list of key/value pairs (in the form of key1=value1 key2=\"my value 2\") that will be substitutded in the template")]
         public IEnumerable<string> Parameters { get; set; }
