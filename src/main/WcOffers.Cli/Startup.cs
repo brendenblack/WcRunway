@@ -107,6 +107,8 @@ namespace WcOffers.Cli
             services.AddSingleton(s => Jira.CreateRestClient(config["data:jira:url"], config["data:jira:username"], config["data:jira:password"]));
             services.AddTransient<OfferJiraTicketManager>();
 
+            services.AddTransient<UniqueOfferGenerator>();
+
             // Add all handlers that derive from CommandLineHandler to the container (note the TODO below)
             var handlers = Assembly.GetAssembly(typeof(Startup)).DefinedTypes
                 .Where(t => typeof(CommandLineHandler).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)

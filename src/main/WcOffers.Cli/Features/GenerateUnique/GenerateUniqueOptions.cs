@@ -6,7 +6,7 @@ using System.Text;
 
 namespace WcOffers.Cli.Features.GenerateUnique
 {
-    [Verb("generate-unique", HelpText = "Generate standard offers for Unique units")]
+    [Verb("gen-unique", HelpText = "Generate standard offers for Unique units")]
     public class GenerateUniqueOptions : CommandLineOptions
     {
         [Value(0)]

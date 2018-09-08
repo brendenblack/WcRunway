@@ -11,14 +11,14 @@ namespace WcOffers
 {
     public class UniqueOfferGenerator
     {
-        private readonly ILogger<UniqueOfferGenerator> log;
+        private readonly ILogger<UniqueOfferGenerator> logger;
         private readonly IOfferData offerData;
 
         public readonly int MAX_PREFIX_LENGTH = 16;
 
         public UniqueOfferGenerator(ILogger<UniqueOfferGenerator> log, IOfferData offerData)
         {
-            this.log = log;
+            this.logger = log;
             this.offerData = offerData;
         }
 
@@ -38,18 +38,19 @@ namespace WcOffers
 
             if (priority < 0)
             {
+                logger.LogDebug("Priority was set to invalid value of {}, defaulting to 0", priority);
                 priority = 0;
             }
 
             var code = (prefix.Length > 17) ? $"{prefix.Substring(0, 17)}Unl" : $"{prefix}Unl";
-            log.LogInformation("Creating unlock offer for {0} - {1} using offer code {2}", unit.Id, unit.Name, code);
+            logger.LogInformation("Creating unlock offer for {0} - {1} using offer code {2}", unit.Id, unit.Name, code);
 
             // Fetch data from the offer data dictionary
             var skeleton = this.offerData.Skeletons.FirstOrDefault(c => c.UnitId == unit.Id && c.OfferType == OfferType.STANDARD_UNLOCK);
             // If nothing was found, use generic alternative with functionally empty content & displayed item blocks
             if (skeleton == null)
             {
-                log.LogWarning("No custom copy exists for an unlock of {0} ({1}); a generic offer will be created with no content or displayed item values", unit.Name, unit.Id);
+                logger.LogWarning("No custom copy exists for an unlock of {0} ({1}); a generic offer will be created with no content or displayed item values", unit.Name, unit.Id);
                 skeleton = new OfferSkeleton
                 {
                     Title = $"Unlock the {unit.Name}!",
@@ -78,14 +79,15 @@ namespace WcOffers
                 Duration = skeleton.Duration,
                 ContentJson = skeleton.Content,
                 DisplayedItemsJson = skeleton.DisplayedItems,
+                CreatedTime = DateTimeOffset.Now,
                 StartTime = DateTimeOffset.Now,
                 EndTime = DateTimeOffset.Now + TimeSpan.FromDays(3),
                 Priority = priority,
                 MaxQuantity = 1,
                 Cooldown = 0,
                 CooldownType = 0,
-                TemplateId = 6
-                
+                TemplateId = 6,
+                IsEnabled = true
             };
 
             return offer;
@@ -146,12 +148,12 @@ namespace WcOffers
                         }
                         else
                         {
-                            log.LogError("Unable to determine a valid level for skeleton {0}", skeleton.Content.ToString());
+                            logger.LogError("Unable to determine a valid level for skeleton {0}", skeleton.Content.ToString());
                         }
                     }
                     catch (JsonSerializationException)
                     {
-                        log.LogError("Unable to parse offer content JSON for level up offer");
+                        logger.LogError("Unable to parse offer content JSON for level up offer");
                     }
                 }
 
@@ -180,6 +182,7 @@ namespace WcOffers
                                 Duration = skeleton.Duration,
                                 ContentJson = skeleton.Content,
                                 DisplayedItemsJson = skeleton.DisplayedItems,
+                                CreatedTime = DateTimeOffset.Now,
                                 StartTime = DateTimeOffset.Now,
                                 EndTime = DateTimeOffset.Now + TimeSpan.FromDays(3),
                                 Priority = priority,
@@ -187,6 +190,7 @@ namespace WcOffers
                                 Cooldown = 0,
                                 CooldownType = 0,
                                 TemplateId = skeleton.TemplateId,
+                                IsEnabled = true
                             };
                             offerLevelDictionary.Add(levelInGrade, offer);
                         }
@@ -210,7 +214,7 @@ namespace WcOffers
                                 else
                                 {
                                     // TODO
-                                    log.LogWarning("What happened? Must be bad data, user error");
+                                    logger.LogWarning("What happened? Must be bad data, user error");
                                 }
                             }
                         }
@@ -358,7 +362,7 @@ namespace WcOffers
             // If nothing was found, use generic alternative with functionally empty content & displayed item blocks
             if (skeleton == null)
             {
-                log.LogWarning("No custom copy exists for an unlock of {0} ({1}); a generic offer will be created with no content or displayed item values", unit.Name, unit.Id);
+                logger.LogWarning("No custom copy exists for an unlock of {0} ({1}); a generic offer will be created with no content or displayed item values", unit.Name, unit.Id);
                 skeleton = new OfferSkeleton
                 {
                     Title = $"Omega {unit.Name} Parts!",
@@ -388,13 +392,15 @@ namespace WcOffers
                 Duration = skeleton.Duration,
                 ContentJson = skeleton.Content,
                 DisplayedItemsJson = skeleton.DisplayedItems,
+                CreatedTime = DateTimeOffset.Now,
                 StartTime = DateTimeOffset.Now,
                 EndTime = DateTimeOffset.Now + TimeSpan.FromDays(3),
                 Priority = priority,
                 MaxQuantity = skeleton.MaximumQuanity,
                 Cooldown = 0,
                 CooldownType = 0,
-                TemplateId = 6
+                TemplateId = 6,
+                IsEnabled = true
 
             };
 
@@ -417,7 +423,7 @@ namespace WcOffers
             // If nothing was found, use generic alternative with functionally empty content & displayed item blocks
             if (skeleton == null)
             {
-                log.LogWarning("No skeleton was found for an elite parts offer for {0} ({1}); a generic offer will be created with no content or displayed item values", unit.Name, unit.Id);
+                logger.LogWarning("No skeleton was found for an elite parts offer for {0} ({1}); a generic offer will be created with no content or displayed item values", unit.Name, unit.Id);
                 skeleton = new OfferSkeleton
                 {
                     Title = $"Elite {unit.Name} Parts!",
@@ -447,19 +453,21 @@ namespace WcOffers
                 Duration = skeleton.Duration,
                 ContentJson = skeleton.Content,
                 DisplayedItemsJson = skeleton.DisplayedItems,
+                CreatedTime = DateTimeOffset.Now,
                 StartTime = DateTimeOffset.Now,
                 EndTime = DateTimeOffset.Now + TimeSpan.FromDays(3),
                 Priority = priority,
                 MaxQuantity = skeleton.MaximumQuanity,
                 Cooldown = 0,
                 CooldownType = 0,
-                TemplateId = 6
+                TemplateId = 6,
+                IsEnabled = true
             };
 
             return offer;
         }
 
-        public List<Offer> CreateTechOffers(WcData.Sheets.Models.Unit unit, string prefix, int priority = 0)
+        public List<Offer> CreateTechOffers(WcData.Sheets.Models.Unit unit, string prefix, int priority = 0, bool unlockAsPrerequisite = true)
         {
             if (unit == null || string.IsNullOrWhiteSpace(prefix))
             {
@@ -477,7 +485,7 @@ namespace WcOffers
 
             if (skeletons.Count == 0)
             {
-                log.LogWarning("No skeletons were found for a tech offer for {0} ({1}); a generic offer will be created with no content or displayed item values", unit.Name, unit.Id);
+                logger.LogWarning("No skeletons were found for a tech offer for {0} ({1}); a generic offer will be created with no content or displayed item values", unit.Name, unit.Id);
                 skeletons.Add(new OfferSkeleton
                 {
                     Title = $"Tech out your {unit.Name}!",
@@ -512,6 +520,7 @@ namespace WcOffers
                     Duration = skeleton.Duration,
                     ContentJson = skeleton.Content,
                     DisplayedItemsJson = skeleton.DisplayedItems,
+                    CreatedTime = DateTimeOffset.Now,
                     StartTime = DateTimeOffset.Now,
                     EndTime = DateTimeOffset.Now + TimeSpan.FromDays(3),
                     Priority = priority,
@@ -519,24 +528,20 @@ namespace WcOffers
                     Cooldown = 0,
                     CooldownType = 0,
                     TemplateId = 6,
-                    Prerequisite = $"{prefix}Unl"
+                    
+                    IsEnabled = true
                 };
+
+                if (unlockAsPrerequisite)
+                {
+                    offer.Prerequisite = $"{prefix}Unl";
+                }
+
                 offers.Add(offer);
             }
 
             return offers;
         }
-
-
-
-        /// <summary>
-        /// Fetches a cohort of users who do not have the specified unit unlocked and are thus eligible to receive the unlock offer
-        /// </summary>
-        /// <param name="unit"></param>
-        //public List<int> FetchUnlockCohort(Unit unit)
-        //{
-        //    return this.unitOwnership.FetchUnitOwnerUserIds(unit.Id);
-        //}
     }
 
 }

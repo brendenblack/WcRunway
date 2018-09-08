@@ -65,7 +65,7 @@ namespace WcData.Sheets.Implementation
             log.LogDebug("Clearing {} offer skeleton(s)", skeletons?.Count ?? 0);
             this.skeletons.Clear();
 
-            var range = "Uniques!A2:L";
+            var range = "Uniques!A2:N";
             log.LogDebug("Retrieving records from range {0}", range);
 
             SpreadsheetsResource.ValuesResource.GetRequest request = sheets.Spreadsheets.Values.Get(sheetId, range);

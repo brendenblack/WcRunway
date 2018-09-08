@@ -36,3 +36,4 @@ A command-line interface in the ```WcOffers.Cli``` project allows an analyst to 
 
 ## TODO
 * Snowflake queries are extremely slow
+* UniqueOfferGenerator test for created time being set

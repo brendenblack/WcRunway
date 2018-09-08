@@ -32,7 +32,7 @@ namespace WcOffers.Cli
                 });
 
             // Handle arguments, treating the Validation verb differently than the rest to bypass starting the container
-            int exitCode = Parser.Default.ParseArguments<ValidateOptions, QualityOptions, GenerateTemplateOptions, ListTemplatesOptions, TestOptions>(args)
+            int exitCode = Parser.Default.ParseArguments<ValidateOptions, QualityOptions, GenerateTemplateOptions, GenerateUniqueOptions, ListTemplatesOptions, TestOptions>(args)
                 .MapResult(
                     (ValidateOptions o) => new ValidateHandler().Execute(o),
                     (CommandLineOptions o) =>
@@ -85,6 +85,8 @@ namespace WcOffers.Cli
                         return container.GetService<QualityHandler>().Execute(qualityOptions);
                     case TestOptions testOptions:
                         return container.GetService<TestHandler>().TestLogging(testOptions);
+                    case GenerateUniqueOptions generateUniqueOptions:
+                        return container.GetService<GenerateUniqueHandler>().Execute(generateUniqueOptions);
                     default:
                         log.LogError("Unable to locate a handler for {}", opts.GetType().Name);
                         return -1;
