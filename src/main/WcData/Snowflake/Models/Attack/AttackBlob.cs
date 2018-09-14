@@ -67,6 +67,9 @@ namespace WcData.Snowflake.Models.Attack
         [JsonProperty("damage_to_defender")]
         public int DamageToDefender { get; set; }
 
+        [JsonProperty("defender_entity_id", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string DefenderEntityId { get; set; } = "";
+
         [JsonProperty("defender_bastions")]
         public string DefenderBastions { get; set; }
 
